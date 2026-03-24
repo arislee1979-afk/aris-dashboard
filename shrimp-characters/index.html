@@ -44,6 +44,14 @@ audio { display: none; }
 .wave span:nth-child(4) { animation-delay: .3s }
 .wave span:nth-child(5) { animation-delay: .4s }
 @keyframes wave { 0%,100% { height: 4px } 50% { height: 16px } }
+.voice-info { display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.voice-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-family: 'Courier New', monospace; border: 1px solid; }
+.voice-badge.axia { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.3); color: #f97316; }
+.voice-badge.zaicai { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
+.voice-badge.health { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: #34d399; }
+.voice-badge.knowledge { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); color: #a855f7; }
+.voice-badge.housework { background: rgba(236,72,153,0.1); border-color: rgba(236,72,153,0.3); color: #ec4899; }
+.voice-label { color: #484f58; font-size: 0.65rem; margin-left: 4px; }
 @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cards { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -65,18 +73,21 @@ audio { display: none; }
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
         <div class="audio-bar">
-          <audio id="audio-axia" preload="metadata" src="axia-intro.mp3"></audio>
+          <audio id="audio-axia" src="axia-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('axia')">▶ 播放語音</button>
           <button class="stop-btn" onclick="stopAudio('axia')">■</button>
           <div class="wave" id="wave-axia" style="display:none">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
+        <div class="voice-info">
+          <span class="voice-badge axia">🔊 Warm_Bestie <span class="voice-label">pitch −3 · 1.0x</span></span>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <img src="zaicai-selected.jpg" class="card-img">
+      <img src="file_96---6ee895b1-ba14-40ee-82a9-5781941722ae.jpg" class="card-img">
       <div class="card-body">
         <h2 class="card-title">💰 發財蝦（財務蝦）</h2>
         <div class="card-sub">
@@ -85,12 +96,15 @@ audio { display: none; }
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體黃色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>黃色工程師安全帽</strong>附頭燈，腰間工具腰包（露出扳手和鉗子），手拿大型扳手，站在<strong>伺服器機房/數據中心走廊</strong>，兩側有機櫃和彩色 LED 狀態燈，專業可靠又可愛的工程師風格</div>
         <div class="audio-bar">
-          <audio id="audio-zaicai" preload="metadata" src="zaicai-intro.mp3"></audio>
+          <audio id="audio-zaicai" src="zaicai-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('zaicai')">▶ 播放語音</button>
           <button class="stop-btn" onclick="stopAudio('zaicai')">■</button>
           <div class="wave" id="wave-zaicai" style="display:none">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge zaicai">🔊 Calm_Woman <span class="voice-label">pitch −2 · 1.0x</span></span>
         </div>
       </div>
     </div>
@@ -105,12 +119,15 @@ audio { display: none; }
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體<strong>藍綠色</strong>，鬃毛和尾巴是彩虹漸層色，頭戴<strong>白色運動頭帶</strong>（附小愛心標記），穿運動背心，腳穿彩虹條紋運動鞋，手拿啞鈴，旁邊有水壺，站在<strong>現代健身房室內</strong>，背景有跑步機和健身器材，活力健康陽光動感可愛卡通風格</div>
         <div class="audio-bar">
-          <audio id="audio-health" preload="metadata" src="health-intro.mp3"></audio>
+          <audio id="audio-health" src="health-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('health')">▶ 播放語音</button>
           <button class="stop-btn" onclick="stopAudio('health')">■</button>
           <div class="wave" id="wave-health" style="display:none">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge health">🔊 Warm_Bestie <span class="voice-label">pitch −1 · 1.05x</span></span>
         </div>
       </div>
     </div>
@@ -125,12 +142,15 @@ audio { display: none; }
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>魔法師帽子</strong>（帶星星裝飾），戴著小小的圓框金屬眼鏡，坐在<strong>圖書館書桌前</strong>，周圍堆滿彩色書本、鍵盤和筆，背景是溫暖的木質書架和柔和的檯燈光，知識探索博學風格可愛卡通</div>
         <div class="audio-bar">
-          <audio id="audio-knowledge" preload="metadata" src="knowledge-intro.mp3"></audio>
+          <audio id="audio-knowledge" src="knowledge-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('knowledge')">▶ 播放語音</button>
           <button class="stop-btn" onclick="stopAudio('knowledge')">■</button>
           <div class="wave" id="wave-knowledge" style="display:none">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge knowledge">🔊 Warm_Bestie <span class="voice-label">pitch −2 · 1.0x</span></span>
         </div>
       </div>
     </div>
@@ -145,12 +165,15 @@ audio { display: none; }
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體淺粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，戴著<strong>粉色橡膠家事手套</strong>，腰間掛著各種清潔工具，拿著小拖把，站在<strong>舒適的客廳</strong>，背景有溫暖的窗台陽光和整齊的書架，清新家務可愛卡通風格</div>
         <div class="audio-bar">
-          <audio id="audio-housework" preload="metadata" src="housework-intro.mp3"></audio>
+          <audio id="audio-housework" src="housework-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('housework')">▶ 播放語音</button>
           <button class="stop-btn" onclick="stopAudio('housework')">■</button>
           <div class="wave" id="wave-housework" style="display:none">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge housework">🔊 Warm_Bestie <span class="voice-label">pitch 0 · 1.05x</span></span>
         </div>
       </div>
     </div>
@@ -161,35 +184,25 @@ audio { display: none; }
 let currentAudio = null;
 let currentId = null;
 function playAudio(id) {
-  var audio = document.getElementById('audio-' + id);
-  if (!audio) return;
-  // Stop any currently playing audio
-  if (currentAudio) {
+  if (currentAudio && currentAudio.id !== 'audio-' + id) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
-    var prevWave = document.getElementById('wave-' + currentId);
-    if (prevWave) prevWave.style.display = 'none';
+    document.getElementById('wave-' + currentId).style.display = 'none';
   }
-  // Reset and play
-  audio.currentTime = 0;
-  audio.play().then(function() {
-    currentAudio = audio;
-    currentId = id;
-    var wave = document.getElementById('wave-' + id);
-    if (wave) wave.style.display = 'flex';
-  }).catch(function(e) { console.log('Play error:', e); });
+  var audio = document.getElementById('audio-' + id);
+  audio.play();
+  currentAudio = audio;
+  currentId = id;
+  document.getElementById('wave-' + id).style.display = 'flex';
   audio.onended = function() {
-    var waveEl = document.getElementById('wave-' + id);
-    if (waveEl) waveEl.style.display = 'none';
+    document.getElementById('wave-' + id).style.display = 'none';
   };
 }
 function stopAudio(id) {
   var audio = document.getElementById('audio-' + id);
-  if (!audio) return;
   audio.pause();
   audio.currentTime = 0;
-  var wave = document.getElementById('wave-' + id);
-  if (wave) wave.style.display = 'none';
+  document.getElementById('wave-' + id).style.display = 'none';
 }
 </script>
 </body>
