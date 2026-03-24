@@ -53,17 +53,6 @@ audio { display: none; }
 .voice-badge.housework { background: rgba(236,72,153,0.1); border-color: rgba(236,72,153,0.3); color: #ec4899; }
 .voice-label { color: #484f58; font-size: 0.65rem; margin-left: 4px; }
 @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cards { grid-template-columns: 1fr; } }
-
-.card-skills { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; margin-bottom: 14px; }
-.skills-title { font-size: 0.7rem; color: #484f58; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; font-weight: 600; }
-.skills-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.skill-tag { padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; }
-.skill-tag.orange { background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
-.skill-tag.yellow { background: rgba(250,204,21,0.15); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
-.skill-tag.green { background: rgba(34,197,94,0.15); color: #34d399; border: 1px solid rgba(34,197,94,0.3); }
-.skill-tag.purple { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
-.skill-tag.pink { background: rgba(236,72,153,0.15); color: #ec4899; border: 1px solid rgba(236,72,153,0.3); }
-
 </style>
 </head>
 <body>
@@ -83,19 +72,6 @@ audio { display: none; }
           <span class="tag tag-orange">船長</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
-        
-        <div class="card-skills">
-          <div class="skills-title">⚙️ 我的技能</div>
-          <div class="skills-list">
-            <span class="skill-tag orange">⚙️ 系統工程</span>
-            <span class="skill-tag orange">🧠 知識管理</span>
-            <span class="skill-tag orange">🔄 任務協調</span>
-            <span class="skill-tag orange">🛡️ 安全監控</span>
-            <span class="skill-tag orange">🌐 網頁發布</span>
-            <span class="skill-tag orange">🦞 蝦群統籌</span>
-          </div>
-        </div>
-    
         <div class="audio-bar">
           <audio id="audio-axia" src="axia-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('axia')">▶ 播放語音</button>
@@ -119,19 +95,6 @@ audio { display: none; }
           <span class="tag tag-blue">工程師</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體黃色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>黃色工程師安全帽</strong>附頭燈，腰間工具腰包（露出扳手和鉗子），手拿大型扳手，站在<strong>伺服器機房/數據中心走廊</strong>，兩側有機櫃和彩色 LED 狀態燈，專業可靠又可愛的工程師風格</div>
-        
-        <div class="card-skills">
-          <div class="skills-title">💰 我的技能</div>
-          <div class="skills-list">
-            <span class="skill-tag yellow">💰 財富分析</span>
-            <span class="skill-tag yellow">📈 台股</span>
-            <span class="skill-tag yellow">📊 數據監控</span>
-            <span class="skill-tag yellow">🔔 盤前戰報</span>
-            <span class="skill-tag yellow">⚠️ 財報警報</span>
-            <span class="skill-tag yellow">📋 投資週報</span>
-          </div>
-        </div>
-    
         <div class="audio-bar">
           <audio id="audio-zaicai" src="zaicai-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('zaicai')">▶ 播放語音</button>
@@ -155,19 +118,6 @@ audio { display: none; }
           <span class="tag tag-green">教練</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體<strong>藍綠色</strong>，鬃毛和尾巴是彩虹漸層色，頭戴<strong>白色運動頭帶</strong>（附小愛心標記），穿運動背心，腳穿彩虹條紋運動鞋，手拿啞鈴，旁邊有水壺，站在<strong>現代健身房室內</strong>，背景有跑步機和健身器材，活力健康陽光動感可愛卡通風格</div>
-        
-        <div class="card-skills">
-          <div class="skills-title">🏃 我的技能</div>
-          <div class="skills-list">
-            <span class="skill-tag green">🏃 訓練</span>
-            <span class="skill-tag green">❤️ HRV</span>
-            <span class="skill-tag green">😴 睡眠</span>
-            <span class="skill-tag green">🏋️ 健身</span>
-            <span class="skill-tag green">⌚ Garmin</span>
-            <span class="skill-tag green">📈 數據追蹤</span>
-          </div>
-        </div>
-    
         <div class="audio-bar">
           <audio id="audio-health" src="health-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('health')">▶ 播放語音</button>
@@ -191,19 +141,6 @@ audio { display: none; }
           <span class="tag tag-purple">魔法師</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>魔法師帽子</strong>（帶星星裝飾），戴著小小的圓框金屬眼鏡，坐在<strong>圖書館書桌前</strong>，周圍堆滿彩色書本、鍵盤和筆，背景是溫暖的木質書架和柔和的檯燈光，知識探索博學風格可愛卡通</div>
-        
-        <div class="card-skills">
-          <div class="skills-title">🧠 我的技能</div>
-          <div class="skills-list">
-            <span class="skill-tag purple">🧠 知識</span>
-            <span class="skill-tag purple">📝 反思</span>
-            <span class="skill-tag purple">📺 YTW</span>
-            <span class="skill-tag purple">🗂️ Notion</span>
-            <span class="skill-tag purple">📚 筆記</span>
-            <span class="skill-tag purple">🔍 搜尋</span>
-          </div>
-        </div>
-    
         <div class="audio-bar">
           <audio id="audio-knowledge" src="knowledge-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('knowledge')">▶ 播放語音</button>
@@ -227,19 +164,6 @@ audio { display: none; }
           <span class="tag tag-pink">家事達人</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體淺粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，戴著<strong>粉色橡膠家事手套</strong>，腰間掛著各種清潔工具，拿著小拖把，站在<strong>舒適的客廳</strong>，背景有溫暖的窗台陽光和整齊的書架，清新家務可愛卡通風格</div>
-        
-        <div class="card-skills">
-          <div class="skills-title">🦐 我的技能</div>
-          <div class="skills-list">
-            <span class="skill-tag pink">🦐 生活</span>
-            <span class="skill-tag pink">🏠 規劃</span>
-            <span class="skill-tag pink">✅ 待辦</span>
-            <span class="skill-tag pink">📅 行程</span>
-            <span class="skill-tag pink">🧹 家務</span>
-            <span class="skill-tag pink">🌱 習慣</span>
-          </div>
-        </div>
-    
         <div class="audio-bar">
           <audio id="audio-housework" src="housework-intro.mp3"></audio>
           <button class="play-btn" onclick="playAudio('housework')">▶ 播放語音</button>
