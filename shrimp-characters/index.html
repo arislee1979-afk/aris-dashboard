@@ -190,13 +190,25 @@ function playAudio(id) {
     document.getElementById('wave-' + currentId).style.display = 'none';
   }
   var audio = document.getElementById('audio-' + id);
-  audio.play();
-  currentAudio = audio;
-  currentId = id;
-  document.getElementById('wave-' + id).style.display = 'flex';
-  audio.onended = function() {
-    document.getElementById('wave-' + id).style.display = 'none';
-  };
+  audio.load();
+  var btn = audio.parentElement.querySelector('.play-btn');
+  btn.textContent = '⏳ 載入中...';
+  var playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(function() {
+      btn.textContent = '▶ 播放中';
+      currentAudio = audio;
+      currentId = id;
+      document.getElementById('wave-' + id).style.display = 'flex';
+      audio.onended = function() {
+        document.getElementById('wave-' + id).style.display = 'none';
+        btn.textContent = '▶ 播放語音';
+      };
+    }).catch(function(err) {
+      btn.textContent = '▶ 播放語音';
+      alert('播放失敗：' + err.message);
+    });
+  }
 }
 function stopAudio(id) {
   var audio = document.getElementById('audio-' + id);
