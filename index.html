@@ -3,37 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>蝦群角色</title>
+<title>🦞 蝦群角色設定</title>
 <style>
-body{font-family:Arial,sans-serif;background:#0a1628;color:#e0e0e0;margin:0;padding:20px;text-align:center}
-h1{color:#00d4ff;margin-bottom:30px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1200px;margin:0 auto}
-.card{background:#1a2a44;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,212,255,0.15)}
-.card img{width:100%;max-width:250px;border-radius:8px;margin-bottom:15px}
-.card h2{color:#00d4ff;font-size:1.3em;margin:10px 0}
-.card p{color:#a0a0a0;font-size:0.95em}
-footer{margin-top:40px;color:#666}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-ui, sans-serif; min-height: 100vh; }
+.hero { text-align: center; padding: 80px 20px 60px; background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.08) 0%, transparent 50%); pointer-events: none; }
+.hero h1 { font-size: 2.8rem; margin-bottom: 12px; position: relative; }
+.hero h1 span { background: linear-gradient(135deg, #f97316, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: #7d8590; font-size: 1.1rem; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px 80px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; overflow: hidden; transition: all 0.3s ease; position: relative; }
+.card::before { content: ''; position: absolute; inset: 0; border-radius: 16px; padding: 1px; background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.3s; }
+.card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); border-color: #3b82f6; }
+.card:hover::before { opacity: 1; }
+.card-img { width: 100%; height: 260px; object-fit: cover; }
+.card-body { padding: 24px; }
+.card-title { font-size: 1.3rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.card-sub { color: #7d8590; font-size: 0.85rem; margin-bottom: 16px; display: flex; gap: 8px; }
+.tag { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; }
+.tag-orange { background: rgba(249,115,22,0.15); color: #f97316; }
+.tag-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.tag-green { background: rgba(34,197,94,0.15); color: #34d399; }
+.tag-purple { background: rgba(168,85,247,0.15); color: #a855f7; }
+.tag-pink { background: rgba(236,72,153,0.15); color: #ec4899; }
+.card-prompt { background: #0d1117; border: 1px solid #21262d; border-radius: 10px; padding: 16px; font-size: 0.82rem; line-height: 1.7; color: #8b949e; }
+.card-prompt strong { color: #58a6ff; }
+@media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cards { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
-<h1>🦐 蝦群角色</h1>
-<div class="grid">
-<div class="card">
-<img src="file_95.jpg" alt="系統蝦">
-<h2>系統蝦</h2>
-<p>主機管理、Vault 檔案、Cron 排程</p>
+<div class="hero">
+  <h1>🦞 <span>蝦群</span> 角色設定</h1>
+  <p>彩虹小馬風格 · AI Agent 角色視覺化</p>
 </div>
-<div class="card">
-<img src="file_96.jpg" alt="發財蝦">
-<h2>發財蝦</h2>
-<p>商業分析、數據洞察、投資建議</p>
+<div class="container">
+  <div class="cards">
+    <div class="card">
+      <img src="file_97---8010eca1-b2ce-4d46-a167-b1136205a180.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🦞 A小蝦（系統蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-orange">橘紅色</span>
+          <span class="tag tag-orange">船長</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="file_96---6ee895b1-ba14-40ee-82a9-5781941722ae.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">💰 發財蝦（財務蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-blue">黃色</span>
+          <span class="tag tag-blue">工程師</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體黃色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>黃色工程師安全帽</strong>附頭燈，腰間工具腰包（露出扳手和鉗子），手拿大型扳手，站在<strong>伺服器機房/數據中心走廊</strong>，兩側有機櫃和彩色 LED 狀態燈，專業可靠又可愛的工程師風格</div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="file_95---03ee8b21-bf1b-464a-bdb1-a290a1043ad2.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🏃 健康蝦（健身蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-green">藍綠色</span>
+          <span class="tag tag-green">教練</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體<strong>藍綠色</strong>，鬃毛和尾巴是彩虹漸層色，頭戴<strong>白色運動頭帶</strong>（附小愛心標記），穿運動背心，腳穿彩虹條紋運動鞋，手拿啞鈴，旁邊有水壺，站在<strong>現代健身房室內</strong>，背景有跑步機和健身器材，活力健康陽光動感可愛卡通風格</div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="knowledge-2.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🧠 知識蝦（學習蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-purple">紫色</span>
+          <span class="tag tag-purple">魔法師</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>魔法師帽子</strong>（帶星星裝飾），戴著小小的圓框金屬眼鏡，坐在<strong>圖書館書桌前</strong>，周圍堆滿彩色書本、鍵盤和筆，背景是溫暖的木質書架和柔和的檯燈光，知識探索博學風格可愛卡通</div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="housework-3.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🦐 家務蝦（生活蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-pink">淺粉紅</span>
+          <span class="tag tag-pink">家事達人</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體淺粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，戴著<strong>粉色橡膠家事手套</strong>，腰間掛著各種清潔工具，拿著小拖把，站在<strong>舒適的客廳</strong>，背景有溫暖的窗台陽光和整齊的書架，清新家務可愛卡通風格</div>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="card">
-<img src="file_97.jpg" alt="健康蝦">
-<h2>健康蝦</h2>
-<p>健康追蹤、Garmin 數據、生活優化</p>
-</div>
-</div>
-<footer>蝦群系統 v2.0 | Powered by Claude Code</footer>
 </body>
 </html>
