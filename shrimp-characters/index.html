@@ -163,25 +163,21 @@ let currentId = null;
 function playAudio(id) {
   var audio = document.getElementById('audio-' + id);
   if (!audio) return;
-  if (currentAudio && currentAudio.id !== 'audio-' + id) {
+  // Stop any currently playing audio
+  if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
-    if (currentId) {
-      var prevWave = document.getElementById('wave-' + currentId);
-      if (prevWave) prevWave.style.display = 'none';
-    }
+    var prevWave = document.getElementById('wave-' + currentId);
+    if (prevWave) prevWave.style.display = 'none';
   }
+  // Reset and play
   audio.currentTime = 0;
-  var playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(function(error) {
-      console.log('Play failed:', error);
-    });
-  }
-  currentAudio = audio;
-  currentId = id;
-  var wave = document.getElementById('wave-' + id);
-  if (wave) wave.style.display = 'flex';
+  audio.play().then(function() {
+    currentAudio = audio;
+    currentId = id;
+    var wave = document.getElementById('wave-' + id);
+    if (wave) wave.style.display = 'flex';
+  }).catch(function(e) { console.log('Play error:', e); });
   audio.onended = function() {
     var waveEl = document.getElementById('wave-' + id);
     if (waveEl) waveEl.style.display = 'none';
