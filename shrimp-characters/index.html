@@ -81,13 +81,13 @@ audio { display: none; }
           </div>
         <div class="audio-bar" style="margin-top:8px">
           <audio id="audio-axia-skills" src="axia-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('axia-skills')" id="btn-axia-skills">▶ 播放完整技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('axia-skills')">■</button>
+          <button class="play-btn" onclick="playAudio('skills')" id="btn-axia-skills">▶ 播放完整技能介紹</button>
+          <button class="stop-btn" onclick="stopAudio('skills')">■</button>
           <div class="wave" id="wave-axia-skills" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
         <div class="audio-bar" style="margin-top:8px">
           <audio id="audio-axia-full" src="axia-full.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('axia-full')" id="btn-axia-full">▶ 播放完整技能介紹（加長版）</button>
-          <button class="stop-btn" onclick="stopAudio('axia-full')">■</button>
+          <button class="play-btn" onclick="playAudio('full')" id="btn-axia-full">▶ 播放完整技能介紹（加長版）</button>
+          <button class="stop-btn" onclick="stopAudio('full')">■</button>
           <div class="wave" id="wave-axia-full" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
         </div>
           <span class="voice-label">完整版 3:12</span>
@@ -247,40 +247,68 @@ audio { display: none; }
 </div>
 <script>
 let currentAudio = null;
-let currentId = null;
+let currentBtnId = null;
+
 function playAudio(id) {
-  if (currentAudio && currentAudio.id !== 'audio-' + id) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    document.getElementById('wave-' + currentId).style.display = 'none';
-  }
-  var audio = document.getElementById('audio-' + id);
-  audio.load();
-  var btn = audio.parentElement.querySelector('.play-btn');
-  btn.textContent = '⏳ 載入中...';
-  var playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.then(function() {
-      btn.textContent = '▶ 播放中';
-      currentAudio = audio;
-      currentId = id;
-      document.getElementById('wave-' + id).style.display = 'flex';
-      audio.onended = function() {
-        document.getElementById('wave-' + id).style.display = 'none';
-        btn.textContent = '▶ 播放語音';
-      };
-    }).catch(function(err) {
-      btn.textContent = '▶ 播放語音';
-      alert('播放失敗：' + err.message);
-    });
-  }
+    // Normalize: if id doesn't start with 'audio-', try both
+    var audioEl = document.getElementById('audio-' + id) || document.getElementById(id);
+    if (!audioEl) return;
+    var audioId = audioEl.id;
+
+    if (currentAudio && currentAudio.id !== audioId) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        if (currentBtnId) {
+            var prevBtn = document.querySelector('[onclick="playAudio(\'' + currentBtnId + '\')"]');
+            if (prevBtn) prevBtn.textContent = prevBtn.textContent.includes('完整') ? '▶ 播放完整技能介紹' : '▶ 播放語音';
+        }
+        var prevWave = document.getElementById('wave-' + currentAudio.id.replace('audio-',''));
+        if (prevWave) prevWave.style.display = 'none';
+    }
+    var btn = document.querySelector('[onclick="playAudio(\'' + id + '\')"]');
+    var wave = document.getElementById('wave-' + audioEl.id.replace('audio-',''));
+    if (audioEl.paused) {
+        audioEl.play();
+        btn.textContent = btn.textContent.includes('完整') ? '⏸ 暫停' : '⏸ 暫停';
+        if (wave) wave.style.display = 'flex';
+        currentAudio = audioEl;
+        currentBtnId = id;
+    } else {
+        audioEl.pause();
+        btn.textContent = btn.textContent.includes('完整') ? '▶ 播放完整技能介紹' : '▶ 播放語音';
+        if (wave) wave.style.display = 'none';
+        currentAudio = null;
+        currentBtnId = null;
+    }
 }
+
 function stopAudio(id) {
-  var audio = document.getElementById('audio-' + id);
-  audio.pause();
-  audio.currentTime = 0;
-  document.getElementById('wave-' + id).style.display = 'none';
+    var audioEl = document.getElementById('audio-' + id) || document.getElementById(id);
+    if (!audioEl) return;
+    audioEl.pause();
+    audioEl.currentTime = 0;
+    var btn = document.querySelector('[onclick="playAudio(\'' + id + '\')"]');
+    var wave = document.getElementById('wave-' + audioEl.id.replace('audio-',''));
+    if (btn) btn.textContent = btn.textContent.includes('完整') ? '▶ 播放完整技能介紹' : '▶ 播放語音';
+    if (wave) wave.style.display = 'none';
+    if (currentAudio && currentAudio.id === audioEl.id) { currentAudio = null; currentBtnId = null; }
 }
+
+// Add ended listeners for all audio elements
+['axia','zaicai','health','knowledge','housework',
+ 'axia-skills','zaicai-skills','health-skills','knowledge-skills','housework-skills',
+ 'axia-full','zaicai-full','health-full','knowledge-full','housework-full'].forEach(id => {
+    var audio = document.getElementById('audio-' + id) || document.getElementById(id);
+    if (audio) {
+        audio.addEventListener('ended', function() {
+            var btn = document.querySelector('[onclick="playAudio(\'' + id + '\')"]');
+            var wave = document.getElementById('wave-' + this.id.replace('audio-',''));
+            if (btn) btn.textContent = btn.textContent.includes('完整') ? '▶ 播放完整技能介紹' : '▶ 播放語音';
+            if (wave) wave.style.display = 'none';
+            currentAudio = null; currentBtnId = null;
+        });
+    }
+});
 </script>
 </body>
 </html>
