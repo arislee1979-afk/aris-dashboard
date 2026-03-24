@@ -1,54 +1,278 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="60">
-<title>🦐 Aris Node Dashboard</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0d1117; color: #c9d1d9; font-family: monospace; padding: 1.5rem; }
-  h1 { color: #58a6ff; margin-bottom: 1rem; font-size: 1.4rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
-  .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1rem; }
-  .card-header { font-size: 1rem; font-weight: bold; margin-bottom: 0.5rem; }
-  .card-body { font-size: 0.85rem; line-height: 1.5; color: #8b949e; white-space: pre-wrap; word-break: break-word; }
-  .card-footer { font-size: 0.7rem; color: #484f58; margin-top: 0.5rem; }
-  .ok { color: #3fb950; }
-  .err { color: #f85149; }
-  .dim { color: #484f58; }
-  .updated { font-size: 0.75rem; color: #484f58; margin-top: 1.5rem; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 Aris Node — 蝦群宇宙</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e17;
+            --card: #111827;
+            --card-hover: #1a2332;
+            --border: #1e293b;
+            --accent: #22d3ee;
+            --pink: #f472b6;
+            --text: #e2e8f0;
+            --muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .hero-emoji {
+            font-size: 72px;
+            margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .subtitle { color: var(--muted); font-size: 16px; }
+        .subtitle a { color: var(--accent); text-decoration: none; }
+        .subtitle a:hover { text-decoration: underline; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .card:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        .card-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+        }
+        .card-body { flex: 1; min-width: 0; }
+        .card-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .card-desc { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+        .card-link {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin: 32px 0 12px 0;
+            padding-left: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+        }
+        .footer span { color: var(--accent); }
+
+        /* Row cards for sub-links */
+        .card-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+        .card-row .card {
+            padding: 16px;
+            gap: 12px;
+        }
+        .card-row .card-icon {
+            width: 44px;
+            height: 44px;
+            font-size: 22px;
+            border-radius: 10px;
+        }
+        .card-row .card-name { font-size: 14px; }
+        .card-row .card-desc { font-size: 12px; }
+        .card-row .card-link { font-size: 11px; }
+    </style>
 </head>
 <body>
-<h1>🦐 Aris Node Dashboard</h1>
-<div class="grid">
-  
-        <div class="card">
-          <div class="card-header"><span class="ok">●</span> 🧠 知識蝦</div>
-          <div class="card-body">=== 任務一：研究 Obsidian 最佳資料管理方式 ===
-📰 Dev.to 最新文章標題：
-• I Built the Most Feature-Com</div>
-          <div class="card-footer">knowledge-vault-organize</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="ok">●</span> 🏃 健康蝦</div>
-          <div class="card-body">Garmin API 限流，健康數據無法取得，建議依自身感受決定今日訓練強度。</div>
-          <div class="card-footer">health-garmin-test</div>
-        </div>
-        <div class="card">
-          <div class="card-header">💰 發財蝦</div>
-          <div class="card-body dim">尚無任務記錄</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="ok">●</span> 🔧 系統蝦</div>
-          <div class="card-body">🔧 系統蝦說: 開始巡邏 systemd 服務狀態...
+<div class="container">
 
-=== 檢查 openclaw-watcher.service ===
-○ openclaw-wat</div>
-          <div class="card-footer">system-patrol-1774357664</div>
-        </div>
+    <div class="hero">
+        <div class="hero-emoji">🦞</div>
+        <h1>Aris Node — 蝦群宇宙</h1>
+        <p class="subtitle">Personal AI Infrastructure · <a href="https://t.me/Aris_openclaw_20260307_bot" target="_blank">Telegram Bot</a></p>
+    </div>
+
+    <!-- Main Dashboards -->
+    <div class="section-title">📊 主要儀表板</div>
+    <div class="grid">
+
+        <a class="card" href="https://arislee1979-afk.github.io/shrimp-dashboard/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#22d3ee22,#f472b622)">📊</div>
+            <div class="card-body">
+                <div class="card-name">🦞 蝦群即時監控</div>
+                <div class="card-desc">深色科幻風 · 5蝦成員 · 排程任務 · 活動狀態</div>
+                <div class="card-link">https://arislee1979-afk.github.io/shrimp-dashboard/</div>
+                <div class="card-tags">
+                    <span class="tag">深色科幻風</span>
+                    <span class="tag">即時監控</span>
+                    <span class="tag">蝦群</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="card" href="https://arislee1979-afk.github.io/shrimp-mission-control/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#22d3ee22,#a855f722)">🎯</div>
+            <div class="card-body">
+                <div class="card-name">🎯 蝦群 Mission Control</div>
+                <div class="card-desc">深色簡約風 · 五大支柱 · 健康/財富概覽 · 活動紀錄</div>
+                <div class="card-link">https://arislee1979-afk.github.io/shrimp-mission-control/</div>
+                <div class="card-tags">
+                    <span class="tag">Mission Control</span>
+                    <span class="tag">五大支柱</span>
+                    <span class="tag">簡約風</span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- Tools -->
+    <div class="section-title">🛠️ 工具站</div>
+    <div class="grid">
+
+        <a class="card" href="https://arislee1979-afk.github.io/gym-dashboard/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#4ade8022,#14b8a622)">🏋️</div>
+            <div class="card-body">
+                <div class="card-name">🏋️ Gym Dashboard</div>
+                <div class="card-desc">訓練數據視覺化 · MEV/MAV/MRV Zone Charts · 每週容量分析</div>
+                <div class="card-link">https://arislee1979-afk.github.io/gym-dashboard/</div>
+                <div class="card-tags">
+                    <span class="tag">訓練</span>
+                    <span class="tag">HRV</span>
+                    <span class="tag">Recharts</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="card" href="https://arislee1979-afk.github.io/voice-intro/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#f472b622,#ec489922)">🎙️</div>
+            <div class="card-body">
+                <div class="card-name">🎙️ A小蝦語音自我介紹</div>
+                <div class="card-desc">MiniMax TTS HD 音頻 · Warm_Bestie 音色 · 備用 Web Speech API</div>
+                <div class="card-link">https://arislee1979-afk.github.io/voice-intro/</div>
+                <div class="card-tags">
+                    <span class="tag">MiniMax TTS</span>
+                    <span class="tag">語音</span>
+                    <span class="tag">自我介紹</span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- Fun / Extra -->
+    <div class="section-title">🎮 趣味站</div>
+    <div class="grid">
+
+        <a class="card" href="https://arislee1979-afk.github.io/openclaw-bot-review/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#6366f122,#8b5cf622)">🤖</div>
+            <div class="card-body">
+                <div class="card-name">🤖 OpenClaw Bot Review</div>
+                <div class="card-desc">Bot 點評遊戲化頁面 · 安裝步驟說明</div>
+                <div class="card-link">https://arislee1979-afk.github.io/openclaw-bot-review/</div>
+                <div class="card-tags">
+                    <span class="tag">OpenClaw</span>
+                    <span class="tag">趣味</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="card" href="https://arislee1979-afk.github.io/cyber-emperor-claw-court/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#f59e0b22,#ef444422)">🏛️</div>
+            <div class="card-body">
+                <div class="card-name">🏛️ Cyber Emperor Claw Court</div>
+                <div class="card-desc">線上宮殿主題趣味頁面</div>
+                <div class="card-link">https://arislee1979-afk.github.io/cyber-emperor-claw-court/</div>
+                <div class="card-tags">
+                    <span class="tag">趣味</span>
+                    <span class="tag">主題</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="card" href="https://arislee1979-afk.github.io/openclaw-virtual-office/" target="_blank">
+            <div class="card-icon" style="background:linear-gradient(135deg,#22d3ee22,#0ea5e922)">🖥️</div>
+            <div class="card-body">
+                <div class="card-name">🖥️ Virtual Office</div>
+                <div class="card-desc">虛擬辦公室主題頁面</div>
+                <div class="card-link">https://arislee1979-afk.github.io/openclaw-virtual-office/</div>
+                <div class="card-tags">
+                    <span class="tag">趣味</span>
+                    <span class="tag">虛擬</span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="footer">
+        🦞 Aris Node · <span>MiniMax M2.7</span> · OpenClaw · 蝦群宇宙<br>
+        所有站點由 A小蝦 自動發布 🚀
+    </div>
 </div>
-<div class="updated">最後更新：2026-03-24 14:45 UTC（每 60 秒自動重整）</div>
 </body>
 </html>
