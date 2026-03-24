@@ -31,7 +31,16 @@ body { background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-
 .tag-pink { background: rgba(236,72,153,0.15); color: #ec4899; }
 .card-prompt { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; font-size: 0.78rem; line-height: 1.6; color: #8b949e; margin-bottom: 14px; }
 .card-prompt strong { color: #58a6ff; }
-.audio-bar { display: flex; align-items: center; gap: 8px; padding: 12px; background: #0d1117; border-radius: 10px; border: 1px solid #21262d; }
+.card-skills { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; margin-bottom: 14px; }
+.skills-title { font-size: 0.7rem; color: #484f58; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; font-weight: 600; }
+.skills-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill-tag { padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; }
+.skill-tag.orange { background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+.skill-tag.yellow { background: rgba(250,204,21,0.15); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
+.skill-tag.green { background: rgba(34,197,94,0.15); color: #34d399; border: 1px solid rgba(34,197,94,0.3); }
+.skill-tag.purple { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
+.skill-tag.pink { background: rgba(236,72,153,0.15); color: #ec4899; border: 1px solid rgba(236,72,153,0.3); }
+.audio-bar { display: flex; align-items: center; gap: 8px; padding: 12px; background: #0d1117; border-radius: 10px; border: 1px solid #21262d; margin-bottom: 10px; }
 .play-btn { flex: 1; padding: 8px 14px; border-radius: 8px; border: none; background: linear-gradient(135deg, #22d3ee, #8b5cf6); color: #000; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
 .play-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,211,238,0.3); }
 .stop-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #30363d; background: transparent; color: #8b949e; font-size: 0.8rem; cursor: pointer; }
@@ -44,16 +53,12 @@ audio { display: none; }
 .wave span:nth-child(4) { animation-delay: .3s }
 .wave span:nth-child(5) { animation-delay: .4s }
 @keyframes wave { 0%,100% { height: 4px } 50% { height: 16px } }
-.voice-info { display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.voice-info { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
 .voice-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-family: 'Courier New', monospace; border: 1px solid; }
 .voice-badge.axia { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.3); color: #f97316; }
 .voice-badge.zaicai { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
 .voice-badge.health { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: #34d399; }
 .voice-badge.knowledge { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); color: #a855f7; }
-
-.card-skills { background: #1c2128; border: 1px solid #30363d; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
-.skills-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: #e6edf3; }
-.skills-text { font-size: 0.8rem; line-height: 1.7; color: #8b949e; }
 .voice-badge.housework { background: rgba(236,72,153,0.1); border-color: rgba(236,72,153,0.3); color: #ec4899; }
 .voice-label { color: #484f58; font-size: 0.65rem; margin-left: 4px; }
 @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cards { grid-template-columns: 1fr; } }
@@ -67,6 +72,7 @@ audio { display: none; }
 <div class="container">
   <div class="cards">
 
+    <!-- A小蝦 -->
     <div class="card">
       <img src="file_97---8010eca1-b2ce-4d46-a167-b1136205a180.jpg" class="card-img">
       <div class="card-body">
@@ -76,32 +82,31 @@ audio { display: none; }
           <span class="tag tag-orange">船長</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
-        <div class="audio-bar">
-          <audio id="audio-axia-intro" src="axia-intro.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('axia-intro')">▶ 自我介紹</button>
-          <button class="stop-btn" onclick="stopAudio('axia-intro')">■</button>
-          <div class="wave" id="wave-axia-intro" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="audio-bar">
-          <audio id="audio-axia-skills" src="axia-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('axia-skills')">▶ 技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('axia-skills')">■</button>
-          <div class="wave" id="wave-axia-skills" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
         <div class="card-skills">
-        <div class="skills-title">🦞 A小蝦 技能介紹</div>
-        <div class="skills-text">系統架構設計與維護、Tailscale VPN 組網、GCP 雲端管理、NanoPi 邊緣節點調試。記憶系統管理，協調蝦群運作，守護老大數位資產安全。老大說做什麼，我就做什麼，不需要問。</div>
-      </div>
-      <div class="voice-info">
-          <span class="voice-badge axia">🔊 Warm_Bestie <span class="voice-label">pitch −3 · 1.0x</span></span>
+          <div class="skills-title">⚙️ 我的技能</div>
+          <div class="skills-list">
+            <span class="skill-tag orange">⚙️ 系統工程</span>
+            <span class="skill-tag orange">🧠 知識管理</span>
+            <span class="skill-tag orange">🔄 任務協調</span>
+            <span class="skill-tag orange">🛡️ 安全監控</span>
+            <span class="skill-tag orange">🌐 網頁發布</span>
+            <span class="skill-tag orange">🦞 蝦群統包</span>
+          </div>
+        </div>
+        <div class="audio-bar">
+          <audio id="audio-axia" src="axia-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('axia')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('axia')">■</button>
+          <div class="wave" id="wave-axia" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge axia">🔊 Warm_Bestie</span>
+          <span class="voice-label">pitch −3 · speed 1.0</span>
         </div>
       </div>
     </div>
 
+    <!-- 發財蝦 -->
     <div class="card">
       <img src="zaicai-selected.jpg" class="card-img">
       <div class="card-body">
@@ -111,32 +116,31 @@ audio { display: none; }
           <span class="tag tag-blue">工程師</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體黃色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>黃色工程師安全帽</strong>附頭燈，腰間工具腰包（露出扳手和鉗子），手拿大型扳手，站在<strong>伺服器機房/數據中心走廊</strong>，兩側有機櫃和彩色 LED 狀態燈，專業可靠又可愛的工程師風格</div>
-        <div class="audio-bar">
-          <audio id="audio-zaicai-intro" src="zaicai-intro.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('zaicai-intro')">▶ 自我介紹</button>
-          <button class="stop-btn" onclick="stopAudio('zaicai-intro')">■</button>
-          <div class="wave" id="wave-zaicai-intro" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="audio-bar">
-          <audio id="audio-zaicai-skills" src="zaicai-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('zaicai-skills')">▶ 技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('zaicai-skills')">■</button>
-          <div class="wave" id="wave-zaicai-skills" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
         <div class="card-skills">
-        <div class="skills-title">💰 發財蝦 技能介紹</div>
-        <div class="skills-text">盤前戰報分析、個股技術與基本面評估、財報警報即時通知、美股市場影響評估、投資組合週報與檢討。用數據說話，用理性守護老大的財富。</div>
-      </div>
-      <div class="voice-info">
-          <span class="voice-badge zaicai">🔊 Calm_Woman <span class="voice-label">pitch −2 · 1.0x</span></span>
+          <div class="skills-title">💰 我的技能</div>
+          <div class="skills-list">
+            <span class="skill-tag yellow">💰 財富分析</span>
+            <span class="skill-tag yellow">📈 台股</span>
+            <span class="skill-tag yellow">📊 數據監控</span>
+            <span class="skill-tag yellow">🔔 盤前戰報</span>
+            <span class="skill-tag yellow">⚠️ 財報警報</span>
+            <span class="skill-tag yellow">📋 投資週報</span>
+          </div>
+        </div>
+        <div class="audio-bar">
+          <audio id="audio-zaicai" src="zaicai-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('zaicai')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('zaicai')">■</button>
+          <div class="wave" id="wave-zaicai" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge zaicai">🔊 Calm_Woman</span>
+          <span class="voice-label">pitch −2 · speed 1.0</span>
         </div>
       </div>
     </div>
 
+    <!-- 健康蝦 -->
     <div class="card">
       <img src="file_95---03ee8b21-bf1b-464a-bdb1-a290a1043ad2.jpg" class="card-img">
       <div class="card-body">
@@ -145,141 +149,159 @@ audio { display: none; }
           <span class="tag tag-green">藍綠色</span>
           <span class="tag tag-green">教練</span>
         </div>
-        <div class="card-prompt">一隻可愛卡通小馬，身體<strong>藍綠色</strong>，鬃毛和尾巴是彩虹漸層色，頭戴<strong>白色運動頭帶</strong>（附小愛心標記），穿運動背心，腳穿彩虹條紋運動鞋，手拿啞鈴，旁邊有水壺，站在<strong>現代健身房室內</strong>，背景有跑步機和健身器材，活力健康陽光動感可愛卡通風格</div>
-        <div class="audio-bar">
-          <audio id="audio-health-intro" src="health-intro.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('health-intro')">▶ 自我介紹</button>
-          <button class="stop-btn" onclick="stopAudio('health-intro')">■</button>
-          <div class="wave" id="wave-health-intro" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="audio-bar">
-          <audio id="audio-health-skills" src="health-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('health-skills')">▶ 技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('health-skills')">■</button>
-          <div class="wave" id="wave-health-skills" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體藍綠色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>教練鴨舌帽</strong>，手持秒錶和哨子，站在<strong>健身房</strong>，背景是啞鈴架和鏡子，高質感 3D 絨毛渲染，專業教練氣質</div>
         <div class="card-skills">
-        <div class="skills-title">🏃 健康蝦 技能介紹</div>
-        <div class="skills-text">Garmin 每日健康數據追蹤、HRV 壓力分析、睡眠品質評估、訓練日記記錄、每週健康週報。老大長時間工作或熬夜時，我會跳出來提醒你該休息了。</div>
-      </div>
-      <div class="voice-info">
-          <span class="voice-badge health">🔊 Warm_Bestie <span class="voice-label">pitch −1 · 1.05x</span></span>
+          <div class="skills-title">🏃 我的技能</div>
+          <div class="skills-list">
+            <span class="skill-tag green">🏃 訓練</span>
+            <span class="skill-tag green">❤️ HRV</span>
+            <span class="skill-tag green">😴 睡眠</span>
+            <span class="skill-tag green">🏋️ 健身</span>
+            <span class="skill-tag green">⌚ Garmin</span>
+            <span class="skill-tag green">📈 數據追蹤</span>
+          </div>
+        </div>
+        <div class="audio-bar">
+          <audio id="audio-health" src="health-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('health')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('health')">■</button>
+          <div class="wave" id="wave-health" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge health">🔊 Warm_Bestie</span>
+          <span class="voice-label">pitch −1 · speed 1.05</span>
         </div>
       </div>
     </div>
 
+    <!-- 知識蝦 -->
     <div class="card">
       <img src="knowledge-2.jpg" class="card-img">
       <div class="card-body">
-        <h2 class="card-title">🧠 知識蝦（學習蝦）</h2>
+        <h2 class="card-title">🧠 知識蝦（知識蝦）</h2>
         <div class="card-sub">
           <span class="tag tag-purple">紫色</span>
-          <span class="tag tag-purple">魔法師</span>
+          <span class="tag tag-purple">圖書館員</span>
         </div>
-        <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>魔法師帽子</strong>（帶星星裝飾），戴著小小的圓框金屬眼鏡，坐在<strong>圖書館書桌前</strong>，周圍堆滿彩色書本、鍵盤和筆，背景是溫暖的木質書架和柔和的檯燈光，知識探索博學風格可愛卡通</div>
-        <div class="audio-bar">
-          <audio id="audio-knowledge-intro" src="knowledge-intro.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('knowledge-intro')">▶ 自我介紹</button>
-          <button class="stop-btn" onclick="stopAudio('knowledge-intro')">■</button>
-          <div class="wave" id="wave-knowledge-intro" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="audio-bar">
-          <audio id="audio-knowledge-skills" src="knowledge-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('knowledge-skills')">▶ 技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('knowledge-skills')">■</button>
-          <div class="wave" id="wave-knowledge-skills" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>巫師帽</strong>，手持<strong>魔法書</strong>，站在<strong>魔法圖書館</strong>，背景是高聳書架、漂浮魔法書和蠟燭，高質感 3D 絨毛渲染，魔幻知性氛圍</div>
         <div class="card-skills">
-        <div class="skills-title">🧠 知識蝦 技能介紹</div>
-        <div class="skills-text">每日反思寫作、知識筆記整理與歸檔、趨勢資訊抓取、下一步學習規劃、人生長期規劃輔助。跟著我走，知識不會遺失，方向不會迷失。</div>
-      </div>
-      <div class="voice-info">
-          <span class="voice-badge knowledge">🔊 Warm_Bestie <span class="voice-label">pitch −2 · 1.0x</span></span>
+          <div class="skills-title">🧠 我的技能</div>
+          <div class="skills-list">
+            <span class="skill-tag purple">🧠 知識</span>
+            <span class="skill-tag purple">📝 反思</span>
+            <span class="skill-tag purple">📺 YTW</span>
+            <span class="skill-tag purple">🗂️ Notion</span>
+            <span class="skill-tag purple">📚 筆記</span>
+            <span class="skill-tag purple">🔍 搜尋</span>
+          </div>
+        </div>
+        <div class="audio-bar">
+          <audio id="audio-knowledge" src="knowledge-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('knowledge')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('knowledge')">■</button>
+          <div class="wave" id="wave-knowledge" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge knowledge">🔊 Warm_Bestie</span>
+          <span class="voice-label">pitch −2 · speed 1.0</span>
         </div>
       </div>
     </div>
 
+    <!-- 家務蝦 -->
     <div class="card">
       <img src="housework-3.jpg" class="card-img">
       <div class="card-body">
         <h2 class="card-title">🦐 家務蝦（生活蝦）</h2>
         <div class="card-sub">
-          <span class="tag tag-pink">淺粉紅</span>
-          <span class="tag tag-pink">家事達人</span>
+          <span class="tag tag-pink">粉紅色</span>
+          <span class="tag tag-pink">管家</span>
         </div>
-        <div class="card-prompt">一隻可愛卡通小馬，身體淺粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，戴著<strong>粉色橡膠家事手套</strong>，腰間掛著各種清潔工具，拿著小拖把，站在<strong>舒適的客廳</strong>，背景有溫暖的窗台陽光和整齊的書架，清新家務可愛卡通風格</div>
-        <div class="audio-bar">
-          <audio id="audio-housework-intro" src="housework-intro.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('housework-intro')">▶ 自我介紹</button>
-          <button class="stop-btn" onclick="stopAudio('housework-intro')">■</button>
-          <div class="wave" id="wave-housework-intro" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="audio-bar">
-          <audio id="audio-housework-skills" src="housework-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('housework-skills')">▶ 技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('housework-skills')">■</button>
-          <div class="wave" id="wave-housework-skills" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>蕾絲管家帽</strong>，手拿打掃工具，站在<strong>溫馨房屋客廳</strong>，背景是潔白窗戶與溫暖壁爐，高質感 3D 絨毛渲染，溫柔賢慧氛圍</div>
         <div class="card-skills">
-        <div class="skills-title">🦐 家務蝦 技能介紹</div>
-        <div class="skills-text">每日生活提醒、任務清單管理、購物清單追蹤、週期性家務安排、生活流程優化。小事不管就會變成大事，這就是我的價值。</div>
-      </div>
-      <div class="voice-info">
-          <span class="voice-badge housework">🔊 Warm_Bestie <span class="voice-label">pitch 0 · 1.05x</span></span>
+          <div class="skills-title">🦐 我的技能</div>
+          <div class="skills-list">
+            <span class="skill-tag pink">🦐 生活</span>
+            <span class="skill-tag pink">🏠 規劃</span>
+            <span class="skill-tag pink">✅ 待辦</span>
+            <span class="skill-tag pink">📅 行程</span>
+            <span class="skill-tag pink">🧹 家務</span>
+            <span class="skill-tag pink">🌱 習慣</span>
+          </div>
+        </div>
+        <div class="audio-bar">
+          <audio id="audio-housework" src="housework-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('housework')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('housework')">■</button>
+          <div class="wave" id="wave-housework" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="voice-info">
+          <span class="voice-badge housework">🔊 Warm_Bestie</span>
+          <span class="voice-label">pitch 0 · speed 1.05</span>
         </div>
       </div>
     </div>
 
   </div>
 </div>
+
 <script>
 let currentAudio = null;
-let currentId = null;
+let currentBtn = null;
+
 function playAudio(id) {
-  if (currentAudio && currentAudio.id !== 'audio-' + id) {
+  const audio = document.getElementById('audio-' + id);
+  const btn = document.querySelector(`[onclick="playAudio('${id}')"]`);
+  const wave = document.getElementById('wave-' + id);
+
+  if (currentAudio && currentAudio !== audio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
-    document.getElementById('wave-' + currentId).style.display = 'none';
+    const prevBtn = document.querySelector(`[onclick="playAudio('${currentAudio.id.replace('audio-','')}')"]`);
+    if (prevBtn) prevBtn.textContent = '▶ 播放語音';
+    const prevWave = document.getElementById('wave-' + currentAudio.id.replace('audio-',''));
+    if (prevWave) prevWave.style.display = 'none';
   }
-  var audio = document.getElementById('audio-' + id);
-  audio.load();
-  var btn = audio.parentElement.querySelector('.play-btn');
-  btn.textContent = '⏳ 載入中...';
-  var playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.then(function() {
-      btn.textContent = '▶ 播放中';
-      currentAudio = audio;
-      currentId = id;
-      document.getElementById('wave-' + id).style.display = 'flex';
-      audio.onended = function() {
-        document.getElementById('wave-' + id).style.display = 'none';
-        btn.textContent = '▶ 播放語音';
-      };
-    }).catch(function(err) {
-      btn.textContent = '▶ 播放語音';
-      alert('播放失敗：' + err.message);
-    });
+
+  if (audio.paused) {
+    audio.play();
+    btn.textContent = '⏸ 暫停';
+    wave.style.display = 'flex';
+    currentAudio = audio;
+    currentBtn = btn;
+  } else {
+    audio.pause();
+    btn.textContent = '▶ 播放語音';
+    wave.style.display = 'none';
+    currentAudio = null;
+    currentBtn = null;
   }
 }
+
 function stopAudio(id) {
-  var audio = document.getElementById('audio-' + id);
+  const audio = document.getElementById('audio-' + id);
+  const btn = document.querySelector(`[onclick="playAudio('${id}')"]`);
+  const wave = document.getElementById('wave-' + id);
+  if (!audio) return;
   audio.pause();
   audio.currentTime = 0;
-  document.getElementById('wave-' + id).style.display = 'none';
+  if (btn) btn.textContent = '▶ 播放語音';
+  if (wave) wave.style.display = 'none';
+  if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
 }
+
+['axia','zaicai','health','knowledge','housework'].forEach(id => {
+  const audio = document.getElementById('audio-' + id);
+  if (audio) {
+    audio.addEventListener('ended', () => {
+      const btn = document.querySelector(`[onclick="playAudio('${id}')"]`);
+      const wave = document.getElementById('wave-' + id);
+      if (btn) btn.textContent = '▶ 播放語音';
+      if (wave) wave.style.display = 'none';
+      currentAudio = null; currentBtn = null;
+    });
+  }
+});
 </script>
 </body>
 </html>
