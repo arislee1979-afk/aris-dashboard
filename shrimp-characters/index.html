@@ -73,30 +73,29 @@ audio { display: none; }
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
         <div class="audio-bar">
-          <audio id="audio-axia" src="axia-intro.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('axia')">▶ 播放語音</button>
-          <button class="stop-btn" onclick="stopAudio('axia')">■</button>
-          <div class="wave" id="wave-axia" style="display:none">
-            <span></span><span></span><span></span><span></span><span></span>
+          <audio id="audio-housework" src="housework-intro.mp3"></audio>
+          <audio id="audio-housework-skills" src="housework-skills.mp3"></audio>
+          <audio id="audio-housework-full" src="housework-full.mp3"></audio>
+          <div class="audio-grid">
+            <div class="audio-col">
+              <button class="play-btn" onclick="playAudio('housework')" id="btn-housework">▶ 自我介紹</button>
+              <button class="stop-btn" onclick="stopAudio('housework')">■</button>
+            </div>
+            <div class="audio-col">
+              <button class="play-btn" onclick="playAudio('housework-skills')" id="btn-housework-skills">▶ 技能介紹</button>
+              <button class="stop-btn" onclick="stopAudio('housework-skills')">■</button>
+            </div>
+            <div class="audio-col">
+              <button class="play-btn" onclick="playAudio('housework-full')" id="btn-housework-full">▶ 完整技能</button>
+              <button class="stop-btn" onclick="stopAudio('housework-full')">■</button>
+            </div>
           </div>
-        <div class="audio-bar" style="margin-top:8px">
-          <audio id="audio-axia-skills" src="axia-skills.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('skills')" id="btn-axia-skills">▶ 播放完整技能介紹</button>
-          <button class="stop-btn" onclick="stopAudio('skills')">■</button>
-          <div class="wave" id="wave-axia-skills" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="audio-bar" style="margin-top:8px">
-          <audio id="audio-axia-full" src="axia-full.mp3"></audio>
-          <button class="play-btn" onclick="playAudio('full')" id="btn-axia-full">▶ 播放完整技能介紹（加長版）</button>
-          <button class="stop-btn" onclick="stopAudio('full')">■</button>
-          <div class="wave" id="wave-axia-full" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
-        </div>
-          <span class="voice-label">完整版 3:12</span>
-        </div>
-        </div>
-        <div class="voice-info">
-          <span class="voice-badge axia">🔊 Chinese (Mandarin)_Warm_Bestie <span class="voice-label">pitch −3 · speed 1.0 · neutral</span></span>
-        </div>
-      </div>
+          <div class="wave" id="wave-housework" style="display:none"><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="voice-info">
+            <span class="voice-badge housework">🔊 Chinese (Mandarin)_Warm_Girl</span>
+            <span class="voice-label">speed 1.0 · pitch +1 · happy</span>
+          </div>
+        </div></div>
     </div>
 
     <div class="card">
