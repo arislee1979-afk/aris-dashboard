@@ -273,6 +273,18 @@ audio { display: none; }
   .audio-buttons { grid-template-columns: repeat(3, 1fr); gap: 4px; }
   .card-body { padding: 14px; }
 }
+
+/* Chat bubble clickable style */
+.chat-bubble.shrimp[data-shrimp] { transition: all 0.2s; }
+.chat-bubble.shrimp[data-shrimp]:hover {
+  border-color: rgba(249,115,22,0.4) !important;
+  background: rgba(249,115,22,0.08) !important;
+}
+/* Shrimp bubble clickable: colored border on hover per shrimp */
+.chat-bubble.shrimp[data-shrimp]:hover {
+  border-color: var(--accent) !important;
+}
+
 </style>
 </head>
 <body>
@@ -369,16 +381,16 @@ audio { display: none; }
           <div class="chat-title">💬 對話範例</div>
           <div class="chat-bubbles">
             <div class="chat-bubble user"><div class="chat-role">老大</div>我的伺服器忽然斷線了怎麼辦？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🦞 A小蝦</div>老大，先看 log。ssh 進 NanoPi，用 journalctl -xe 查一下是網路問題還是服務崩了，我陪你一步一步追。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="axia" onclick="playBubbleAudio('axia')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🦞 A小蝦</div>老大，先看 log。ssh 進 NanoPi，用 journalctl -xe 查一下是網路問題還是服務崩了，我陪你一步一步追。</div></div>
             <div class="chat-bubble user"><div class="chat-role">老大</div>今天的任務安排如何？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🦞 A小蝦</div>07:00 發財蝦早報、08:30 盤前戰報、22:00 知識蝦反思。其他正常待命，有事叫我。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="axia" onclick="playBubbleAudio('axia')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🦞 A小蝦</div>07:00 發財蝦早報、08:30 盤前戰報、22:00 知識蝦反思。其他正常待命，有事叫我。</div></div>
           </div>
         </div>
 
         <!-- Audio -->
         <div class="audio-section">
           <audio id="audio-axia-intro" src="axia-intro.mp3"></audio>
-          <audio id="audio-axia-skill" src="axia-skills.mp3"></audio>
+          <audio id="audio-axia-skill" src="axia-skill.mp3"></audio>
           <audio id="audio-axia-full" src="axia-full.mp3"></audio>
           <div class="audio-buttons">
             <button class="audio-btn intro" onclick="playAudio('axia','intro')">▶ 自我<br>介紹</button>
@@ -438,16 +450,16 @@ audio { display: none; }
           <div class="chat-title">💬 對話範例</div>
           <div class="chat-bubbles">
             <div class="chat-bubble user"><div class="chat-role">老大</div>今天大盤怎麼看？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">💰 發財蝦</div>目前加權指數在均線糾結處，成交量萎縮，短期方向不明。建議觀望為主，不要追高，留意今晚美國 CPI 數據。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="zaicai" onclick="playBubbleAudio('zaicai')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">💰 發財蝦</div>目前加權指數在均線糾結處，成交量萎縮，短期方向不明。建議觀望為主，不要追高，留意今晚美國 CPI 數據。</div></div>
             <div class="chat-bubble user"><div class="chat-role">老大</div>我的持股需要停損嗎？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">💰 發財蝦</div>先說是哪一檔。停損的原則是：跌破關鍵支撐 + 跌破你的設定紀律，就出。不要用感覺，要用規則。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="zaicai" onclick="playBubbleAudio('zaicai')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">💰 發財蝦</div>先說是哪一檔。停損的原則是：跌破關鍵支撐 + 跌破你的設定紀律，就出。不要用感覺，要用規則。</div></div>
           </div>
         </div>
 
         <!-- Audio -->
         <div class="audio-section">
           <audio id="audio-zaicai-intro" src="zaicai-intro.mp3"></audio>
-          <audio id="audio-zaicai-skill" src="zaicai-skills.mp3"></audio>
+          <audio id="audio-zaicai-skill" src="zaicai-skill.mp3"></audio>
           <audio id="audio-zaicai-full" src="zaicai-full.mp3"></audio>
           <div class="audio-buttons">
             <button class="audio-btn intro" onclick="playAudio('zaicai','intro')">▶ 自我<br>介紹</button>
@@ -507,16 +519,16 @@ audio { display: none; }
           <div class="chat-title">💬 對話範例</div>
           <div class="chat-bubbles">
             <div class="chat-bubble user"><div class="chat-role">老大</div>教練，今天 HRV 偏低怎麼辦？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🏃 健康蝦</div>HRV 偏低代表身體還在恢復，今天建議休息或做輕鬆的活動，不要做高強度訓練。明天再追蹤一次。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="health" onclick="playBubbleAudio('health')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🏃 健康蝦</div>HRV 偏低代表身體還在恢復，今天建議休息或做輕鬆的活動，不要做高強度訓練。明天再追蹤一次。</div></div>
             <div class="chat-bubble user"><div class="chat-role">老大</div>今天重量訓練做什麼？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🏃 健康蝦</div>今天是 PULL day。引體向上 22-24 下（阻力帶輔助），啞鈴划船 4x12，聳肩 3x15。記得練前熱身 10 分鐘。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="health" onclick="playBubbleAudio('health')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🏃 健康蝦</div>今天是 PULL day。引體向上 22-24 下（阻力帶輔助），啞鈴划船 4x12，聳肩 3x15。記得練前熱身 10 分鐘。</div></div>
           </div>
         </div>
 
         <!-- Audio -->
         <div class="audio-section">
           <audio id="audio-health-intro" src="health-intro.mp3"></audio>
-          <audio id="audio-health-skill" src="health-skills.mp3"></audio>
+          <audio id="audio-health-skill" src="health-skill.mp3"></audio>
           <audio id="audio-health-full" src="health-full.mp3"></audio>
           <div class="audio-buttons">
             <button class="audio-btn intro" onclick="playAudio('health','intro')">▶ 自我<br>介紹</button>
@@ -576,16 +588,16 @@ audio { display: none; }
           <div class="chat-title">💬 對話範例</div>
           <div class="chat-bubbles">
             <div class="chat-bubble user"><div class="chat-role">老大</div>這部 YouTube 影片很棒，幫我存起來</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🧠 知識蝦</div>收到！貼連結給我，我來自動抓字幕、濃縮重點，寫進 vault 和 Notion。之後搜尋關鍵字就能找到。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="knowledge" onclick="playBubbleAudio('knowledge')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🧠 知識蝦</div>收到！貼連結給我，我來自動抓字幕、濃縮重點，寫進 vault 和 Notion。之後搜尋關鍵字就能找到。</div></div>
             <div class="chat-bubble user"><div class="chat-role">老大</div>我最近讀了關於系統思維的書，有什麼建議？</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🧠 知識蝦</div>建議搭配《系統之美》和《第五項修煉》。我可以在 vault 裡幫你建立系統思維的主題卡片盒，把書中概念和老大的系統實踐連結起來。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="knowledge" onclick="playBubbleAudio('knowledge')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🧠 知識蝦</div>建議搭配《系統之美》和《第五項修煉》。我可以在 vault 裡幫你建立系統思維的主題卡片盒，把書中概念和老大的系統實踐連結起來。</div></div>
           </div>
         </div>
 
         <!-- Audio -->
         <div class="audio-section">
           <audio id="audio-knowledge-intro" src="knowledge-intro.mp3"></audio>
-          <audio id="audio-knowledge-skill" src="knowledge-skills.mp3"></audio>
+          <audio id="audio-knowledge-skill" src="knowledge-skill.mp3"></audio>
           <audio id="audio-knowledge-full" src="knowledge-full.mp3"></audio>
           <div class="audio-buttons">
             <button class="audio-btn intro" onclick="playAudio('knowledge','intro')">▶ 自我<br>介紹</button>
@@ -645,16 +657,16 @@ audio { display: none; }
           <div class="chat-title">💬 對話範例</div>
           <div class="chat-bubbles">
             <div class="chat-bubble user"><div class="chat-role">老大</div>我這週忘了很多事情</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🦐 家務蝦</div>交給我！我幫你列一張這週待辦清單，按重要性排序，你只要專注在最重要的三件事就好。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="housework" onclick="playBubbleAudio('housework')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🦐 家務蝦</div>交給我！我幫你列一張這週待辦清單，按重要性排序，你只要專注在最重要的三件事就好。</div></div>
             <div class="chat-bubble user"><div class="chat-role">老大</div>晚上要帶什麼?</div>
-            <div class="chat-bubble shrimp"><div class="chat-role">🦐 家務蝦</div>明天天氣晴，16-24 度。建議帶：水壺、健身服、毛巾。還有你的阻力帶別忘了，今天是 PULL day。</div></div>
+            <div class="chat-bubble shrimp" data-shrimp="housework" onclick="playBubbleAudio('housework')" style="cursor:pointer" title="點擊播放語音"><div class="chat-role">🦐 家務蝦</div>明天天氣晴，16-24 度。建議帶：水壺、健身服、毛巾。還有你的阻力帶別忘了，今天是 PULL day。</div></div>
           </div>
         </div>
 
         <!-- Audio -->
         <div class="audio-section">
           <audio id="audio-housework-intro" src="housework-intro.mp3"></audio>
-          <audio id="audio-housework-skill" src="housework-skills.mp3"></audio>
+          <audio id="audio-housework-skill" src="housework-skill.mp3"></audio>
           <audio id="audio-housework-full" src="housework-full.mp3"></audio>
           <div class="audio-buttons">
             <button class="audio-btn intro" onclick="playAudio('housework','intro')">▶ 自我<br>介紹</button>
@@ -781,6 +793,38 @@ function playAudio(id, type) {
     document.getElementById('wave-' + id).style.display = 'none';
     document.getElementById('status-' + id).textContent = '';
     btn.classList.remove('playing');
+    currentAudio = null; currentId = null;
+  };
+}
+
+function playBubbleAudio(shrimpId) {
+  // Stop any currently playing audio first
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    document.querySelectorAll('.audio-btn.playing').forEach(function(b) { b.classList.remove('playing'); });
+    if (currentId) {
+      var oldWave = document.getElementById('wave-' + currentId);
+      if (oldWave) oldWave.style.display = 'none';
+      var oldStatus = document.getElementById('status-' + currentId);
+      if (oldStatus) oldStatus.textContent = '';
+    }
+  }
+  // Find the intro audio for this shrimp
+  var introAudio = document.getElementById('audio-' + shrimpId + '-intro');
+  if (!introAudio) return;
+  introAudio.play().catch(function() {});
+  currentAudio = introAudio;
+  currentId = shrimpId;
+  document.getElementById('wave-' + shrimpId).style.display = 'flex';
+  document.getElementById('status-' + shrimpId).textContent = '🔊 對話範例 播放中...';
+  // Highlight the intro button
+  var btn = document.querySelector('[onclick="playAudio(\'' + shrimpId + '\',\'intro\')"]');
+  if (btn) btn.classList.add('playing');
+  introAudio.onended = function() {
+    document.getElementById('wave-' + shrimpId).style.display = 'none';
+    document.getElementById('status-' + shrimpId).textContent = '';
+    if (btn) btn.classList.remove('playing');
     currentAudio = null; currentId = null;
   };
 }
