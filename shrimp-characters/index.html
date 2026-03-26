@@ -600,3 +600,184 @@ document.getElementById('updated').textContent=new Date().toLocaleString('zh-TW'
 </script>
 </body>
 </html>
+/div></div>
+    <div class="ability-row"><span class="ability-label">生活空間</span><div class="ability-bar-bg"><div class="ability-bar-fill housework-fill" style="--w: 78%"></div></div></div>
+    </div></div>
+    <div class="skills-section"><button class="skills-toggle" onclick="toggleSkills(this)">🔧 核心技能 ▼</button><div class="skills-list">
+      <div class="skill-item"><span class="skill-icon">📅</span><div><span class="skill-name">行程安排</span><div class="skill-desc">會議、健身、個人事項的時間規劃與提醒</div></div></div>
+      <div class="skill-item"><span class="skill-icon">🧹</span><div><span class="skill-name">家務清單</span><div class="skill-desc">清潔、洗衣、採購清單，追蹤完成進度</div></div></div>
+      <div class="skill-item"><span class="skill-icon">✅</span><div><span class="skill-name">習慣追蹤</span><div class="skill-desc">協助建立並維持每日好習慣</div></div></div>
+      <div class="skill-item"><span class="skill-icon">🛒</span><div><span class="skill-name">採購管理</span><div class="skill-desc">日常物資需求整理，避免遺漏</div></div></div>
+      <div class="skill-item"><span class="skill-icon">🌿</span><div><span class="skill-name">生活空間</span><div class="skill-desc">居家環境優化建議，打造高效舒適空間</div></div></div>
+    </div></div>
+    <div class="audio-section">
+      <audio id="audio-housework-intro" src="housework-intro.mp3"></audio>
+      <audio id="audio-housework-skills" src="housework-skills.mp3"></audio>
+      <audio id="audio-housework-tagline" src="housework-tagline.mp3"></audio>
+      <audio id="audio-housework-morning" src="housework-morning.mp3"></audio>
+      <audio id="audio-housework-night" src="housework-night.mp3"></audio>
+      <audio id="audio-housework-report" src="housework-report.mp3"></audio>
+      <audio id="audio-housework-encourage" src="housework-encourage.mp3"></audio>
+      <div class="audio-label">🎵 語音播放</div>
+      <div class="audio-buttons-7">
+        <button class="audio-btn intro" onclick="playAudio('housework','intro')">🎤<br>自我介紹</button>
+        <button class="audio-btn skill" onclick="playAudio('housework','skills')">💪<br>專業技能</button>
+        <button class="audio-btn tagline" onclick="playAudio('housework','tagline')">✨<br>招牌台詞</button>
+        <button class="audio-btn morning" onclick="playAudio('housework','morning')">🌅<br>早安問候</button>
+        <button class="audio-btn night" onclick="playAudio('housework','night')">🌙<br>晚安問候</button>
+        <button class="audio-btn report" onclick="playAudio('housework','report')">📊<br>任務報告</button>
+        <button class="audio-btn encourage" onclick="playAudio('housework','encourage')">💬<br>鼓勵話語</button>
+      </div>
+      <div class="audio-status"><span class="now-playing" id="status-housework"></span><div class="wave" id="wave-housework" style="display:none"><span></span><span></span><span></span><span></span><span></span></div><button class="stop-btn" onclick="stopAudio('housework')">■ 停止</button></div>
+    </div>
+    <div class="chat-section"><div class="chat-title">💬 對話範例</div><div class="chat-bubbles">
+      <div class="chat-bubble user"><div class="chat-role">老大</div>今天有什麼行程？</div>
+      <div class="chat-bubble shrimp"><div class="chat-role">🦐 家務蝦</div>10:00 視訊會議、14:00 健身、18:00 買菜。購物清單我也準備好了 📋</div></div>
+    </div></div>
+    <div class="expr-section"><div class="expr-title">📸 表情牆</div><div class="expr-wall">
+      <img src="img-housework-happy.jpg" class="expr-img" title="開心">
+      <img src="img-housework-angry.jpg" class="expr-img" title="生氣">
+      <img src="img-housework-thinking.jpg" class="expr-img" title="思考">
+      <img src="img-housework-cheer.jpg" class="expr-img" title="歡呼">
+      <img src="img-housework-scene.jpg" class="expr-img" title="場景">
+    </div></div>
+    <div class="more-section"><div class="more-title">🖼️ 更多圖片</div><div class="more-gallery">
+      <img src="housework-3.jpg" class="more-img" title="家務3">
+      <img src="housework-cooking.jpg" class="more-img" title="烹飪">
+    </div></div>
+    <div class="voice-info"><span class="voice-badge housework">🔊 Warm_Bestie <span class="voice-label">pitch 0 · 1.05x</span></span></div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+var currentSlide = 0;
+var slideInterval = null;
+function moveSlide(dir) { var total = 4; currentSlide = (currentSlide + dir + total) % total; updateSlide(); }
+function goToSlide(n) { currentSlide = n; updateSlide(); }
+function updateSlide() {
+  document.getElementById('bannerSlides').style.transform = 'translateX(' + (-currentSlide * 25) + '%)';
+  document.querySelectorAll('.banner-dot').forEach(function(d, i) { d.classList.toggle('active', i === currentSlide); });
+  if (slideInterval) { clearInterval(slideInterval); startAutoSlide(); }
+}
+function startAutoSlide() { slideInterval = setInterval(function() { currentSlide = (currentSlide + 1) % 4; updateSlide(); }, 5000); }
+startAutoSlide();
+
+function toggleTheme() {
+  var html = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var current = html.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  btn.textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('shrimp-theme', next);
+}
+var saved = localStorage.getItem('shrimp-theme');
+if (saved) { document.documentElement.setAttribute('data-theme', saved); document.getElementById('themeBtn').textContent = saved === 'dark' ? '🌙' : '☀️'; }
+
+var abilityObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.ability-bar-fill').forEach(function(bar) { bar.classList.add('animate'); });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.card').forEach(function(card) { abilityObserver.observe(card); });
+
+var cardObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry, i) {
+    if (entry.isIntersecting) { setTimeout(function() { entry.target.classList.add('visible'); }, i * 100); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.card').forEach(function(card) { cardObserver.observe(card); });
+
+function toggleSkills(btn) {
+  var list = btn.nextElementSibling;
+  btn.classList.toggle('open');
+  list.classList.toggle('open');
+  if (list.classList.contains('open')) { list.style.maxHeight = list.scrollHeight + 'px'; }
+  else { list.style.maxHeight = '0'; }
+}
+
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(function(el) {
+    var target = parseInt(el.dataset.target);
+    var suffix = el.dataset.suffix || '';
+    var duration = 1500;
+    var start = performance.now();
+    function step(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+var statsObserver = new IntersectionObserver(function(entries) {
+  if (entries[0].isIntersecting) { animateCounters(); statsObserver.disconnect(); }
+}, { threshold: 0.5 });
+document.querySelectorAll('.stats-bar').forEach(function(el) { statsObserver.observe(el); });
+
+document.getElementById('lastUpdated').textContent = '最後更新：' + new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+
+var currentAudio = null;
+var currentId = null;
+var typeLabels = { intro: '自我介紹', skills: '專業技能', tagline: '招牌台詞', morning: '早安問候', night: '晚安問候', report: '任務報告', encourage: '鼓勵話語' };
+
+function playAudio(id, type) {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    document.querySelectorAll('.audio-btn.playing').forEach(function(b) { b.classList.remove('playing'); });
+    if (currentId) {
+      var oldWave = document.getElementById('wave-' + currentId);
+      if (oldWave) oldWave.style.display = 'none';
+      var oldStatus = document.getElementById('status-' + currentId);
+      if (oldStatus) oldStatus.textContent = '';
+    }
+  }
+  var audioEl = document.getElementById('audio-' + id + '-' + type);
+  if (!audioEl) return;
+  audioEl.play().catch(function() {});
+  currentAudio = audioEl;
+  currentId = id;
+  var btn = event.target;
+  btn.classList.add('playing');
+  var wave = document.getElementById('wave-' + id);
+  if (wave) wave.style.display = 'flex';
+  var status = document.getElementById('status-' + id);
+  if (status) status.textContent = '🔊 ' + typeLabels[type] + ' 播放中...';
+  audioEl.onended = function() {
+    var w2 = document.getElementById('wave-' + id);
+    if (w2) w2.style.display = 'none';
+    var s2 = document.getElementById('status-' + id);
+    if (s2) s2.textContent = '';
+    btn.classList.remove('playing');
+    currentAudio = null; currentId = null;
+  };
+}
+
+function stopAudio(id) {
+  var types = ['intro', 'skills', 'tagline', 'morning', 'night', 'report', 'encourage'];
+  types.forEach(function(t) {
+    var a = document.getElementById('audio-' + id + '-' + t);
+    if (a) { a.pause(); a.currentTime = 0; }
+  });
+  var w = document.getElementById('wave-' + id);
+  if (w) w.style.display = 'none';
+  var s = document.getElementById('status-' + id);
+  if (s) s.textContent = '';
+  document.querySelectorAll('.audio-btn.playing').forEach(function(b) { b.classList.remove('playing'); });
+  if (currentId === id) { currentAudio = null; currentId = null; }
+}
+</script>
+
+<div class="footer">
+  🦞 蝦群角色設定 V3 · 終極豪華版 · 2026<br>
+  彩虹小馬風格 AI Agent 蝦群 × GitHub Pages
+</div>
+
+</body>
+</html>
