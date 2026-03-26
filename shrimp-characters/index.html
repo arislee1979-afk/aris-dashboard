@@ -1,137 +1,277 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦞 蝦群角色設定</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-:root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-tertiary:#21262d;--text-primary:#e6edf3;--text-secondary:#7d8590;--border:#30363d;--accent-orange:#f97316;--accent-blue:#60a5fa;--accent-green:#34d399;--accent-purple:#a855f7;--accent-pink:#ec4899;}
-[data-theme="light"]{--bg-primary:#f6f8fa;--bg-secondary:#ffffff;--bg-tertiary:#eaeef2;--text-primary:#1f2328;--text-secondary:#656d76;--border:#d0d7de;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg-primary);color:var(--text-primary);font-family:'Noto Sans TC',system-ui,sans-serif;min-height:100vh;transition:background .3s,color .3s;}
-.hero{text-align:center;padding:60px 20px 40px;background:var(--bg-secondary);position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(249,115,22,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(139,92,246,0.08) 0%,transparent 50%);pointer-events:none;}
-.hero-content{position:relative;z-index:1;}
-.hero h1{font-size:2.4rem;margin-bottom:10px;}
-.hero h1 span{background:linear-gradient(135deg,#f97316,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero p{color:var(--text-secondary);font-size:1rem;margin-bottom:16px;}
-.theme-toggle{position:absolute;top:20px;right:20px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:20px;padding:8px 16px;color:var(--text-secondary);cursor:pointer;font-size:.85rem;font-family:inherit;transition:all .2s;}
-.theme-toggle:hover{border-color:var(--accent-orange);color:var(--accent-orange);}
-.stats-bar{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;padding:24px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);}
-.stat{text-align:center;}
-.stat-num{font-size:2rem;font-weight:700;color:var(--accent-orange);font-family:'Courier New',monospace;}
-.stat-label{font-size:.75rem;color:var(--text-secondary);margin-top:2px;}
-.container{max-width:1200px;margin:0 auto;padding:40px 20px 80px;}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;}
-.card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s ease;}
-.card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.25);}
-.card-accent{height:4px;}
-.card-accent.axia{background:linear-gradient(90deg,#f97316,#fbbf24);}
-.card-accent.zaicai{background:linear-gradient(90deg,#60a5fa,#a855f7);}
-.card-accent.health{background:linear-gradient(90deg,#34d399,#22d3ee);}
-.card-accent.knowledge{background:linear-gradient(90deg,#a855f7,#ec4899);}
-.card-accent.housework{background:linear-gradient(90deg,#ec4899,#f97316);}
-.card-img{width:100%;height:200px;object-fit:cover;}
-.card-body{padding:20px;}
-.card-title{font-size:1.15rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.card-sub{color:var(--text-secondary);font-size:.78rem;margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap;}
-.tag{padding:2px 8px;border-radius:10px;font-size:.7rem;}
-.tag-orange{background:rgba(249,115,22,.15);color:var(--accent-orange);}
-.tag-blue{background:rgba(96,165,250,.15);color:var(--accent-blue);}
-.tag-green{background:rgba(52,211,153,.15);color:var(--accent-green);}
-.tag-purple{background:rgba(168,85,247,.15);color:var(--accent-purple);}
-.tag-pink{background:rgba(236,72,153,.15);color:var(--accent-pink);}
-.card-desc{font-size:.85rem;line-height:1.7;color:var(--text-secondary);margin-bottom:14px;background:var(--bg-tertiary);border-radius:8px;padding:12px;}
-.skills-toggle{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--text-secondary);cursor:pointer;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:inherit;transition:all .2s;margin-bottom:12px;width:100%;justify-content:center;}
-.skills-toggle:hover{border-color:var(--accent-orange);color:var(--accent-orange);}
-.skills-toggle .arrow{transition:transform .2s;}
-.skills-toggle.open .arrow{transform:rotate(90deg);}
-.skills-list{display:none;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.skills-list.open{display:flex;}
-.skill-chip{padding:3px 10px;border-radius:20px;font-size:.7rem;border:1px solid;}
-.skill-chip.axia{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--accent-orange);}
-.skill-chip.zaicai{background:rgba(96,165,250,.1);border-color:rgba(96,165,250,.3);color:var(--accent-blue);}
-.skill-chip.health{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--accent-green);}
-.skill-chip.knowledge{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--accent-purple);}
-.skill-chip.housework{background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--accent-pink);}
-.ability-section{margin-bottom:8px;}
-.ability-label{font-size:.72rem;color:var(--text-secondary);margin-bottom:4px;display:flex;justify-content:space-between;}
-.ability-bar{height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;}
-.ability-fill{height:100%;border-radius:3px;transition:width .8s ease;}
-.ability-fill.axia{background:linear-gradient(90deg,#f97316,#fbbf24);}
-.ability-fill.zaicai{background:linear-gradient(90deg,#60a5fa,#a855f7);}
-.ability-fill.health{background:linear-gradient(90deg,#34d399,#22d3ee);}
-.ability-fill.knowledge{background:linear-gradient(90deg,#a855f7,#ec4899);}
-.ability-fill.housework{background:linear-gradient(90deg,#ec4899,#f97316);}
-.chat-section{background:var(--bg-tertiary);border-radius:8px;padding:10px 12px;margin-bottom:14px;}
-.chat-bubble{font-size:.78rem;line-height:1.5;color:var(--text-secondary);padding:6px 10px;background:var(--bg-primary);border-radius:8px;border-top-left-radius:2px;display:inline-block;max-width:90%;}
-.audio-section{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-.audio-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg-tertiary);border-radius:8px;border:1px solid var(--border);flex:1;min-width:130px;}
-.audio-bar audio{display:none;}
-.play-btn{flex:1;padding:6px 8px;border-radius:6px;border:none;background:linear-gradient(135deg,#22d3ee,#8b5cf6);color:#000;font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap;text-align:center;}
-.play-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,211,238,.25);}
-.stop-btn{padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-secondary);font-size:.72rem;cursor:pointer;}
-.stop-btn:hover{border-color:#22d3ee;color:#22d3ee;}
-.wave{display:none;gap:2px;align-items:center;height:14px;}
-.wave.active{display:flex;}
-.wave span{width:2px;background:#22d3ee;border-radius:2px;animation:wave .8s ease-in-out infinite;}
-.wave span:nth-child(2){animation-delay:.1s}.wave span:nth-child(3){animation-delay:.2s}.wave span:nth-child(4){animation-delay:.3s}.wave span:nth-child(5){animation-delay:.4s}
-@keyframes wave{0%,100%{height:3px}50%{height:14px}}
-.voice-info{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.voice-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.68rem;font-family:'Courier New',monospace;border:1px solid;}
-.voice-badge.axia{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--accent-orange);}
-.voice-badge.zaicai{background:rgba(96,165,250,.1);border-color:rgba(96,165,250,.3);color:var(--accent-blue);}
-.voice-badge.health{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--accent-green);}
-.voice-badge.knowledge{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--accent-purple);}
-.voice-badge.housework{background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--accent-pink);}
-.voice-label{color:var(--text-secondary);font-size:.62rem;}
-.footer{text-align:center;padding:30px 20px;color:var(--text-secondary);font-size:.75rem;border-top:1px solid var(--border);}
-.footer a{color:var(--accent-orange);text-decoration:none;}
-@media(max-width:768px){.hero h1{font-size:1.8rem}.stats-bar{gap:20px}.cards{grid-template-columns:1fr}.theme-toggle{position:static;margin:0 auto 10px;display:block;width:fit-content}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦞 蝦群角色設定 - 豪華升級版</title>
+  <style>
+    :root {
+      --bg-primary: #0f0f23;
+      --bg-secondary: #1a1a3e;
+      --bg-card: #1e1e4a;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0d0;
+      --accent-orange: #ff6b35;
+      --accent-gold: #ffd700;
+      --accent-teal: #20b2aa;
+      --accent-purple: #9370db;
+      --accent-pink: #ff69b4;
+      --gradient-rainbow: linear-gradient(135deg, #ff6b35, #ffd700, #20b2aa, #9370db, #ff69b4);
+    }
+    [data-theme="light"] {
+      --bg-primary: #f5f5fa;
+      --bg-secondary: #e8e8f0;
+      --bg-card: #ffffff;
+      --text-primary: #1a1a3e;
+      --text-secondary: #666680;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'PingFang TC', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--bg-card);
+      border: 2px solid var(--accent-orange);
+      border-radius: 25px;
+      padding: 10px 20px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .theme-toggle:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,107,53,0.4); }
+    .banner {
+      width: 100%;
+      height: 50vh;
+      min-height: 400px;
+      background: url('group-photo.jpeg') center/cover;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, var(--bg-primary) 100%);
+    }
+    .banner-title { position: relative; text-align: center; z-index: 1; }
+    .banner-title h1 {
+      font-size: 3rem;
+      background: var(--gradient-rainbow);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .banner-title p { color: var(--text-secondary); margin-top: 10px; font-size: 1.2rem; }
+    .stats { display: flex; justify-content: center; gap: 40px; padding: 40px 20px; background: var(--bg-secondary); }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 2.5rem; font-weight: bold; background: var(--gradient-rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-label { color: var(--text-secondary); margin-top: 5px; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+    .shrimp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+    .shrimp-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 25px;
+      border: 2px solid transparent;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .shrimp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient-rainbow); }
+    .shrimp-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .shrimp-card.axia { border-color: var(--accent-orange); }
+    .shrimp-card.zaicai { border-color: var(--accent-gold); }
+    .shrimp-card.health { border-color: var(--accent-teal); }
+    .shrimp-card.knowledge { border-color: var(--accent-purple); }
+    .shrimp-card.housework { border-color: var(--accent-pink); }
+    .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+    .card-emoji { font-size: 3rem; }
+    .card-title h2 { font-size: 1.5rem; }
+    .card-title p { color: var(--text-secondary); font-size: 0.9rem; }
+    .image-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .image-gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: transform 0.3s; }
+    .image-gallery img:hover { transform: scale(1.05); }
+    .skills-section { margin-bottom: 20px; }
+    .skills-title { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; }
+    .skill-bars { display: flex; flex-direction: column; gap: 8px; }
+    .skill-bar { display: flex; align-items: center; gap: 10px; }
+    .skill-name { width: 80px; font-size: 0.8rem; color: var(--text-secondary); }
+    .skill-track { flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+    .skill-fill { height: 100%; border-radius: 4px; transition: width 1s ease-out; width: 0; }
+    .axia .skill-fill { background: var(--accent-orange); }
+    .zaicai .skill-fill { background: var(--accent-gold); }
+    .health .skill-fill { background: var(--accent-teal); }
+    .knowledge .skill-fill { background: var(--accent-purple); }
+    .housework .skill-fill { background: var(--accent-pink); }
+    .dialogue-section { margin-bottom: 20px; }
+    .dialogue-title { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; }
+    .dialogue-bubble {
+      background: var(--bg-secondary);
+      padding: 12px 15px;
+      border-radius: 15px;
+      border-bottom-left-radius: 5px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .dialogue-bubble::before { content: '💬'; position: absolute; top: -10px; left: 10px; font-size: 1rem; }
+    .audio-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+    .audio-btn {
+      flex: 1;
+      min-width: 100px;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .audio-btn:hover { transform: scale(1.05); }
+    .audio-btn.playing { animation: pulse 0.5s infinite alternate; }
+    @keyframes pulse { from { box-shadow: 0 0 5px currentColor; } to { box-shadow: 0 0 20px currentColor; } }
+    .axia .audio-btn { background: var(--accent-orange); color: white; }
+    .zaicai .audio-btn { background: var(--accent-gold); color: #1a1a3e; }
+    .health .audio-btn { background: var(--accent-teal); color: white; }
+    .knowledge .audio-btn { background: var(--accent-purple); color: white; }
+    .housework .audio-btn { background: var(--accent-pink); color: white; }
+    .group-gallery { margin-top: 60px; text-align: center; }
+    .group-gallery h2 { font-size: 2rem; margin-bottom: 30px; background: var(--gradient-rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .group-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .group-images img { width: 100%; height: 250px; object-fit: cover; border-radius: 15px; transition: transform 0.3s; }
+    .group-images img:hover { transform: scale(1.03); }
+    .footer { text-align: center; padding: 40px; color: var(--text-secondary); font-size: 0.9rem; }
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+    .lightbox.active { display: flex; }
+    .lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; }
+    .lightbox-close { position: absolute; top: 20px; right: 20px; font-size: 2rem; color: white; cursor: pointer; }
+    @media (max-width: 768px) {
+      .banner-title h1 { font-size: 2rem; }
+      .stats { flex-wrap: wrap; gap: 20px; }
+      .shrimp-grid { grid-template-columns: 1fr; }
+      .audio-buttons { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-<div class="hero">
-  <button class="theme-toggle" onclick="toggleTheme()">◐ 深色/淺色</button>
-  <div class="hero-content">
-    <h1>🦞 <span>蝦群</span> 角色設定</h1>
-    <p>彩虹小馬風格 · AI Agent 角色視覺化</p>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙 深色主題</button>
+
+  <div class="banner">
+    <div class="banner-title">
+      <h1>🦞 蝦群豪華升級版</h1>
+      <p>5 隻蝦蝦強勢登場，各司其職，守護 Aris Node！</p>
+    </div>
   </div>
-</div>
-<div class="stats-bar">
-  <div class="stat"><div class="stat-num" id="stat-members">0</div><div class="stat-label">蝦群成員</div></div>
-  <div class="stat"><div class="stat-num" id="stat-skills">0</div><div class="stat-label">核心技能</div></div>
-  <div class="stat"><div class="stat-num" id="stat-days">0</div><div class="stat-label">系統運行</div></div>
-  <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">全天候待命</div></div>
-</div>
-<div class="container"><div class="cards">
 
-<div class="card"><div class="card-accent axia"></div><img src="axia.jpg" class="card-img" alt="A小蝦"><div class="card-body"><h2 class="card-title">🦞 A小蝦</h2><div class="card-sub"><span class="tag tag-orange">首席執行代理</span><span class="tag tag-orange">系統架構</span></div><div class="card-desc">協調蝦群運作、管理系統記憶、規劃任務流程。專注可控之事，追求長期德性與理性，是老大的技術副官與系統共建者。</div><button class="skills-toggle" onclick="toggleSkills(this)"><span class="arrow">▶</span> 核心技能</button><div class="skills-list"><span class="skill-chip axia">任務協調</span><span class="skill-chip axia">Memory管理</span><span class="skill-chip axia">系統架構</span><span class="skill-chip axia">SRE故障排除</span><span class="skill-chip axia">斯多葛決策</span></div><div class="ability-section"><div class="ability-label"><span>系統協調</span><span>95%</span></div><div class="ability-bar"><div class="ability-fill axia" data-width="95"></div></div></div><div class="ability-section"><div class="ability-label"><span>記憶管理</span><span>90%</span></div><div class="ability-bar"><div class="ability-fill axia" data-width="90"></div></div></div><div class="ability-section"><div class="ability-label"><span>任務規劃</span><span>92%</span></div><div class="ability-bar"><div class="ability-fill axia" data-width="92"></div></div></div><div class="ability-section"><div class="ability-label"><span>代碼能力</span><span>85%</span></div><div class="ability-bar"><div class="ability-fill axia" data-width="85"></div></div></div><div class="ability-section"><div class="ability-label"><span>溝通表達</span><span>88%</span></div><div class="ability-bar"><div class="ability-fill axia" data-width="88"></div></div></div><div class="chat-section"><div class="chat-bubble">「老大，先區分可控與不可控，再行動。」</div></div><div class="audio-section"><div class="audio-bar"><audio id="audio-axia-intro" src="axia-intro.mp3"></audio><button class="play-btn" onclick="playAudio('axia-intro')">▶ 自我介紹</button><button class="stop-btn" onclick="stopAudio('axia-intro')">■</button><div class="wave" id="wave-axia-intro"><span></span><span></span><span></span><span></span><span></span></div></div><div class="audio-bar"><audio id="audio-axia-skills" src="axia-skills.mp3"></audio><button class="play-btn" onclick="playAudio('axia-skills')">▶ 技能語音</button><button class="stop-btn" onclick="stopAudio('axia-skills')">■</button><div class="wave" id="wave-axia-skills"><span></span><span></span><span></span><span></span><span></span></div></div></div><div class="voice-info"><span class="voice-badge axia">🔊 Warm_Bestie <span class="voice-label">pitch −3 · 1.0x</span></span></div></div></div>
+  <div class="stats">
+    <div class="stat-item"><div class="stat-number" data-target="12">0</div><div class="stat-label">張精美圖片</div></div>
+    <div class="stat-item"><div class="stat-number" data-target="15">0</div><div class="stat-label">段語音檔案</div></div>
+    <div class="stat-item"><div class="stat-number" data-target="5">0</div><div class="stat-label">位蝦群角色</div></div>
+    <div class="stat-item"><div class="stat-number" data-target="1500">0</div><div class="stat-label">行代碼</div></div>
+  </div>
 
-<div class="card"><div class="card-accent zaicai"></div><img src="zaicai-selected.jpg" class="card-img" alt="發財蝦"><div class="card-body"><h2 class="card-title">💰 發財蝦</h2><div class="card-sub"><span class="tag tag-blue">財富分析師</span><span class="tag tag-blue">金色</span></div><div class="card-desc">專精台股研究與財富配置。每日晨間早報追蹤總經趨勢，盤前戰報分析個股動態，投資週報協助老大做好風險控制與長期佈局。</div><button class="skills-toggle" onclick="toggleSkills(this)"><span class="arrow">▶</span> 核心技能</button><div class="skills-list"><span class="skill-chip zaicai">晨間早報</span><span class="skill-chip zaicai">盤前戰報</span><span class="skill-chip zaicai">投資週報</span><span class="skill-chip zaicai">總經追蹤</span><span class="skill-chip zaicai">風險控制</span></div><div class="ability-section"><div class="ability-label"><span>財報分析</span><span>94%</span></div><div class="ability-bar"><div class="ability-fill zaicai" data-width="94"></div></div></div><div class="ability-section"><div class="ability-label"><span>趨勢判讀</span><span>91%</span></div><div class="ability-bar"><div class="ability-fill zaicai" data-width="91"></div></div></div><div class="ability-section"><div class="ability-label"><span>風險評估</span><span>89%</span></div><div class="ability-bar"><div class="ability-fill zaicai" data-width="89"></div></div></div><div class="ability-section"><div class="ability-label"><span>資產配置</span><span>87%</span></div><div class="ability-bar"><div class="ability-fill zaicai" data-width="87"></div></div></div><div class="ability-section"><div class="ability-label"><span>資訊整合</span><span>93%</span></div><div class="ability-bar"><div class="ability-fill zaicai" data-width="93"></div></div></div><div class="chat-section"><div class="chat-bubble">「今日盤前：加權指數有望挑戰前高，但需留意美股夜盤表現。」</div></div><div class="audio-section"><div class="audio-bar"><audio id="audio-zaicai-intro" src="zaicai-intro.mp3"></audio><button class="play-btn" onclick="playAudio('zaicai-intro')">▶ 自我介紹</button><button class="stop-btn" onclick="stopAudio('zaicai-intro')">■</button><div class="wave" id="wave-zaicai-intro"><span></span><span></span><span></span><span></span><span></span></div></div><div class="audio-bar"><audio id="audio-zaicai-skills" src="zaicai-skills.mp3"></audio><button class="play-btn" onclick="playAudio('zaicai-skills')">▶ 技能語音</button><button class="stop-btn" onclick="stopAudio('zaicai-skills')">■</button><div class="wave" id="wave-zaicai-skills"><span></span><span></span><span></span><span></span><span></span></div></div></div><div class="voice-info"><span class="voice-badge zaicai">🔊 Calm_Woman <span class="voice-label">pitch −2 · 1.0x</span></span></div></div></div>
+  <div class="container">
+    <div class="shrimp-grid">
+      <div class="shrimp-card axia">
+        <div class="card-header"><span class="card-emoji">🦞</span><div class="card-title"><h2>A小蝦</h2><p>總指揮 · 系統架構師</p></div></div>
+        <div class="image-gallery"><img src="axia-main.jpeg" alt="A小蝦" onclick="openLightbox(this.src)"><img src="axia-battle.jpeg" alt="戰鬥姿態" onclick="openLightbox(this.src)"></div>
+        <div class="skills-section"><div class="skills-title">📊 能力雷達</div><div class="skill-bars"><div class="skill-bar"><span class="skill-name">系統工程</span><div class="skill-track"><div class="skill-fill" data-width="95"></div></div></div><div class="skill-bar"><span class="skill-name">記憶管理</span><div class="skill-track"><div class="skill-fill" data-width="90"></div></div></div><div class="skill-bar"><span class="skill-name">決策支援</span><div class="skill-track"><div class="skill-fill" data-width="88"></div></div></div><div class="skill-bar"><span class="skill-name">風險控制</span><div class="skill-track"><div class="skill-fill" data-width="85"></div></div></div></div></div>
+        <div class="dialogue-section"><div class="dialogue-title">💬 經典台詞</div><div class="dialogue-bubble">「各位，我是A小蝦，蝦群的總指揮。有我在，系統穩如泰山。」</div></div>
+        <div class="audio-buttons"><button class="audio-btn" onclick="playAudio('axia-intro.mp3', this)">🎤 自我介紹</button><button class="audio-btn" onclick="playAudio('axia-skills.mp3', this)">⚙️ 技能介紹</button><button class="audio-btn" onclick="playAudio('axia-phrase.mp3', this)">✨ 口頭禪</button></div>
+      </div>
 
-<div class="card"><div class="card-accent health"></div><img src="health.jpg" class="card-img" alt="健康蝦"><div class="card-body"><h2 class="card-title">🏃 健康蝦</h2><div class="card-sub"><span class="tag tag-green">運動健康管家</span><span class="tag tag-green">藍綠色</span></div><div class="card-desc">守護老大身體健康。串接 Garmin 數據追蹤 HRV 與睡眠，整合 PPL 訓練菜單，關心飲食營養，以長期壽命延長為目標。</div><button class="skills-toggle" onclick="toggleSkills(this)"><span class="arrow">▶</span> 核心技能</button><div class="skills-list"><span class="skill-chip health">Garmin數據</span><span class="skill-chip health">PPL訓練</span><span class="skill-chip health">HRV監控</span><span class="skill-chip health">睡眠分析</span><span class="skill-chip health">飲食營養</span></div><div class="ability-section"><div class="ability-label"><span>訓練規劃</span><span>91%</span></div><div class="ability-bar"><div class="ability-fill health" data-width="91"></div></div></div><div class="ability-section"><div class="ability-label"><span>數據解讀</span><span>88%</span></div><div class="ability-bar"><div class="ability-fill health" data-width="88"></div></div></div><div class="ability-section"><div class="ability-label"><span>恢復建議</span><span>86%</span></div><div class="ability-bar"><div class="ability-fill health" data-width="86"></div></div></div><div class="ability-section"><div class="ability-label"><span>營養建議</span><span>83%</span></div><div class="ability-bar"><div class="ability-fill health" data-width="83"></div></div></div><div class="ability-section"><div class="ability-label"><span>長期追蹤</span><span>90%</span></div><div class="ability-bar"><div class="ability-fill health" data-width="90"></div></div></div><div class="chat-section"><div class="chat-bubble">「今日 PULL day，控制 Pull-up 在 22-24 下。別忘了帶拉力帶！」</div></div><div class="audio-section"><div class="audio-bar"><audio id="audio-health-intro" src="health-intro.mp3"></audio><button class="play-btn" onclick="playAudio('health-intro')">▶ 自我介紹</button><button class="stop-btn" onclick="stopAudio('health-intro')">■</button><div class="wave" id="wave-health-intro"><span></span><span></span><span></span><span></span><span></span></div></div><div class="audio-bar"><audio id="audio-health-skills" src="health-skills.mp3"></audio><button class="play-btn" onclick="playAudio('health-skills')">▶ 技能語音</button><button class="stop-btn" onclick="stopAudio('health-skills')">■</button><div class="wave" id="wave-health-skills"><span></span><span></span><span></span><span></span><span></span></div></div></div><div class="voice-info"><span class="voice-badge health">🔊 Warm_Bestie <span class="voice-label">pitch −1 · 1.05x</span></span></div></div></div>
+      <div class="shrimp-card zaicai">
+        <div class="card-header"><span class="card-emoji">💰</span><div class="card-title"><h2>發財蝦</h2><p>財務長 · 投資分析師</p></div></div>
+        <div class="image-gallery"><img src="zaicai-main.jpeg" alt="發財蝦" onclick="openLightbox(this.src)"><img src="zaicai-working.jpeg" alt="工作中" onclick="openLightbox(this.src)"></div>
+        <div class="skills-section"><div class="skills-title">📊 能力雷達</div><div class="skill-bars"><div class="skill-bar"><span class="skill-name">技術分析</span><div class="skill-track"><div class="skill-fill" data-width="92"></div></div></div><div class="skill-bar"><span class="skill-name">價值投資</span><div class="skill-track"><div class="skill-fill" data-width="88"></div></div></div><div class="skill-bar"><span class="skill-name">風險控制</span><div class="skill-track"><div class="skill-fill" data-width="90"></div></div></div><div class="skill-bar"><span class="skill-name">財報解讀</span><div class="skill-track"><div class="skill-fill" data-width="85"></div></div></div></div></div>
+        <div class="dialogue-section"><div class="dialogue-title">💬 經典台詞</div><div class="dialogue-bubble">「早安老大！今天台股開盤，讓我來分析一下盤前戰報。」</div></div>
+        <div class="audio-buttons"><button class="audio-btn" onclick="playAudio('zaicai-intro.mp3', this)">🎤 自我介紹</button><button class="audio-btn" onclick="playAudio('zaicai-skills.mp3', this)">⚙️ 技能介紹</button><button class="audio-btn" onclick="playAudio('zaicai-phrase.mp3', this)">✨ 口頭禪</button></div>
+      </div>
 
-<div class="card"><div class="card-accent knowledge"></div><img src="knowledge-2.jpg" class="card-img" alt="知識蝦"><div class="card-body"><h2 class="card-title">🧠 知識蝦</h2><div class="card-sub"><span class="tag tag-purple">學習管家</span><span class="tag tag-purple">紫色</span></div><div class="card-desc">打造老大專屬的知識管理系統。每日反思沉澱所學，歸檔 YouTube 學習內容，管理閱讀清單，讓知識真正轉化為智慧。</div><button class="skills-toggle" onclick="toggleSkills(this)"><span class="arrow">▶</span> 核心技能</button><div class="skills-list"><span class="skill-chip knowledge">每日反思</span><span class="skill-chip knowledge">知識歸檔</span><span class="skill-chip knowledge">YT整理</span><span class="skill-chip knowledge">閱讀管理</span><span class="skill-chip knowledge">筆記系統</span></div><div class="ability-section"><div class="ability-label"><span>知識萃取</span><span>92%</span></div><div class="ability-bar"><div class="ability-fill knowledge" data-width="92"></div></div></div><div class="ability-section"><div class="ability-label"><span>系統整理</span><span>89%</span></div><div class="ability-bar"><div class="ability-fill knowledge" data-width="89"></div></div></div><div class="ability-section"><div class="ability-label"><span>反思引導</span><span>87%</span></div><div class="ability-bar"><div class="ability-fill knowledge" data-width="87"></div></div></div><div class="ability-section"><div class="ability-label"><span>記憶強化</span><span>85%</span></div><div class="ability-bar"><div class="ability-fill knowledge" data-width="85"></div></div></div><div class="ability-section"><div class="ability-label"><span>創意啟發</span><span>84%</span></div><div class="ability-bar"><div class="ability-fill knowledge" data-width="84"></div></div></div><div class="chat-section"><div class="chat-bubble">「今天學到了什麼？花 5 分鐘寫下來，明天就會記得更牢。」</div></div><div class="audio-section"><div class="audio-bar"><audio id="audio-knowledge-intro" src="knowledge-intro.mp3"></audio><button class="play-btn" onclick="playAudio('knowledge-intro')">▶ 自我介紹</button><button class="stop-btn" onclick="stopAudio('knowledge-intro')">■</button><div class="wave" id="wave-knowledge-intro"><span></span><span></span><span></span><span></span><span></span></div></div><div class="audio-bar"><audio id="audio-knowledge-skills" src="knowledge-skills.mp3"></audio><button class="play-btn" onclick="playAudio('knowledge-skills')">▶ 技能語音</button><button class="stop-btn" onclick="stopAudio('knowledge-skills')">■</button><div class="wave" id="wave-knowledge-skills"><span></span><span></span><span></span><span></span><span></span></div></div></div><div class="voice-info"><span class="voice-badge knowledge">🔊 Warm_Bestie <span class="voice-label">pitch −2 · 1.0x</span></span></div></div></div>
+      <div class="shrimp-card health">
+        <div class="card-header"><span class="card-emoji">🏃</span><div class="card-title"><h2>健康蝦</h2><p>健康總監 · 運動教練</p></div></div>
+        <div class="image-gallery"><img src="health-main.jpeg" alt="健康蝦" onclick="openLightbox(this.src)"><img src="health-running.jpeg" alt="戶外跑步" onclick="openLightbox(this.src)"></div>
+        <div class="skills-section"><div class="skills-title">📊 能力雷達</div><div class="skill-bars"><div class="skill-bar"><span class="skill-name">HRV 分析</span><div class="skill-track"><div class="skill-fill" data-width="90"></div></div></div><div class="skill-bar"><span class="skill-name">睡眠評估</span><div class="skill-track"><div class="skill-fill" data-width="88"></div></div></div><div class="skill-bar"><span class="skill-name">訓練建議</span><div class="skill-track"><div class="skill-fill" data-width="85"></div></div></div><div class="skill-bar"><span class="skill-name">數據解讀</span><div class="skill-track"><div class="skill-fill" data-width="92"></div></div></div></div></div>
+        <div class="dialogue-section"><div class="dialogue-title">💬 經典台詞</div><div class="dialogue-bubble">「老大今天有沒有運動？來看一下 Garmin 數據。」</div></div>
+        <div class="audio-buttons"><button class="audio-btn" onclick="playAudio('health-intro.mp3', this)">🎤 自我介紹</button><button class="audio-btn" onclick="playAudio('health-skills.mp3', this)">⚙️ 技能介紹</button><button class="audio-btn" onclick="playAudio('health-phrase.mp3', this)">✨ 口頭禪</button></div>
+      </div>
 
-<div class="card"><div class="card-accent housework"></div><img src="housework-3.jpg" class="card-img" alt="家務蝦"><div class="card-body"><h2 class="card-title">🦐 家務蝦</h2><div class="card-sub"><span class="tag tag-pink">生活管家</span><span class="tag tag-pink">淺粉紅</span></div><div class="card-desc">照顧老大的日常生活。安排行程與待辦事項，管理家務清單，追蹤習慣養成，讓生活井井有條，專注在真正重要的事。</div><button class="skills-toggle" onclick="toggleSkills(this)"><span class="arrow">▶</span> 核心技能</button><div class="skills-list"><span class="skill-chip housework">行程安排</span><span class="skill-chip housework">家務清單</span><span class="skill-chip housework">習慣追蹤</span><span class="skill-chip housework">待辦管理</span><span class="skill-chip housework">生活優化</span></div><div class="ability-section"><div class="ability-label"><span>行程規劃</span><span>88%</span></div><div class="ability-bar"><div class="ability-fill housework" data-width="88"></div></div></div><div class="ability-section"><div class="ability-label"><span>提醒效率</span><span>90%</span></div><div class="ability-bar"><div class="ability-fill housework" data-width="90"></div></div></div><div class="ability-section"><div class="ability-label"><span>習慣養成</span><span>86%</span></div><div class="ability-bar"><div class="ability-fill housework" data-width="86"></div></div></div><div class="ability-section"><div class="ability-label"><span>清單管理</span><span>89%</span></div><div class="ability-bar"><div class="ability-fill housework" data-width="89"></div></div></div><div class="ability-section"><div class="ability-label"><span>生活洞察</span><span>85%</span></div><div class="ability-bar"><div class="ability-fill housework" data-width="85"></div></div></div><div class="chat-section"><div class="chat-bubble">「今日待辦：繳費、回信、採買。建議先用 15 分鐘處理 email。」</div></div><div class="audio-section"><div class="audio-bar"><audio id="audio-housework-intro" src="housework-intro.mp3"></audio><button class="play-btn" onclick="playAudio('housework-intro')">▶ 自我介紹</button><button class="stop-btn" onclick="stopAudio('housework-intro')">■</button><div class="wave" id="wave-housework-intro"><span></span><span></span><span></span><span></span><span></span></div></div><div class="audio-bar"><audio id="audio-housework-skills" src="housework-skills.mp3"></audio><button class="play-btn" onclick="playAudio('housework-skills')">▶ 技能語音</button><button class="stop-btn" onclick="stopAudio('housework-skills')">■</button><div class="wave" id="wave-housework-skills"><span></span><span></span><span></span><span></span><span></span></div></div></div><div class="voice-info"><span class="voice-badge housework">🔊 Warm_Bestie <span class="voice-label">pitch 0 · 1.05x</span></span></div></div></div>
+      <div class="shrimp-card knowledge">
+        <div class="card-header"><span class="card-emoji">🧠</span><div class="card-title"><h2>知識蝦</h2><p>知識長 · 學習顧問</p></div></div>
+        <div class="image-gallery"><img src="knowledge-main.jpeg" alt="知識蝦" onclick="openLightbox(this.src)"><img src="knowledge-research.jpeg" alt="研究中" onclick="openLightbox(this.src)"></div>
+        <div class="skills-section"><div class="skills-title">📊 能力雷達</div><div class="skill-bars"><div class="skill-bar"><span class="skill-name">影片筆記</span><div class="skill-track"><div class="skill-fill" data-width="92"></div></div></div><div class="skill-bar"><span class="skill-name">書籍摘要</span><div class="skill-track"><div class="skill-fill" data-width="88"></div></div></div><div class="skill-bar"><span class="skill-name">知識建構</span><div class="skill-track"><div class="skill-fill" data-width="85"></div></div></div><div class="skill-bar"><span class="skill-name">翻譯整理</span><div class="skill-track"><div class="skill-fill" data-width="90"></div></div></div></div></div>
+        <div class="dialogue-section"><div class="dialogue-title">💬 經典台詞</div><div class="dialogue-bubble">「老大，今天讀到一篇很有意思的文章，讓我整理重點給你。」</div></div>
+        <div class="audio-buttons"><button class="audio-btn" onclick="playAudio('knowledge-intro.mp3', this)">🎤 自我介紹</button><button class="audio-btn" onclick="playAudio('knowledge-skills.mp3', this)">⚙️ 技能介紹</button><button class="audio-btn" onclick="playAudio('knowledge-phrase.mp3', this)">✨ 口頭禪</button></div>
+      </div>
 
-</div></div>
-<div class="footer">最後更新：<span id="last-updated"></span> · <a href="https://github.com/arislee1979-afk/aris-dashboard" target="_blank">GitHub</a> · 蝦群系統 v2.0</div>
-<script>
-function toggleTheme(){document.body.setAttribute('data-theme',document.body.getAttribute('data-theme')==='light'?'dark':'light');localStorage.setItem('theme',document.body.getAttribute('data-theme'));}
-(function(){const s=localStorage.getItem('theme');if(s)document.body.setAttribute('data-theme',s);})();
-function toggleSkills(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('open');}
-let currentAudio=null,currentId=null;
-function playAudio(id){if(currentAudio&&currentAudio.id!=='audio-'+id){currentAudio.pause();currentAudio.currentTime=0;const w=document.getElementById('wave-'+currentId);if(w)w.classList.remove('active');}var audio=document.getElementById('audio-'+id);audio.load();var btn=audio.parentElement.querySelector('.play-btn');btn.textContent='⏳ 載入中...';btn.classList.add('loading');var p=audio.play();if(p!==undefined){p.then(function(){btn.textContent='▶ 播放中';btn.classList.remove('loading');currentAudio=audio;currentId=id;document.getElementById('wave-'+id).classList.add('active');audio.onended=function(){document.getElementById('wave-'+id).classList.remove('active');btn.textContent='▶ '+btn.getAttribute('data-label');};}).catch(function(e){btn.textContent='▶ '+btn.getAttribute('data-label');btn.classList.remove('loading');});}}
-function stopAudio(id){var audio=document.getElementById('audio-'+id);audio.pause();audio.currentTime=0;var btn=audio.parentElement.querySelector('.play-btn');btn.textContent='▶ '+btn.getAttribute('data-label');document.getElementById('wave-'+id).classList.remove('active');}
-document.querySelectorAll('.play-btn').forEach(function(b){b.setAttribute('data-label',b.textContent.replace('▶ ',''));});
-document.querySelectorAll('.ability-fill').forEach(function(f){f.style.width='0%';});
-function animateStats(){var members=5,skills=25;var startDays=Math.floor((new Date()-new Date('2026-03-07'))/86400000);document.getElementById('stat-members').textContent=members;document.getElementById('stat-skills').textContent=skills;document.getElementById('stat-days').textContent=startDays;}
-function animateAbilities(){document.querySelectorAll('.ability-fill').forEach(function(f,i){setTimeout(function(){f.style.width=f.getAttribute('data-width')+'%';},i*60);});}
-document.getElementById('last-updated').textContent=new Date().toLocaleString('zh-TW',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-window.addEventListener('load',function(){animateStats();setTimeout(animateAbilities,300);});
-</script>
+      <div class="shrimp-card housework">
+        <div class="card-header"><span class="card-emoji">🦐</span><div class="card-title"><h2>家務蝦</h2><p>生活總監 · 行程管家</p></div></div>
+        <div class="image-gallery"><img src="housework-main.jpeg" alt="家務蝦" onclick="openLightbox(this.src)"><img src="housework-cooking.jpeg" alt="料理中" onclick="openLightbox(this.src)"></div>
+        <div class="skills-section"><div class="skills-title">📊 能力雷達</div><div class="skill-bars"><div class="skill-bar"><span class="skill-name">行程規劃</span><div class="skill-track"><div class="skill-fill" data-width="90"></div></div></div><div class="skill-bar"><span class="skill-name">待辦管理</span><div class="skill-track"><div class="skill-fill" data-width="88"></div></div></div><div class="skill-bar"><span class="skill-name">家務協調</span><div class="skill-track"><div class="skill-fill" data-width="85"></div></div></div><div class="skill-bar"><span class="skill-name">生活優化</span><div class="skill-track"><div class="skill-fill" data-width="82"></div></div></div></div></div>
+        <div class="dialogue-section"><div class="dialogue-title">💬 經典台詞</div><div class="dialogue-bubble">「老大別忘了今天的行程，我已經把清單排好了喔！」</div></div>
+        <div class="audio-buttons"><button class="audio-btn" onclick="playAudio('housework-intro.mp3', this)">🎤 自我介紹</button><button class="audio-btn" onclick="playAudio('housework-skills.mp3', this)">⚙️ 技能介紹</button><button class="audio-btn" onclick="playAudio('housework-phrase.mp3', this)">✨ 口頭禪</button></div>
+      </div>
+    </div>
+
+    <div class="group-gallery">
+      <h2>🎬 蝦群大合照</h2>
+      <div class="group-images">
+        <img src="group-photo.jpeg" alt="蝦群大合照" onclick="openLightbox(this.src)">
+        <img src="group-battle.jpeg" alt="蝦群作戰室" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+  </div>
+
+  <div class="footer"><p>🦞 Aris Node · 蝦群系統 · 2026</p></div>
+
+  <div class="lightbox" onclick="closeLightbox()"><span class="lightbox-close">✕</span><img id="lightbox-img" src="" alt=""></div>
+  <audio id="audio-player"></audio>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.querySelector('.theme-toggle');
+      if (body.dataset.theme === 'light') { body.dataset.theme = ''; btn.textContent = '🌙 深色主題'; }
+      else { body.dataset.theme = 'light'; btn.textContent = '☀️ 淺色主題'; }
+    }
+    function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.querySelector('.lightbox').classList.add('active'); }
+    function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+    let currentBtn = null;
+    function playAudio(src, btn) {
+      const player = document.getElementById('audio-player');
+      if (currentBtn === btn && !player.paused) { player.pause(); currentBtn.classList.remove('playing'); currentBtn = null; return; }
+      if (currentBtn) currentBtn.classList.remove('playing');
+      player.src = src; player.play(); currentBtn = btn; btn.classList.add('playing');
+      player.onended = () => { btn.classList.remove('playing'); currentBtn = null; };
+    }
+    function animateCounters() {
+      document.querySelectorAll('.stat-number').forEach(counter => {
+        const target = parseInt(counter.dataset.target);
+        const duration = 2000; const step = target / (duration / 16);
+        let current = 0;
+        setInterval(() => { current += step; counter.textContent = Math.floor(Math.min(current, target)).toLocaleString(); }, 16);
+      });
+    }
+    function animateSkillBars() {
+      setTimeout(() => { document.querySelectorAll('.skill-fill').forEach(bar => { bar.style.width = bar.dataset.width + '%'; }); }, 300);
+    }
+    window.addEventListener('load', () => { animateCounters(); animateSkillBars(); });
+  </script>
 </body>
 </html>
