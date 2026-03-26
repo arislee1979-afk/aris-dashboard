@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦞 蝦群角色設定</title>
+<title>🦞 蝦群角色設定 🐴</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,11 +14,12 @@ body { background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-
 .hero h1 span { background: linear-gradient(135deg, #f97316, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hero p { color: #7d8590; font-size: 1.1rem; }
 .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px 80px; }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
 .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; overflow: hidden; transition: all 0.3s ease; position: relative; }
 .card::before { content: ''; position: absolute; inset: 0; border-radius: 16px; padding: 1px; background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.3s; }
 .card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); border-color: #3b82f6; }
 .card:hover::before { opacity: 1; }
+.card-img-wrap { position: relative; }
 .card-img { width: 100%; height: 260px; object-fit: cover; }
 .card-body { padding: 24px; }
 .card-title { font-size: 1.3rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -29,74 +30,220 @@ body { background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-
 .tag-green { background: rgba(34,197,94,0.15); color: #34d399; }
 .tag-purple { background: rgba(168,85,247,0.15); color: #a855f7; }
 .tag-pink { background: rgba(236,72,153,0.15); color: #ec4899; }
-.card-prompt { background: #0d1117; border: 1px solid #21262d; border-radius: 10px; padding: 16px; font-size: 0.82rem; line-height: 1.7; color: #8b949e; }
-.card-prompt strong { color: #58a6ff; }
+
+/* Audio Player Styles */
+.audio-section { margin-top: 16px; }
+.audio-label { font-size: 0.72rem; color: #7d8590; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+.audio-label::before { content: '🎵'; font-size: 0.8rem; }
+.audio-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.audio-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 20px; border: 1px solid #30363d; background: #0d1117; color: #8b949e; font-size: 0.72rem; font-family: inherit; cursor: pointer; transition: all 0.2s; }
+.audio-btn:hover { border-color: #58a6ff; color: #58a6ff; background: rgba(88,166,255,0.08); }
+.audio-btn:active { transform: scale(0.96); }
+.audio-btn.playing { border-color: #3fb950; color: #3fb950; background: rgba(63,185,80,0.1); }
+audio { display: none; }
+
 @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cards { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="hero">
-  <h1>🦞 <span>蝦群</span> 角色設定</h1>
-  <p>🐴 彩虹小馬風格 · AI 角色視覺化</p>
+  <h1>🦞 <span>蝦群</span> 角色設定 🐴</h1>
+  <p>🐴 彩虹小馬風格 · 🎵 語音角色設定</p>
 </div>
 <div class="container">
   <div class="cards">
+
     <div class="card">
-      <img src="file_97---8010eca1-b2ce-4d46-a167-b1136205a180.jpg" class="card-img">
+      <div class="card-img-wrap">
+        <img src="file_97---8010eca1-b2ce-4d46-a167-b1136205a180.jpg" class="card-img" alt="🦞 A小蝦（系統總管）">
+      </div>
       <div class="card-body">
         <h2 class="card-title">🦞 A小蝦（系統總管）</h2>
         <div class="card-sub">
-          <span class="tag tag-orange">橘紅色</span>
-          <span class="tag tag-orange">船長</span>
+          <span class="tag tag-orange">橘紅色</span><span class="tag tag-orange">船長</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
+        <div class="audio-section">
+          <div class="audio-label">點擊播放語音 🎵</div>
+          <div class="audio-grid">
+            <button class="audio-btn" onclick="playAudio(this, 'axia-intro.mp3')">🌟 自我介紹</button>
+<audio id="audio-axia-intro-mp3" src="axia-intro.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'axia-skills.mp3')">💪 專業技能</button>
+<audio id="audio-axia-skills-mp3" src="axia-skills.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'axia-tagline.mp3')">✨ 每日語錄</button>
+<audio id="audio-axia-tagline-mp3" src="axia-tagline.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'axia-night.mp3')">🌙 晚安問候</button>
+<audio id="audio-axia-night-mp3" src="axia-night.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'axia-report.mp3')">📊 任務報告</button>
+<audio id="audio-axia-report-mp3" src="axia-report.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'axia-morning.mp3')">☀️ 早安問候</button>
+<audio id="audio-axia-morning-mp3" src="axia-morning.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'axia-encourage.mp3')">💬 鼓勵話語</button>
+<audio id="audio-axia-encourage-mp3" src="axia-encourage.mp3"></audio>
+          </div>
+        </div>
       </div>
     </div>
+    
     <div class="card">
-      <img src="file_96---6ee895b1-ba14-40ee-82a9-5781941722ae.jpg" class="card-img">
+      <div class="card-img-wrap">
+        <img src="file_96---6ee895b1-ba14-40ee-82a9-5781941722ae.jpg" class="card-img" alt="💰 發財蝦（財務總管）">
+      </div>
       <div class="card-body">
         <h2 class="card-title">💰 發財蝦（財務總管）</h2>
         <div class="card-sub">
-          <span class="tag tag-blue">黃色</span>
-          <span class="tag tag-blue">工程師</span>
+          <span class="tag tag-blue">黃色</span><span class="tag tag-blue">工程師</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體黃色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>黃色工程師安全帽</strong>附頭燈，腰間工具腰包（露出扳手和鉗子），手拿大型扳手，站在<strong>伺服器機房/數據中心走廊</strong>，兩側有機櫃和彩色 LED 狀態燈，專業可靠又可愛的工程師風格</div>
+        <div class="audio-section">
+          <div class="audio-label">點擊播放語音 🎵</div>
+          <div class="audio-grid">
+            <button class="audio-btn" onclick="playAudio(this, 'zaicai-intro.mp3')">🌟 自我介紹</button>
+<audio id="audio-zaicai-intro-mp3" src="zaicai-intro.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'zaicai-skills.mp3')">💪 專業技能</button>
+<audio id="audio-zaicai-skills-mp3" src="zaicai-skills.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'zaicai-tagline.mp3')">✨ 每日語錄</button>
+<audio id="audio-zaicai-tagline-mp3" src="zaicai-tagline.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'zaicai-night.mp3')">🌙 晚安問候</button>
+<audio id="audio-zaicai-night-mp3" src="zaicai-night.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'zaicai-report.mp3')">📊 任務報告</button>
+<audio id="audio-zaicai-report-mp3" src="zaicai-report.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'zaicai-morning.mp3')">☀️ 早安戰報</button>
+<audio id="audio-zaicai-morning-mp3" src="zaicai-morning.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'zaicai-encourage.mp3')">💬 鼓勵話語</button>
+<audio id="audio-zaicai-encourage-mp3" src="zaicai-encourage.mp3"></audio>
+          </div>
+        </div>
       </div>
     </div>
+    
     <div class="card">
-      <img src="file_95---03ee8b21-bf1b-464a-bdb1-a290a1043ad2.jpg" class="card-img">
+      <div class="card-img-wrap">
+        <img src="file_95---03ee8b21-bf1b-464a-bdb1-a290a1043ad2.jpg" class="card-img" alt="🏃 健康蝦（健身教練）">
+      </div>
       <div class="card-body">
         <h2 class="card-title">🏃 健康蝦（健身教練）</h2>
         <div class="card-sub">
-          <span class="tag tag-green">藍綠色</span>
-          <span class="tag tag-green">教練</span>
+          <span class="tag tag-green">藍綠色</span><span class="tag tag-green">教練</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體<strong>藍綠色</strong>，鬃毛和尾巴是彩虹漸層色，頭戴<strong>白色運動頭帶</strong>（附小愛心標記），穿運動背心，腳穿彩虹條紋運動鞋，手拿啞鈴，旁邊有水壺，站在<strong>現代健身房室內</strong>，背景有跑步機和健身器材，活力健康陽光動感可愛卡通風格</div>
+        <div class="audio-section">
+          <div class="audio-label">點擊播放語音 🎵</div>
+          <div class="audio-grid">
+            <button class="audio-btn" onclick="playAudio(this, 'health-intro.mp3')">🌟 自我介紹</button>
+<audio id="audio-health-intro-mp3" src="health-intro.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'health-skills.mp3')">💪 專業技能</button>
+<audio id="audio-health-skills-mp3" src="health-skills.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'health-tagline.mp3')">✨ 每日語錄</button>
+<audio id="audio-health-tagline-mp3" src="health-tagline.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'health-night.mp3')">🌙 晚安問候</button>
+<audio id="audio-health-night-mp3" src="health-night.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'health-report.mp3')">📊 任務報告</button>
+<audio id="audio-health-report-mp3" src="health-report.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'health-morning.mp3')">☀️ 早安問候</button>
+<audio id="audio-health-morning-mp3" src="health-morning.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'health-encourage.mp3')">💬 鼓勵話語</button>
+<audio id="audio-health-encourage-mp3" src="health-encourage.mp3"></audio>
+          </div>
+        </div>
       </div>
     </div>
+    
     <div class="card">
-      <img src="knowledge-2.jpg" class="card-img">
+      <div class="card-img-wrap">
+        <img src="knowledge-2.jpg" class="card-img" alt="🧠 知識蝦（學習導師）">
+      </div>
       <div class="card-body">
         <h2 class="card-title">🧠 知識蝦（學習導師）</h2>
         <div class="card-sub">
-          <span class="tag tag-purple">紫色</span>
-          <span class="tag tag-purple">魔法師</span>
+          <span class="tag tag-purple">紫色</span><span class="tag tag-purple">魔法師</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>魔法師帽子</strong>（帶星星裝飾），戴著小小的圓框金屬眼鏡，坐在<strong>圖書館書桌前</strong>，周圍堆滿彩色書本、鍵盤和筆，背景是溫暖的木質書架和柔和的檯燈光，知識探索博學風格可愛卡通</div>
+        <div class="audio-section">
+          <div class="audio-label">點擊播放語音 🎵</div>
+          <div class="audio-grid">
+            <button class="audio-btn" onclick="playAudio(this, 'knowledge-intro.mp3')">🌟 自我介紹</button>
+<audio id="audio-knowledge-intro-mp3" src="knowledge-intro.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'knowledge-skills.mp3')">💪 專業技能</button>
+<audio id="audio-knowledge-skills-mp3" src="knowledge-skills.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'knowledge-tagline.mp3')">✨ 每日語錄</button>
+<audio id="audio-knowledge-tagline-mp3" src="knowledge-tagline.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'knowledge-night.mp3')">🌙 晚安問候</button>
+<audio id="audio-knowledge-night-mp3" src="knowledge-night.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'knowledge-report.mp3')">📊 任務報告</button>
+<audio id="audio-knowledge-report-mp3" src="knowledge-report.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'knowledge-morning.mp3')">☀️ 早安問候</button>
+<audio id="audio-knowledge-morning-mp3" src="knowledge-morning.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'knowledge-encourage.mp3')">💬 鼓勵話語</button>
+<audio id="audio-knowledge-encourage-mp3" src="knowledge-encourage.mp3"></audio>
+          </div>
+        </div>
       </div>
     </div>
+    
     <div class="card">
-      <img src="housework-3.jpg" class="card-img">
+      <div class="card-img-wrap">
+        <img src="housework-3.jpg" class="card-img" alt="🦐 家務蝦（生活管家）">
+      </div>
       <div class="card-body">
         <h2 class="card-title">🦐 家務蝦（生活管家）</h2>
         <div class="card-sub">
-          <span class="tag tag-pink">淺粉紅</span>
-          <span class="tag tag-pink">家事達人</span>
+          <span class="tag tag-pink">淺粉紅</span><span class="tag tag-pink">家事達人</span>
         </div>
         <div class="card-prompt">一隻可愛卡通小馬，身體淺粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，戴著<strong>粉色橡膠家事手套</strong>，腰間掛著各種清潔工具，拿著小拖把，站在<strong>舒適的客廳</strong>，背景有溫暖的窗台陽光和整齊的書架，清新家務可愛卡通風格</div>
+        <div class="audio-section">
+          <div class="audio-label">點擊播放語音 🎵</div>
+          <div class="audio-grid">
+            <button class="audio-btn" onclick="playAudio(this, 'housework-intro.mp3')">🌟 自我介紹</button>
+<audio id="audio-housework-intro-mp3" src="housework-intro.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'housework-skills.mp3')">💪 專業技能</button>
+<audio id="audio-housework-skills-mp3" src="housework-skills.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'housework-tagline.mp3')">✨ 每日語錄</button>
+<audio id="audio-housework-tagline-mp3" src="housework-tagline.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'housework-night.mp3')">🌙 晚安問候</button>
+<audio id="audio-housework-night-mp3" src="housework-night.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'housework-report.mp3')">📊 任務報告</button>
+<audio id="audio-housework-report-mp3" src="housework-report.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'housework-morning.mp3')">☀️ 早安問候</button>
+<audio id="audio-housework-morning-mp3" src="housework-morning.mp3"></audio>
+<button class="audio-btn" onclick="playAudio(this, 'housework-encourage.mp3')">💬 鼓勵話語</button>
+<audio id="audio-housework-encourage-mp3" src="housework-encourage.mp3"></audio>
+          </div>
+        </div>
       </div>
     </div>
+    
   </div>
 </div>
+<script>
+let currentPlaying = null;
+function playAudio(btn, mp3) {
+  const audioId = 'audio-' + mp3.replace('.', '-');
+  const audio = document.getElementById(audioId);
+  if (!audio) return;
+  
+  // Stop current
+  if (currentPlaying && currentPlaying !== audio) {
+    currentPlaying.pause();
+    currentPlaying.currentTime = 0;
+    document.querySelectorAll('.audio-btn.playing').forEach(b => b.classList.remove('playing'));
+  }
+  
+  if (audio.paused) {
+    audio.play();
+    btn.classList.add('playing');
+    currentPlaying = audio;
+  } else {
+    audio.pause();
+    btn.classList.remove('playing');
+    currentPlaying = null;
+  }
+  
+  audio.onended = () => {
+    btn.classList.remove('playing');
+    currentPlaying = null;
+  };
+}
+</script>
 </body>
 </html>
