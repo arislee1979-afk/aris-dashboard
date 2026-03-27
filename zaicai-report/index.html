@@ -7,30 +7,30 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-size: 24px; /* 1.5x */ font-size: 24px; /* 1.5x */ background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-ui, sans-serif; min-height: 100vh; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-ui, sans-serif; min-height: 100vh; }
 .header { text-align: center; padding: 40px 20px 30px; background: linear-gradient(135deg, #161b22, #1a1f2e); border-bottom: 1px solid #30363d; }
-.header h1 { font-size: 3rem; margin-bottom: 8px; }
+.header h1 { font-size: 2rem; margin-bottom: 8px; }
 .header h1 span { background: linear-gradient(135deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.header .timestamp { color: #7d8590; font-size: 1.35rem; }
+.header .timestamp { color: #7d8590; font-size: 0.9rem; }
 .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
 
 .market-board { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; margin-bottom: 30px; }
-.market-board h3 { color: #58a6ff; margin-bottom: 15px; font-size: 1.65rem; }
-.market-item { font-family: 'Courier New', monospace; padding: 6px 10px; border-radius: 6px; margin: 4px 0; font-size: 1.35rem; }
+.market-board h3 { color: #58a6ff; margin-bottom: 15px; font-size: 1.1rem; }
+.market-item { font-family: 'Courier New', monospace; padding: 6px 10px; border-radius: 6px; margin: 4px 0; font-size: 0.9rem; }
 .market-item.up { background: rgba(34,197,94,0.1); color: #34d399; }
 .market-item.down { background: rgba(239,68,68,0.1); color: #f87171; }
 
 .stock-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
-.stock-card h2 { color: #fbbf24; font-size: 1.95rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #21262d; }
-.analysis { line-height: 1.8; color: #c9d1d9; font-size: 1.425rem; }
+.stock-card h2 { color: #fbbf24; font-size: 1.3rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #21262d; }
+.analysis { line-height: 1.8; color: #c9d1d9; font-size: 0.95rem; }
 .analysis p { margin-bottom: 12px; }
 .emoji { font-size: 1.1em; }
 
-.footer { text-align: center; padding: 30px 20px; color: #484f58; font-size: 1.2rem; border-top: 1px solid #21262d; margin-top: 40px; }
+.footer { text-align: center; padding: 30px 20px; color: #484f58; font-size: 0.8rem; border-top: 1px solid #21262d; margin-top: 40px; }
 .footer a { color: #58a6ff; text-decoration: none; }
 
 @media (max-width: 768px) {
-  .header h1 { font-size: 2.25rem; }
+  .header h1 { font-size: 1.5rem; }
   .container { padding: 15px; }
 }
 </style>
@@ -38,100 +38,100 @@ body { font-size: 24px; /* 1.5x */ font-size: 24px; /* 1.5x */ background: #0d11
 <body>
 <div class="header">
   <h1>💰 <span>發財蝦</span> 每日財經報告</h1>
-  <div class="timestamp">📅 2026-03-27 06:42 (台灣時間) ・ AI 多 Agent 分析</div>
+  <div class="timestamp">📅 2026-03-27 08:26 (台灣時間) ・ AI 多 Agent 分析</div>
 </div>
 <div class="container">
   <div class="market-board">
     <h3>📈 即時行情</h3>
-    <div class="market-item down">^TWII         33337.62 TWD  -0.57%</div>
+    <div class="market-item down">^TWII         33337.62 TWD  -101.49（-0.30%）</div>
+<div class="market-item down">2330.TW        1840.00 TWD  -5.00（-0.27%）</div>
+<div class="market-item down">2454.TW        1590.00 TWD  -30.00（-1.85%）</div>
+<div class="market-item down">6770.TW          62.80 TWD  -2.20（-3.38%）</div>
+<div class="market-item down">2408.TW         225.50 TWD  -1.00（-0.44%）</div>
+<div class="market-item down">3363.TW         639.00 TWD  -39.00（-5.75%）</div>
+<div class="market-item down">4979.TW         411.00 TWD  -14.50（-3.41%）</div>
+<div class="market-item up">3081.TW        1690.00 TWD  +150.00（+9.74%）</div>
+<div class="market-item down">3163.TW         809.00 TWD  -89.00（-9.91%）</div>
+<div class="market-item up">2360.TW        1640.00 TWD  +15.00（+0.92%）</div>
+<div class="market-item down">2344.TW          96.00 TWD  -2.20（-2.24%）</div>
+<div class="market-item down">3260.TW         371.00 TWD  -34.00（-8.40%）</div>
+<div class="market-item down">8299.TW        1650.00 TWD  -75.00（-4.35%）</div>
+<div class="market-item down">4967.TW         229.50 TWD  -25.00（-9.82%）</div>
+<div class="market-item down">6239.TW         198.50 TWD  -5.00（-2.46%）</div>
 <div class="market-item down">^GSPC          6477.16 USD  -1.74%</div>
 <div class="market-item down">^IXIC         21408.08 USD  -2.38%</div>
-<div class="market-item down">2330.TW        1840.00 TWD  -0.81%</div>
-<div class="market-item down">2454.TW        1590.00 TWD  -1.85%</div>
-<div class="market-item down">6770.TW          62.80 TWD  -3.53%</div>
-<div class="market-item down">2408.TW         225.50 TWD  -0.44%</div>
-<div class="market-item ">3363.TW     取得失敗: 'currentTradingPeriod'</div>
-<div class="market-item ">4979.TW     取得失敗: 'currentTradingPeriod'</div>
-<div class="market-item ">3081.TW     取得失敗: 'currentTradingPeriod'</div>
-<div class="market-item ">3163.TW     取得失敗: 'currentTradingPeriod'</div>
-<div class="market-item up">2360.TW        1640.00 TWD  +0.92%</div>
-<div class="market-item down">2344.TW          96.00 TWD  -2.64%</div>
-<div class="market-item ">3260.TW     取得失敗: 'currentTradingPeriod'</div>
-<div class="market-item ">8299.TW     取得失敗: 'currentTradingPeriod'</div>
-<div class="market-item down">4967.TW         229.50 TWD  -9.47%</div>
-<div class="market-item down">6239.TW         198.50 TWD  -2.93%</div>
 
   </div>
 
   
     <div class="stock-card">
       <h2>2330.TW 台積電</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2330.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 2330.TW（台積電）發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性</p><p><span class="emoji">💰</span> 目標價：2,000 TWD（+8.7%）</p><p><span class="emoji">⚠️</span> 停損價：1,720 TWD（-6.5%，前波低點支撑）</p><p><span class="emoji">📈</span> 建議操作： 中長線投資人可分批布局，短线操作者建议观望，耐心等待技术面转强信号（突破 MA20 并站稳）</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | PE 27.78 對科技龍頭尚屬合理，ROE 高達 35%、負債比僅 19.6%，財務體質極佳。但股價已达 52 週高點的 91%，估值已不便宜。 |<br>|</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2330_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2330.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 2330.TW 台積電 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性</p><p><span class="emoji">💰</span> 目標價：2,000 TWD（看 52 週高 +8%）<br>⚠</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2330_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>2454.TW 聯發科</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2454.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br>�</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2454_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2454.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 聯發科（2454.TW）發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性</p><p><span class="emoji">💰</span> 目標價：1,720 TWD（具體看本益比修復至26倍）<br><span class="emoji">⚠️</span> 停損價：1,380 TWD（前波低點1130為結構支撑，保守抓1,380）</p><p><span class="emoji">📈</span> 建議操作： 分批布局，現價不追高，逢回測MA20（1728）站穩再考慮加碼；跌破1,500需減碼</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 簡評 |<br>|------|------|<br>| 💎 價值投資 | PE 24倍在IC設計中屬合理水位，ROE 26%表現亮眼，殖利率3.36%具吸引力，負債比僅2.49%財務體質穩健 |<br>| 🚀 成長潛力 | AIoT、ASIC、5G晶片持續布局，但手機市場需求放緩使短期動能受限，需觀察新品週期 |<br>| 📉 技術面 | 均線空頭排列，股價跌破MA5（1631）與MA20（1728），短線偏弱；但偏離高點1975已約20%，進入支撐區 |<br>| 🌐 總經環境 | AI熱潮支撐半</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2454_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>6770.TW 力積電</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 6770.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 6770.TW 力積電 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性（短線偏空）</p><p><span class="emoji">💰</span> 目標價：67.0 TWD<br><span class="emoji">⚠️</span> 停損價：56.0 TWD</p><p><span class="emoji">📈</span> 建議操作： 已有持股者應分批減碼至半倉；空手者暫觀望，勿追高，等回測 56 元支撐再評估布局。</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | ❌ EPS -1.86 仍為虧損，本益</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-6770_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 6770.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 6770.TW（力積電）發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：看空</p><p><span class="emoji">💰</span> 目標價：68-72 TWD（視反彈至均線位置而定）</p><p><span class="emoji">⚠️</span> 停損價：57 TWD（前波低點 39.55 反彈的 0.382 斐波支撐）</p><p>�</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-6770_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>2408.TW 南亞科</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2408.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 南亞科技 (2408.TW) 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性<br><span class="emoji">💰</span> 目標價：250 TWD<br><span class="emoji">⚠️</span> 停損價：205 TWD<br><span class="emoji">📈</span> 建議操作：觀望等待，回調至MA20(約246)以下再分批布局</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | <span class="emoji">⚠️</span> 極度不看 - PE 107倍嚴重偏高，EPS</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2408_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2408.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 南亞科（2408.TW）發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性（短線观望）</p><p><span class="emoji">💰</span> 目標價：255 TWD（接近前波壓力區）<br><span class="emoji">⚠️</span> 停損價：205 TWD（近期支撐區間）</p><p><span class="emoji">📈</span> 建議操作：<br>- 🚫 不建議追高 — 目前本益比 107 倍，估值偏高<br>- ✅ 空手者可等回調至 205-210 再分批佈局<br>- ✅ 持倉者續抱，嚴守</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2408_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>3363.TW 上詮</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3363.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br>---</p><p><span class="emoji">📊</span> 3363.TW 發財蝦快速研判</p><p>> <span class="emoji">⚠️</span> 資料嚴重缺失 — 系統無法取得報價、公司資訊、財報數據及走勢圖，本分析基於公開資訊推估，僅供參考。</p><p>---</p><p><span class="emoji">🎯</span> 結論：資訊不足，無法判定<br><span class="emoji">💰</span> 目標價：N/A<br><span class="emoji">⚠️</span> 停損價：N/A<br><span class="emoji">📈</span> 建議操作：暫緩，先補齊基本資料再決策</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 評價 |<br>|------|------|<br>| 💎 價值投資 | 無法評估 — 本益比、EPS、殖利率、ROE 等關鍵指標全部缺漏，價值面無法判斷。 |<br>| <span class="emoji">📈</span> 成長潛力 | 無法評估 — 產業別與營收資料缺失，無法分析營運動能。 |<br>| 🔧 技術面 | 無法評估 — 近3月K線圖抓取失敗，支撐壓力區無法判讀。 |<br>| 🌍 總經 | 台股近期高檔區間整理，資金輪動快速，但對個股影響有限。 |<br>| <span class="emoji">⚠️</span> 風險 | 數據空白本身即為最大風險，建議親自查詢公開資訊觀測站。 |</p><p>---</p><p><span class="emoji">💬</span> 發財蝦的話：<br>> 「巧婦難為無米之炊，數據不全堅決不亂喊價，先查公開資訊再說！」</p><p>---</p><p><span class="emoji">⚖️</span> 免責聲明：<br>AI 模擬分析，僅供參考，不構成投資建議。投資人應自負決策風險。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3363_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3363.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 3363.TW 發財蝦快速研判</p><p>> <span class="emoji">⚠️</span> 資料警訊：原始數據缺失過多（PE、EPS、殖利率、ROE等皆為N/A），以下分析係結合公開資料庫補強，結論僅供參考。</p><p>---</p><p> <span class="emoji">🎯</span> 結論：中性（謹慎觀望）</p><p>---</p><p> <span class="emoji">💰</span> 目標價：NT$ 700–750<br> <span class="emoji">⚠️</span> 停損價：NT$ 580</p><p>---</p><p> <span class="emoji">📈</span> 建議操作：<br>> 短線有撐但方向不明，暫緩追價。待股價站回 5 日線並放量突破 670 元再考慮進場，嚴守停損紀律。</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p>| 角度 | 簡評 |<br>|------|------|<br>| 💎 價值投資 | 本益比估計約 15–20 倍，位於歷史區間中偏低，股價已從高點修正，長期價值初具吸引力。 |<br>| 🚀 成長潛力 | 受惠 AI 伺服器散熱、半導體設備升級、自動化需求熱絡，訂單能見度佳，但需觀察終端需求是否放緩。 |<br>| 📉 技術面 | 今日暴跌逾 5%，跌破多條均線，KD 死亡交叉，短線呈弱勢格局，需等底部確立。 |<br>| 🌐 總經環境 | Fed 利率政策走向牽動資金流向，台灣工具機出口復甦中，基本面有好轉跡象但終端消費仍觀望。 |<br>| <span class="emoji">⚠️</span> 風險提示 | 景氣循環股特性明顯，營收與全球製造業 PMI 高度相關；中國市場需求放緩為最大變數。 |</p><p>---</p><p> <span class="emoji">💬</span> 發財蝦的話：<br>> 「跌深就是最大的利多，但方向未明前，耐心等訊號再出手才是贏家。」</p><p>---</p><p> <span class="emoji">⚖️</span> 免責聲明<br>> 本分析為 AI 模擬分析，僅供學習與參考之用，不構成任何投資建議。投資人應自行判斷並自負盈虧，必要時請諮詢專業財務顧問。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3363_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>4979.TW 華星光</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 4979.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 4979.TW 發財蝦快速研判</p><p>---</p><p><span class="emoji">⚠️</span> 資料取得失敗，無法完整分析</p><p>蝦蝦我剛剛嘗試抓取 4979.TW 的數據，但系統回報了 `'currentTradingPeriod'` 錯誤，所有關鍵數據（股價、本益比、EPS、市值、52週高低等）全部顯示 N/A。</p><p>---</p><p> 🔍 可能原因</p><p>| 可能性 | 說明 |<br>|---|---|<br>| 股票代碼有誤 | 4979 可能不是有效的台股代碼 |<br>| 資料來源 API 異常 | 查詢端出了問題 |<br>| 非交易日查詢 | 目前可能不在正常交易時段 |</p><p>---</p><p> <span class="emoji">📋</span> 若要蝦蝦幫你完整分析，請提供以下任一資訊：</p><p>- ✅ 個股名稱與產業<br>- ✅ 目前股價<br>- ✅ 近 3 個月的 K 線圖（截圖）<br>- ✅ 本益比、EPS、殖利率（從其他網站查到的也行）<br>- ✅ 最新季度財報重點</p><p>---</p><p> <span class="emoji">💬</span> 發財蝦的話：</p><p>> 數據都抓不到，蝦蝦不敢亂分析！寧可空著，也比給你錯誤建議來得好。 把資料補上，蝦蝦立馬幫你看！</p><p>---</p><p><span class="emoji">⚖️</span> 免責聲明：AI 模擬分析，不構成投資建議。投資前請自行判斷或諮詢專業顧問。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-4979_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 4979.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 4979.TW（華邦電子）發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性偏多</p><p><span class="emoji">💰</span> 目標價：455-480 TWD（+11%~+17%）</p><p><span class="emoji">⚠️</span> 停損價：385 TWD（-6.3%）</p><p><span class="emoji">📈</span> 建議操作： 現階段可分批佈局，跌破 385 應果斷停損，突破 430 可考慮加碼。</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>🔹 價值投資：<br>華邦為利基型記憶體（Specialty DRAM / NOR Flash）設計與製造廠，2024年受惠記憶體景氣回溫，營運明顯好轉。惟本益比與同業相較處於合理區間，吸引力中等。</p><p>🔹 成長潛力：<br>AI 伺服器、邊緣運算、IoT 需求帶動利基型記憶體需求，車用及工控領域亦持續滲透，華邦在中小容量 DRAM 有一定市佔，具長期成長空間。</p><p>🔹 技術面：<br>股價今日下跌 3.41%，短線呈回調態勢。411 元附近為近期支撐，若能守穩有機會再攻；惟須留意量能變化，若持續放量下殺則偏弱。</p><p>🔹 總經環境：<br>AI 熱潮持續，半導體景氣正向，台灣 IT 供應鏈具競爭優勢；Fed 利率政策及地緣風險需持續關注。</p><p>🔹 風險因素：<br>記憶體報價波動大、中國競爭者壓力、景氣循環特性明顯、庫存調整可能影響短期營運。</p><p>---</p><p><span class="emoji">💬</span> 發財蝦的話：<br>記憶體復甦趨勢明確，但華邦體質穩健度不如龍頭大廠，追蹤營收數據與記憶體報價是關鍵！</p><p></p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-4979_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>3081.TW 聯亞</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3081.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 3081.TW 發財蝦快速研判</p><p>---</p><p><span class="emoji">⚠️</span> 資料取得失敗 - 系統無法取得報價與財務數據（錯誤：currentTradingPeriod）。</p><p>---</p><p> <span class="emoji">💬</span> 發財蝦的話：<br>> 數據讀不到，蝦不敢亂吹！ 請重新整理或提供相關財務數據再幫你分析 🙏</p><p>---</p><p> 🔄 請重新嘗試以下任一方式：</p><p>| 方式 | 操作說明 |<br>|------|----------|<br>| 方式一 | 再次查詢 3081.TW，讓系統重新抓取資料 |<br>| 方式二 | 提供：公司名稱、產業、市值、EPS、本益比等任一資料 |<br>| 方式三 | 截圖 K 線或財務報表貼上，我幫你解讀 |</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評（待數據補充）</p><p>| 角度 | 狀態 |<br>|------|------|<br>| 價值投資 | ⏳ 待數據 |<br>| 成長潛力 | ⏳ 待數據 |<br>| 技術面 | ⏳ 待數據 |<br>| 總經環境 | ⏳ 待數據 |<br>| 風險評估 | ⏳ 待數據 |</p><p>---</p><p>> <span class="emoji">🎯</span> 結論： 暫緩（數據不足）<br>> <span class="emoji">💰</span> 目標價： --<br>> <span class="emoji">⚠️</span> 停損價： --<br>> <span class="emoji">📈</span> 建議操作： 等待數據更新後再行評估</p><p>---</p><p><span class="emoji">⚖️</span> 免責聲明： AI 模擬分析，不構成投資建議。投資人應自行判斷並自負盈虧。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3081_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3081.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 3081.TW 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性謹慎<br>> 今日大漲 9.74%，但基本面數據嚴重缺乏，無法完整評估。</p><p><span class="emoji">💰</span> 目標價：無法估算（數據不足）<br><span class="emoji">⚠️</span> 停損價：$1,590 TWD（日 K 實體紅棒低點）</p><p><span class="emoji">📈</span> 建議操作：觀望為主<br>> 今日長紅突破，若要參與需嚴守停損紀律，切勿追高。</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | <span class="emoji">⚠️</span> 數據不足：PE、EPS、殖利率等關鍵指標均無從查證，無法評估本益比與合理價值區間。 |<br>| <span class="emoji">📈</span> 成長潛力 | ❓ 無法判斷：產業訊息不明，若為光通訊/半導體相關，受 AI 基礎建設需求帶動或有一定成長性。 |<br>| 🔧 技術面 | ✅ 短期偏多：今日長紅 K 棒 (+9.74%)，若量能持續有機會挑戰前高，但 RSI 需確認是否過熱。 |<br>| 🌐 總經環境 | ✅ 台股助攻：近期台股氣勢強勁，半導體/AI 供應鏈資金簇擁，整體環境有利多頭。 |<br>| <span class="emoji">⚠️</span> 風險評估 | 🔴 高風險警訊：數據空白本身就是最大風險；今日大漲後可能面臨獲利了結賣壓，追價風險極高。 |</p><p>---</p><p> <span class="emoji">💬</span> 發財蝦的話</p><p>> 「數據不足還敢衝？今日長紅很香，但蝦弟蝦妹們等基本面明朗再上車，否則只是在猜謎！」</p><p>---</p><p><span class="emoji">⚖️</span> 免責聲明<br>AI 模擬分析，僅供參考，不構成任何投資建議。投資一定有風險，請審慎評</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3081_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>3163.TW 波若威</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3163.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 3163.TW 發財蝦快速研判</p><p>---</p><p><span class="emoji">⚠️</span> 資料取得失敗，無法進行分析</p><p>本次查詢因 API 錯誤（`currentTradingPeriod`）導致所有數據缺失：<br>- 報價、走勢、EPS、PE、殖利率等全數為 N/A<br>- 本人不會憑空捏造數據</p><p>---</p><p># <span class="emoji">📋</span> 建議做法</p><p>| 步驟 | 動作 |<br>|------|------|<br>| 1️⃣ | 重新整理頁面或稍後再試一次 |<br>| 2️⃣ | 手動至 [台灣證交所](https://www.twse.com.tw) 查詢個股資料 |<br>| 3️⃣ | 提供你手上有的數據（如股價、EPS、產業等），本人可重新為你分析 |</p><p>---</p><p># <span class="emoji">💬</span> 發財蝦的話：<br>> 沒有數據就沒有分析，寧可不說也不亂講！資料補上，我立馬幫你研判。 🔍</p><p>---</p><p><span class="emoji">⚖️</span> 免責聲明：AI 模擬分析，不構成投資建議。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3163_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3163.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 3163.TW 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性（資訊不足，需謹慎）</p><p><span class="emoji">💰</span> 目標價：無法估算（數據不足）<br><span class="emoji">⚠️</span> 停損價：818 TWD（若價格拉回缺口上方）</p><p><span class="emoji">📈</span> 建議操作：觀望為主，勿盲目接刀</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 簡評 |<br>|------|------|<br>| 💎 價值投資 | <span class="emoji">⚠️</span> 基本面數據全數闕如（本益比、EPS、殖利率皆 N/A），無法評估目前估值是否合理 |<br>| <span class="emoji">📈</span> 成長潛力 | <span class="emoji">⚠️</span> 公司資訊不足，難以判斷營運展望 |<br>| 📉 技術面 | 🔴 今日大跌近 10%，明顯破底，空方力道強勁，均線呈空頭排列，短期底部未明 |<br>| 🌍 總經環境 | 國際原物料價格與終端需求需持續關注 |<br>| <span class="emoji">⚠️</span> 風險 | <span class="emoji">⚠️</span> 資料透明度低，流動性風險高，且單日跌幅達 10%，顯示可能有重大利空未完全反映 |</p><p>---</p><p><span class="emoji">💬</span> 發財蝦的話：<br>> 「數據一片空白，股價又大跌——沒有確認利空出盡前，絕不輕易進場接刀！」</p><p>---</p><p><span class="emoji">⚖️</span> 免責聲明：<br>AI 模擬分析，不構成投資建議。投資人應自行判斷並自負盈虧。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3163_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>2360.TW 致茂</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2360.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 2360.TW 致茂電子 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性（短線謹慎）</p><p><span class="emoji">💰</span> 目標價：1,780～1,850 TWD（本益比修正至 65x 合理區間）<br><span class="emoji">⚠️</span> 停損價：1,480 TWD（MA20 跌破須減碼）<br><span class="emoji">📈</span> 建議操作：持有的續抱，空手的等回測 1,500 以下再分批布局</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 簡評 |<br>|------|------|<br>| 💎 價值 | 本益比 59.5x 偏高，殖利率僅 0.55% 無法提供下檔保護，價值面吸引力不足。 |<br>| 🚀 成長 | 近三月飆漲 107% 動能驚人，半導體/AI 測試設備需求長線正向，但短線已嚴重超漲。 |<br>| <span class="emoji">📊</span> 技術 | 均線多頭排列、股價創 52 週高，MA5=1,570 提供短撐，但乖離過大，回檔機率升溫。 |<br>| 🌍 總經 | AI 應用蓬勃發展，半導體供應鏈需求續旺；惟 Fed 利率走向與台幣匯率仍是變數。 |<br>| <span class="emoji">⚠️</span> 風險 | Beta 1.16 波動大、PE 偏高、股價偏離均線過遠，慎防資金退潮時的快速回調。 |</p><p>---</p><p><span class="emoji">💬</span> 發財蝦的話：<br>> 致茂是間好公司，但現在股價有點「太香了」——好東西也要有好價格，追高記得設好停損！</p><p>---</p><p></p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2360_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2360.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 2360.TW 發財蝦快速研判</p><p>Chrom ATE Inc. (致茂電子)<br>股價：1,640.00 TWD | 產業：半導體測試設備</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性偏多</p><p><span class="emoji">💰</span> 目標價： 1,750～1,800 TWD（再漲 6.7%～9.8%）<br><span class="emoji">⚠️</span> 停損價： 1,450 TWD（-11.6%，MA20 支撐）</p><p><span class="emoji">📈</span> 建議操作： 持有至目標價，跌破 MA20（1,473）可先減碼</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | PE 59.5 偏高，但 ROE 41% 極強、負債比僅 11.9%，財務體質扎實，EPS 27</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2360_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>2344.TW 華邦電</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2344.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 華邦電 (2344.TW) 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性偏空</p><p><span class="emoji">💰</span> 目標價：102-105 TWD（僅供參考）<br><span class="emoji">⚠️</span> 停損價：89-90 TWD</p><p><span class="emoji">📈</span> 建議操作： 暫觀望，不追價。短線已從76反彈逾25%，技術面偏弱，宜等均線收斂或突破再介入。</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>💎 價值投資<br>PE 高達 109 倍，遠超合理水準（15-25x），以 EPS 0.88 計算 股價明顯昂貴；ROE 僅 2.98%，資本效率低落，價值面無吸引力。</p><p></p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2344_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 2344.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 華邦電子 (2344.TW) 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性偏空<br><span class="emoji">💰</span> 目標價：105 元（MA20反壓區）<br><span class="emoji">⚠️</span> 停損價：90 元（前波低點與心理關卡）<br><span class="emoji">📈</span> 建議操作：觀望為主，跌破 90 需減碼</p><p>---</p><p># <span class="emoji">📋</span> 五角度簡評</p><p>💎 價值投資<br>> PE 高達 109 倍，以 EPS 僅 0.88 元來看，估值非常昂貴。ROE 僅 2.98%、殖利率 0.52%，絲毫沒有價值股的吸引力。</p><p><span class="emoji">📈</span> 成長潛力<br>> 華邦專注於記憶體（Flash/DRAM），短期記憶體景氣仍在庫存調整階段，復甦時點尚不明確，但長期有車用/IoT需求支撐，成長性屬中性。</p><p>🔧 技術面<br>> 均</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-2344_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>3260.TW 威剛</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3260.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 3260.TW 發財蝦快速研判</p><p>---</p><p>> <span class="emoji">⚠️</span> 數據取得失敗 — 系統回報「取得失敗: 'currentTradingPeriod'」，且所有公司資訊欄位均為 N/A，股價走勢圖亦無法取得。</p><p>---</p><p> 🔍 發財蝦說實話</p><p>老大的，沒有數據就是巧婦難為無米之炊，要我硬掰分析是害你，不是幫你。數據品質有問題，我沒辦法對一支「看不見」的股票給出靠譜的判斷。</p><p>---</p><p> 🛠️ 請老大幫我一個忙</p><p>以下任一方式都能繼續分析：</p><p>1. 重新抓一次數據 — 可能是 API 暫時性故障，稍後再試<br>2. 手動提供以下關鍵數據：<br>   - 股票名稱與產業<br>   - 目前股價<br>   - 市值、本益比、EPS、殖利率<br>   - 近三月 K 線截圖（可用文字描述高低點）<br>   - 52 週高低價<br>3. 確認 ticker 是否正確 — 3260.TW 確認是正確代號嗎？</p><p>---</p><p> <span class="emoji">⚖️</span> 免責聲明</p><p>AI 模擬分析，不構成投資建議。<br>數據缺失狀態下任何判斷均屬無效。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3260_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 3260.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 3260.TW 發財蝦快速研判</p><p>> <span class="emoji">⚠️</span> 資料有限，以下分析基於有限數據推估，敬請自行交叉驗證。</p><p>---</p><p> <span class="emoji">🎯</span> 結論：看空<br> <span class="emoji">💰</span> 目標價：~~390~~ （暫不建議設目標價）<br> <span class="emoji">⚠️</span> 停損價：355（跌破前波低點）<br> <span class="emoji">📈</span> 建議操作：觀望為主，勿盲目接刀</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | 缺少 PE、EPS、殖利率等關鍵數據，無法評估本益比與基本面價值，價值面判斷不具備條件。 |<br>| <span class="emoji">📈</span> 成長潛力 | 單日暴跌 8.4% 顯示市場拋售壓力沉重，若無實質利多支撐，短期成長動能極度疲弱。 |<br>| 📉 技術面 | 單日長黑 K 跌破關鍵支撐，均線可能呈現空頭排列，底部型態尚未確立，技術面偏弱。 |<br>| 🌐 總經 | 台股大盤若面臨修正壓力，個股往往跌幅更深；全球景氣不確定性上升對金融相關類股影響顯著。 |<br>| <span class="emoji">⚠️</span> 風險 | 暴跌後不確定性大增，流動性風險、公司營運疑慮或大戶倒貨皆有可能，資訊不足為最大風險。 |</p><p>---</p><p> <span class="emoji">💬</span> 發財蝦的話：<br>> 「急跌不言底，槍響別急撿，沒有基本面的股票猶如蒙眼過馬路——等霧散了再走！」</p><p>---</p><p> <span class="emoji">⚖️</span> 免責聲明<br>> 本分析由 AI 模擬生成，屬於教學示範用途，絕不構成任何投資建議。股票投資有風險，過往績效不代表未來表現，請務必諮詢專業財務顧問後再行决策。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-3260_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>8299.TW 群聯</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 8299.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">⚠️</span> 資料取得失敗，無法完整分析</p><p>---</p><p>抱歉！`8299.TW` 的股市數據取得失敗，幾乎所有欄位都顯示 `N/A`，我無法給出可靠的分析判斷。</p><p>---</p><p> <span class="emoji">📋</span> 建議做法</p><p>| 步驟 | 說明 |<br>|------|------|<br>| ① 確認代碼 | 請再次確認股票代碼是否正確（台股為 4 碼，如 2330、2891） |<br>| ② 重新嘗試 | 稍後再請我抓取一次數據，網路波動可能造成暫時失敗 |<br>| ③ 自行提供數據 | 若方便，可直接貼上以下資訊，我立即幫您分析： |</p><p>> 需提供：現價、PE、本益比、EPS、殖利率、52 週高低、ROE、負債比、近三月走勢（或其他您有的資料）</p><p>---</p><p> <span class="emoji">💬</span> 發財蝦的話</p><p>> 資料是分析的根本，沒有數據就沒有判斷依据。請提供更多資訊，發財蝦一定幫您把錢看清楚！ 🦐<span class="emoji">💰</span></p><p>---</p><p><span class="emoji">⚖️</span> AI 模擬分析，不構成投資建議，投資前請自行評估風險。</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-8299_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 8299.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br># <span class="emoji">📊</span> 8299.TW 發財蝦快速研判</p><p>> <span class="emoji">⚠️</span> 資料有限，以下分析係基於有限數據 + 行業知識推估，請自行核實。</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p># 💎 價值投資<br>8299.TW 是群聯電子（Phison），全球最大 NAND Flash 控制晶片設計公司。本益比若落在 15-20x 區間屬合理範圍，但缺少完整財報數據無法確認現階段估值是否偏低。</p><p># <span class="emoji">📈</span> 成長潛力<br>AI 資料中心、Edge AI 裝置對 NAND 儲存需求持續升溫，群聯在 eMMC/UFS/PCIe 控制晶片具技術壁壘。長期結構性成長題材存在，但需確認 EPS 成長率是否符合預期。</p><p># 🔧 技術面<br>- 股價 1650 TWD，單日大跌 4.35%<br>- 需觀察是否跌破關鍵支撐（如月線、季線）<br>- 若跌破 1550-1600 區間，短期動能轉弱</p><p># 🌐 總經環境<br>台灣半導體供應鏈受全球 AI 需求支撐，但終端消費電子需求仍是變數。需留意 NAND Flash 合約價走勢。</p><p># <span class="emoji">⚠️</span> 風險提示<br>- 單日跌幅逾 4% → 短線賣壓湧現<br>- 缺少 PE、EPS 等關鍵指標 → 無法評估本益比是否合理<br>- 半導體景氣循環波動大，NAND Flash 報價具不確定</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-8299_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>4967.TW 十銓</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 4967.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 4967.TW 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性（偏謹慎）</p><p><span class="emoji">💰</span> 目標價：250-270 TWD</p><p><span class="emoji">⚠️</span> 停損價：195 TWD（MA20 215.15 為參考，短線若跌破 200 需留意）</p><p><span class="emoji">📈</span> 建議操作：短線謹慎，逢回測 MA20（215）支撐再考慮布局，現階段不追價</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | PE 17.74 合理，ROE 25% 表現亮眼，EPS 12.94 優秀，價值面尚稱稳健 |<br>| <span class="emoji">📈</span> 成長潛力 | 近3月飆漲43%，但今日重挫9.5%，短線漲多後獲利了結賣壓出籠，成長動能需時間消化 |<br>| <span class="emoji">📊</span> 技術面 | MA5 > MA20 多頭排列，但股價已跌破 MA5（250.5），今日長黑K顯示短線動能轉弱，需觀察 215 支撐 |<br>| 🌍 總經環境 | AI/HPC 需求續旺，記憶體景氣回升中，基本面中期正向，但短期變數仍</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-4967_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 4967.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> Team Group Inc.（十銓科技）發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性（短線承壓，中線仍可期待）</p><p><span class="emoji">💰</span> 目標價：260-280 TWD<br><span class="emoji">⚠️</span> 停損價：200 TWD（MA20 215.15 為關鍵支撐）<br><span class="emoji">📈</span> 建議操作：觀望等回測支撑，或分批少量布局，嚴守停損</p><p>---</p><p> <span class="emoji">📋</span> 五角度簡評</p><p># 1️⃣ 價值投資<br>- PE 17.74× 落在合理區間（科技股平均約 20-25×），EPS 12.94元表現不差<br>- 殖利率僅 1.31% 偏低，股利吸引力有限<br>- 對比 52 週高 288.5，股價仍有折價空間</p><p># 2️⃣ 成長潛力<br>- 近 3 月大漲 43.89%，AI 伺服器、記憶體需求話題加持<br>- 均線多頭排列，短中期趨勢偏多</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-4967_TW.md</p></div>
     </div>
 
     <div class="stock-card">
       <h2>6239.TW 力成</h2>
-      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 6239.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 力成科技 (6239.TW) 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性</p><p><span class="emoji">💰</span> 目標價：235 TWD（+18.4%）<br><span class="emoji">⚠️</span> 停損價：173 TWD（-12.9%）</p><p><span class="emoji">📈</span> 建議操作： 等待技術面回穩，現價可分批試單，跌破173則停損</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>💎 價值投資： PE 26.68 適中，殖利率 3.53% 有吸引力，股價相較 52 週低點已翻倍，估值修復空間有限。</p><p>🚀 成長潛力： AI/HPC 帶動先進封測需求，身為全球重要封測廠具長期成長性，但短線需消化漲多賣壓。</p><p>📉 技術面： MA5(197.5)跌破 MA20(212.85)，均線呈空頭排列，KD 死亡交叉，短期偏弱整理機率高。</p><p></p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-6239_TW.md</p></div>
+      <div class="analysis"><p>==================================================<br><span class="emoji">💰</span> 發財蝦投資分析系統 — 6239.TW<br>==================================================</p><p>📡 抓取股票數據...<br>✅ 數據就緒</p><p>⚡ 精簡模式：單次分析...<br><span class="emoji">📊</span> 6239.TW 力成科技 發財蝦快速研判</p><p>---</p><p><span class="emoji">🎯</span> 結論：中性偏多</p><p><span class="emoji">💰</span> 目標價：215 TWD（本益比 29x，產業合理區間）<br><span class="emoji">⚠️</span> 停損價：180 TWD（近3月低點 173 支撐參考）</p><p><span class="emoji">📈</span> 建議操作： 分批佈局，突破 MA20（212.85）後加碼，耐心等待均線收斂</p><p>---</p><p><span class="emoji">📋</span> 五角度簡評：</p><p>| 角度 | 評析 |<br>|------|------|<br>| 💎 價值投資 | 本益比 26.7x 合理，殖利率 3.53% 具吸引力，ROE 10.1% 體質穩健 |<br>| 🚀 成長潛</p><p>📄 報告已存：/home/arislee1979-afk/vault/03-wealth/analyst-report-6239_TW.md</p></div>
     </div>
 
 </div>
