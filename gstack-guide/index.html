@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gstack Complete Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0a06;--surface:#171108;--surface2:#1f160a;--surface3:#261c0e;
+  --border:#2a1e0e;--border2:#3a2a14;
+  --amber:#f0a030;--amber-dim:#b87820;--amber-bright:#ffbe60;
+  --gold:#e8c060;--orange:#e06010;
+  --cream:#f4e8d0;--cream-dim:#c0a880;
+  --text:#e0d0b8;--text-dim:#806848;--text-muted:#482e14;
+  --green:#70b050;--red:#c85838;--blue:#6090c0;
+  --r:10px;--rsm:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(13,10,6,.93);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100;display:flex;align-items:stretch;}
+.topbar-logo{display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid var(--border);flex-shrink:0;}
+.logo-mark{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:900;color:var(--amber);letter-spacing:-.02em;}
+.logo-sep{width:1px;height:16px;background:var(--border2);}
+.logo-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.08em;}
+.topbar-nav{display:flex;align-items:stretch;overflow-x:auto;flex:1;scrollbar-width:none;}
+.topbar-nav::-webkit-scrollbar{display:none;}
+.nav-tab{display:flex;align-items:center;gap:7px;padding:0 15px;font-size:12px;font-weight:400;color:var(--text-dim);cursor:pointer;border-right:1px solid var(--border);transition:color .18s,background .18s;white-space:nowrap;position:relative;user-select:none;}
+.nav-tab:hover{color:var(--cream);background:rgba(240,160,48,.04);}
+.nav-tab.active{color:var(--amber);background:rgba(240,160,48,.07);}
+.nav-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),var(--orange));}
+.tab-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:.1em;}
+.nav-tab.active .tab-num{color:var(--amber-dim);}
+.nav-divider{display:flex;align-items:center;padding:0 10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;border-right:1px solid var(--border);background:rgba(0,0,0,.2);white-space:nowrap;flex-shrink:0;}
+
+/* LANG SWITCHER */
+.lang-switch{display:flex;align-items:center;gap:0;padding:0 16px;border-left:1px solid var(--border);flex-shrink:0;}
+.lang-btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:5px 8px;border-radius:4px;cursor:pointer;color:var(--text-muted);border:1px solid transparent;transition:all .18s;user-select:none;}
+.lang-btn.active{color:var(--amber);border-color:rgba(240,160,48,.25);background:rgba(240,160,48,.08);}
+
+/* MAIN */
+.main{padding-top:52px;min-height:100vh;}
+.page{display:none;opacity:0;max-width:820px;margin:0 auto;padding:56px 40px 100px;}
+.page.active{display:block;animation:fadeUp .38s cubic-bezier(.16,1,.3,1) forwards;}
+.page.exit{display:block;animation:fadeDown .22s cubic-bezier(.4,0,1,1) forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeDown{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
+
+/* LANG VISIBILITY */
+[lang-en]{display:none;}
+[lang-zh]{display:block;}
+body.en [lang-en]{display:block;}
+body.en [lang-zh]{display:none;}
+/* inline span lang */
+span[lang-en]{display:none;}
+span[lang-zh]{display:inline;}
+body.en span[lang-en]{display:inline;}
+body.en span[lang-zh]{display:none;}
+
+/* TYPOGRAPHY */
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--amber-dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;}
+.page-title{font-family:'Noto Serif TC',serif;font-size:clamp(26px,4vw,42px);font-weight:900;color:var(--cream);letter-spacing:-.02em;line-height:1.1;margin-bottom:18px;}
+.page-title em{font-style:normal;color:var(--amber);}
+.page-lead{font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.85;max-width:580px;margin-bottom:48px;padding-left:18px;border-left:2px solid var(--border2);}
+h3{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:600;color:var(--cream);margin-bottom:14px;letter-spacing:-.01em;}
+p{color:var(--text);line-height:1.85;margin-bottom:14px;font-size:14.5px;}
+p:last-child{margin-bottom:0;}
+strong{color:var(--amber);font-weight:600;}
+
+/* SECTION */
+.section{margin-bottom:52px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--amber);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* CALLOUT */
+.callout{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:20px 22px;margin:18px 0;position:relative;overflow:hidden;}
+.callout::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),var(--orange));}
+.callout-title{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;}
+.callout p{font-size:13.5px;color:var(--text-dim);margin-bottom:8px;}
+.callout p:last-child{margin-bottom:0;}
+
+/* CLAUDE CODE CONTEXT BOX */
+.cc-box{background:rgba(13,10,6,.8);border:1px solid var(--border2);border-left:3px solid var(--amber);border-radius:0 var(--r) var(--r) 0;padding:14px 18px;margin:14px 0;}
+.cc-box-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.cc-box-label::before{content:'▶';font-size:8px;}
+.cc-box p{font-size:13px;color:var(--text-dim);margin-bottom:6px;line-height:1.65;}
+.cc-box p:last-child{margin-bottom:0;}
+.cc-box code{font-size:11.5px;}
+
+/* CODE */
+code{font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);color:var(--amber);padding:2px 6px;border-radius:4px;border:1px solid var(--border2);}
+pre{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:18px 20px;margin:14px 0;overflow-x:auto;position:relative;}
+pre::before{content:'terminal';position:absolute;top:9px;right:12px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;}
+pre code{background:none;border:none;padding:0;font-size:12.5px;color:var(--gold);line-height:1.9;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:2px;margin:18px 0;}
+.step{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .18s,transform .18s;}
+.step:hover{border-color:var(--border2);transform:translateX(3px);}
+.step-n{width:50px;flex-shrink:0;background:rgba(240,160,48,.07);border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:17px;color:var(--amber);font-weight:500;}
+.step-body{padding:16px 18px;flex:1;}
+.step-tag{font-size:10px;font-weight:600;color:var(--amber-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.step-title{font-weight:600;color:var(--cream);font-size:14.5px;margin-bottom:5px;}
+.step-cmd{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--gold);margin-bottom:7px;}
+.step-desc{font-size:13px;color:var(--text-dim);line-height:1.65;}
+
+/* CMD EXPAND */
+.cmd-expand{border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;margin:8px 0;background:var(--surface);transition:border-color .18s;}
+.cmd-expand:hover{border-color:rgba(240,160,48,.3);}
+.cmd-expand-header{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none;transition:background .15s;}
+.cmd-expand-header:hover{background:rgba(240,160,48,.05);}
+.cmd-expand-name{font-family:'DM Mono',monospace;font-size:13px;color:var(--amber);font-weight:500;flex-shrink:0;}
+.cmd-expand-short{font-size:12.5px;color:var(--text-dim);flex:1;line-height:1.4;}
+.cmd-expand-badges{display:flex;gap:5px;flex-shrink:0;}
+.cmd-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:.04em;}
+.badge-core{background:rgba(240,160,48,.12);color:var(--amber);border:1px solid rgba(240,160,48,.2);}
+.badge-adv{background:rgba(112,176,80,.1);color:var(--green);border:1px solid rgba(112,176,80,.2);}
+.badge-util{background:rgba(72,46,20,.4);color:var(--text-muted);border:1px solid var(--border);}
+.cmd-expand-chevron{font-size:10px;color:var(--text-muted);transition:transform .25s cubic-bezier(.16,1,.3,1);flex-shrink:0;}
+.cmd-expand.open .cmd-expand-chevron{transform:rotate(180deg);}
+.cmd-expand-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.16,1,.3,1),opacity .25s ease;opacity:0;}
+.cmd-expand.open .cmd-expand-body{max-height:1000px;opacity:1;}
+.cmd-expand-inner{border-top:1px solid var(--border);padding:16px 16px 16px 44px;}
+.cmd-detail-row{display:grid;grid-template-columns:90px 1fr;gap:6px 12px;margin-bottom:10px;font-size:13px;}
+.cmd-detail-label{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;padding-top:2px;}
+.cmd-detail-val{color:var(--text-dim);line-height:1.6;}
+.cmd-detail-val strong{color:var(--amber);}
+.cmd-detail-val code{font-size:11px;}
+.cmd-analogy{background:var(--surface2);border-radius:var(--rsm);padding:12px 14px;margin-top:8px;border-left:2px solid var(--amber-dim);}
+.cmd-analogy p{font-size:12.5px;color:var(--text-dim);font-style:italic;margin:0;}
+.cmd-analogy strong{color:var(--gold);font-style:normal;}
+
+/* TRAPS */
+.traps{display:flex;flex-direction:column;gap:7px;margin:18px 0;}
+.trap{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:0 var(--rsm) var(--rsm) 0;padding:15px 17px;}
+.trap-title{font-weight:600;color:var(--cream);font-size:13.5px;margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.trap-title::before{content:'⚠';color:var(--red);font-size:11px;}
+.trap p{font-size:13px;color:var(--text-dim);margin:0;line-height:1.65;}
+.fix{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:11.5px;}
+
+/* ROLES */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0;}
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:border-color .18s;}
+.role-card:hover{border-color:rgba(240,160,48,.25);}
+.role-icon{font-size:20px;margin-bottom:9px;}
+.role-name{font-weight:600;color:var(--cream);font-size:14px;margin-bottom:3px;}
+.role-cmd{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);margin-bottom:8px;}
+.role-desc{font-size:12.5px;color:var(--text-dim);line-height:1.6;}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.info-title{font-size:11.5px;font-weight:600;color:var(--amber);margin-bottom:9px;letter-spacing:.05em;}
+.info-card p{font-size:13px;color:var(--text-dim);margin-bottom:6px;}
+
+/* VERDICT */
+.verdict-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:14px 0;}
+.verdict-box{background:var(--surface);border:1px solid var(--border);padding:16px 18px;border-radius:var(--rsm);}
+.verdict-box.good{border-left:3px solid var(--green);}
+.verdict-box.bad{border-left:3px solid var(--red);}
+.verdict-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;}
+.verdict-box.good .verdict-label{color:var(--green);}
+.verdict-box.bad .verdict-label{color:var(--red);}
+.verdict-box p{font-size:13px;color:var(--text-dim);margin-bottom:6px;line-height:1.6;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:2px;margin:18px 0;}
+.tl-row{display:grid;grid-template-columns:100px 1fr;background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);overflow:hidden;}
+.tl-when{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--amber-dim);padding:14px 16px;border-right:1px solid var(--border);background:rgba(240,160,48,.04);display:flex;align-items:center;}
+.tl-cmds{padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.tl-cmd{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);background:rgba(232,192,96,.06);border:1px solid rgba(232,192,96,.14);padding:5px 10px;border-radius:4px;}
+.tl-arrow{color:var(--text-muted);font-size:11px;padding:4px 2px;display:flex;align-items:center;}
+
+hr{border:none;border-top:1px solid var(--border);margin:36px 0;}
+
+@media(max-width:680px){
+  .page{padding:40px 20px 80px;}
+  .roles,.two-col,.verdict-row{grid-template-columns:1fr;}
+  .tl-row{grid-template-columns:1fr;}
+  .tl-when{border-right:none;border-bottom:1px solid var(--border);}
+  .cmd-expand-short{display:none;}
+  .nav-divider{display:none;}
+  .lang-switch{padding:0 10px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <span class="logo-mark">gstack</span>
+    <span class="logo-sep"></span>
+    <span class="logo-sub" lang-zh>完整教學</span>
+    <span class="logo-sub" lang-en>Complete Guide</span>
+  </div>
+  <nav class="topbar-nav">
+    <div class="nav-divider" lang-zh>入門</div>
+    <div class="nav-divider" lang-en>Start</div>
+    <div class="nav-tab active" data-page="what"><span class="tab-num">01</span><span lang-zh>什麼是 gstack</span><span lang-en>What is gstack</span></div>
+    <div class="nav-tab" data-page="install"><span class="tab-num">02</span><span lang-zh>安裝</span><span lang-en>Install</span></div>
+    <div class="nav-tab" data-page="after-install"><span class="tab-num">03</span><span lang-zh>裝完先做什麼</span><span lang-en>After Install</span></div>
+    <div class="nav-divider" lang-zh>指令</div>
+    <div class="nav-divider" lang-en>Commands</div>
+    <div class="nav-tab" data-page="commands-core"><span class="tab-num">04</span><span lang-zh>核心指令</span><span lang-en>Core Commands</span></div>
+    <div class="nav-tab" data-page="commands-all"><span class="tab-num">05</span><span lang-zh>全部指令</span><span lang-en>All Commands</span></div>
+    <div class="nav-divider" lang-zh>實戰</div>
+    <div class="nav-divider" lang-en>In Practice</div>
+    <div class="nav-tab" data-page="workflow"><span class="tab-num">06</span><span lang-zh>工作流程</span><span lang-en>Workflow</span></div>
+    <div class="nav-tab" data-page="scenarios"><span class="tab-num">07</span><span lang-zh>情境 &amp; 比喻</span><span lang-en>Scenarios</span></div>
+    <div class="nav-tab" data-page="traps"><span class="tab-num">08</span><span lang-zh>踩雷</span><span lang-en>Common Mistakes</span></div>
+    <div class="nav-tab" data-page="habits"><span class="tab-num">09</span><span lang-zh>習慣流程</span><span lang-en>Daily Habits</span></div>
+    <div class="nav-divider" lang-zh>深度</div>
+    <div class="nav-divider" lang-en>Deep Dive</div>
+    <div class="nav-tab" data-page="review-truth"><span class="tab-num">10</span><span lang-zh>/review 真的有用嗎</span><span lang-en>Does /review Work?</span></div>
+    <div class="nav-tab" data-page="real-project"><span class="tab-num">11</span><span lang-zh>模擬開發流程</span><span lang-en>Simulated Project</span></div>
+  </nav>
+  <div class="lang-switch">
+    <div class="lang-btn active" id="btn-zh">ZH</div>
+    <div class="lang-btn" id="btn-en">EN</div>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- ══ 01: WHAT ══ -->
+<div class="page active" id="page-what">
+  <div class="eyebrow" lang-zh>01 · 原理</div>
+  <div class="eyebrow" lang-en>01 · Concept</div>
+  <h1 class="page-title" lang-zh>什麼是 <em>gstack</em>？</h1>
+  <h1 class="page-title" lang-en>What is <em>gstack</em>?</h1>
+  <p class="page-lead" lang-zh>Y Combinator CEO Garry Tan 開源的 Claude Code skill pack。核心概念只有一個：不要讓 AI 用同一個腦袋做所有事。</p>
+  <p class="page-lead" lang-en>An open-source Claude Code skill pack by Y Combinator CEO Garry Tan. One core idea: don't let AI use the same mental mode for everything.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>問題在哪</div>
+    <div class="section-label" lang-en>The Problem</div>
+    <div lang-zh>
+      <h3>沒有 gstack 的 Claude Code</h3>
+      <p>你在 Claude Code 裡打：「幫我 review 這段 code」，它有時檢查安全性，有時檢查可讀性，有時隨便說幾句。每次品質不穩定，因為它不知道現在的角色是什麼。你打「幫我規劃這個功能」，它可能直接開始寫 code，跳過所有產品層面的問題。</p>
+      <div class="callout"><div class="callout-title">核心問題</div><p>Claude Code 被當成萬能泥巴，捏成什麼形狀取決於你的心情。沒有結構，沒有角色，沒有一致性。</p></div>
+    </div>
+    <div lang-en>
+      <h3>Claude Code Without gstack</h3>
+      <p>You type "review my code" in Claude Code. Sometimes it checks security, sometimes readability, sometimes it barely says anything. Quality is inconsistent because it has no defined role. You type "plan this feature" and it starts writing code immediately, skipping all product-level thinking.</p>
+      <div class="callout"><div class="callout-title">The Core Problem</div><p>Claude Code is treated as an all-purpose tool shaped by your mood. No structure, no role, no consistency.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>解法</div>
+    <div class="section-label" lang-en>The Solution</div>
+    <div lang-zh>
+      <h3>gstack 給 Claude Code 明確的角色</h3>
+      <p>你在 Claude Code 裡打 <code>/review</code>，它立刻切換成 Senior Code Reviewer 模式：「我的工作只有一件事，找 production bugs 和安全漏洞。我不管 UI，不管文件，不管效能。」每次同樣的標準，不是今天嚴格明天鬆散。</p>
+    </div>
+    <div lang-en>
+      <h3>gstack Gives Claude Code a Defined Role</h3>
+      <p>You type <code>/review</code> in Claude Code and it instantly switches to Senior Code Reviewer mode: "My only job is finding production bugs and security vulnerabilities. Not UI, not docs, not performance." Same standard every time — not strict today, loose tomorrow.</p>
+    </div>
+    <div class="roles">
+      <div class="role-card">
+        <div class="role-icon">👔</div>
+        <div class="role-name" lang-zh>CEO / Founder</div>
+        <div class="role-name" lang-en>CEO / Founder</div>
+        <div class="role-cmd">/plan-ceo-review</div>
+        <div class="role-desc" lang-zh>在 Claude Code 裡問你在做什麼、為什麼、用戶是誰。找出你真正該做的產品。</div>
+        <div class="role-desc" lang-en>Asks what you're building, why, and who it's for inside Claude Code. Finds what you should actually build.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🏗</div>
+        <div class="role-name">Engineering Manager</div>
+        <div class="role-cmd">/plan-eng-review</div>
+        <div class="role-desc" lang-zh>鎖定架構決策、找技術風險。在 Claude Code 開始寫 code 之前先審查。</div>
+        <div class="role-desc" lang-en>Locks in architecture decisions and finds technical risks before Claude Code starts writing code.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🔍</div>
+        <div class="role-name" lang-zh>Senior Code Reviewer</div>
+        <div class="role-name" lang-en>Senior Code Reviewer</div>
+        <div class="role-cmd">/review</div>
+        <div class="role-desc" lang-zh>在 Claude Code 裡找 bug、安全漏洞、效能問題。不是建議，是找真實的生產問題。</div>
+        <div class="role-desc" lang-en>Finds bugs, security holes, and performance issues in Claude Code. Not suggestions — real production problems.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🧪</div>
+        <div class="role-name">QA Lead</div>
+        <div class="role-cmd">/qa</div>
+        <div class="role-desc" lang-zh>Claude Code 直接開 Playwright 瀏覽器點擊你的網站，真的截圖、點按鈕、找 bug。</div>
+        <div class="role-desc" lang-en>Claude Code opens a real Playwright browser, clicks through your site, takes screenshots, and finds real UI bugs.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🎨</div>
+        <div class="role-name">Designer</div>
+        <div class="role-cmd">/design-review</div>
+        <div class="role-desc" lang-zh>找 spacing、字型、對齊等設計問題，給出 A-F 評分。</div>
+        <div class="role-desc" lang-en>Finds spacing, typography, and alignment issues. Grades your design A–F.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🚢</div>
+        <div class="role-name">Release Engineer</div>
+        <div class="role-cmd">/ship</div>
+        <div class="role-desc" lang-zh>Claude Code 自動 sync main、跑測試、push、開 PR，一個指令搞定。</div>
+        <div class="role-desc" lang-en>Claude Code auto-syncs main, runs tests, pushes, and opens a PR — one command.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>核心哲學</div>
+    <div class="section-label" lang-en>Core Philosophy</div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>Garry Tan 的原話</div>
+      <div class="callout-title" lang-en>Garry Tan's Words</div>
+      <p lang-zh>「Planning 不是 Review。Review 不是 Shipping。把這三件事混在一起，你會得到一個平庸的結果。gstack 給你明確的齒輪切換——你可以告訴 Claude Code『現在我需要哪種大腦』。」</p>
+      <p lang-en>"Planning is not Review. Review is not Shipping. Blur them together and you get mediocre output. gstack gives you explicit gear shifts — you tell Claude Code which brain you need right now."</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>資料收集：你需要知道的事</div>
+    <div class="section-label" lang-en>Data Collection: What You Should Know</div>
+    <div lang-zh>
+      <p>gstack 有一個遙測機制，但<strong>不是偷偷收集</strong>。第一次跑 setup 時，它會明確問你要不要分享匿名使用數據。你可以直接說 no。</p>
+    </div>
+    <div lang-en>
+      <p>gstack includes telemetry — but it's <strong>not silent collection</strong>. The first time you run setup, it explicitly asks if you want to share anonymous usage data. You can simply say no.</p>
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+      <div class="info-card">
+        <div class="info-title" lang-zh>✓ 如果你 opt in，傳送的內容</div>
+        <div class="info-title" lang-en>✓ If you opt in, what's sent</div>
+        <p lang-zh>你用了哪個 skill 名稱</p>
+        <p lang-zh>執行時間長度</p>
+        <p lang-zh>成功或失敗</p>
+        <p lang-zh>gstack 版本號</p>
+        <p lang-zh>作業系統</p>
+        <p lang-en>Which skill name was invoked</p>
+        <p lang-en>Execution duration</p>
+        <p lang-en>Success or failure</p>
+        <p lang-en>gstack version</p>
+        <p lang-en>Operating system</p>
+      </div>
+      <div class="info-card">
+        <div class="info-title" lang-zh>✗ 明確說不會傳送的</div>
+        <div class="info-title" lang-en>✗ Explicitly never sent</div>
+        <p lang-zh>你的 code 內容</p>
+        <p lang-zh>檔案路徑或名稱</p>
+        <p lang-zh>repo / branch 名稱</p>
+        <p lang-zh>你打的 prompt 內容</p>
+        <p lang-zh>任何你自己產生的內容</p>
+        <p lang-en>Your code content</p>
+        <p lang-en>File paths or names</p>
+        <p lang-en>Repo / branch names</p>
+        <p lang-en>Your prompt content</p>
+        <p lang-en>Any content you generate</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <div class="callout-title" lang-zh>隨時可以關掉，本地也有記錄</div>
+      <div class="callout-title" lang-en>Opt out anytime, local analytics always available</div>
+      <p lang-zh>在 Terminal 跑這個立刻關閉遙測（用完整路徑，直接打 gstack-config 可能找不到）：</p>
+      <p lang-en>Run this in Terminal to disable telemetry (use the full path — the command may not be in your PATH):</p>
+      <pre style="margin:10px 0 12px"><code>~/.claude/skills/gstack/bin/gstack-config set telemetry off</code></pre>
+      <p lang-zh>確認狀態：</p>
+      <p lang-en>Verify the setting:</p>
+      <pre style="margin:10px 0 12px"><code>~/.claude/skills/gstack/bin/gstack-config get telemetry</code></pre>
+      <p lang-zh>本地使用紀錄隨時可以看（不需要連到遠端）：</p>
+      <p lang-en>View your local usage history anytime (no remote connection needed):</p>
+      <pre style="margin:10px 0 0"><code>~/.claude/skills/gstack/bin/gstack-analytics</code></pre>
+    </div>
+
+    <div lang-zh>
+      <p style="margin-top:14px;font-size:13.5px;color:var(--text-dim)">資料存在 Supabase。gstack 的 repo 裡有公開 schema（<code>supabase/migrations/001_telemetry.sql</code>），可以自己去驗證實際收集了什麼。</p>
+    </div>
+    <div lang-en>
+      <p style="margin-top:14px;font-size:13.5px;color:var(--text-dim)">Data is stored in Supabase. The schema is public in the repo at <code>supabase/migrations/001_telemetry.sql</code> — you can verify exactly what's collected.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 02: INSTALL ══ -->
+<div class="page" id="page-install">
+  <div class="eyebrow" lang-zh>02 · 安裝</div>
+  <div class="eyebrow" lang-en>02 · Installation</div>
+  <h1 class="page-title" lang-zh><em>安裝</em>教學</h1>
+  <h1 class="page-title" lang-en><em>Installation</em> Guide</h1>
+  <p class="page-lead" lang-zh>兩個層級的概念，先懂再動手。需求：Claude Code + Git + Bun v1.0+。</p>
+  <p class="page-lead" lang-en>Two-level concept — understand first, then install. Requirements: Claude Code + Git + Bun v1.0+.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>概念先懂</div>
+    <div class="section-label" lang-en>The Two Levels</div>
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-title" lang-zh>全域層（只裝一次）</div>
+        <div class="info-title" lang-en>Global Layer (once)</div>
+        <p><code>~/.claude/skills/gstack</code></p>
+        <p lang-zh>gstack 原始碼。整台電腦只存一份，等於買了一套工具放在車上。</p>
+        <p lang-en>gstack source code. One copy per machine — like keeping your tools in the car.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-title" lang-zh>專案層（每個專案一次）</div>
+        <div class="info-title" lang-en>Project Layer (per project)</div>
+        <p><code>your-project/.claude/skills/gstack</code></p>
+        <p lang-zh>從全域 copy 一份進專案。每個要用的專案各做一次，等於把工具帶進工地。</p>
+        <p lang-en>Copied from global into each project. Like carrying your tools into the worksite.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第一步：全域安裝（只做一次）</div>
+    <div class="section-label" lang-en>Step 1: Global Install (once only)</div>
+    <p lang-zh>在 Terminal（不是 Claude Code）貼這個：</p>
+    <p lang-en>In Terminal (not inside Claude Code), run:</p>
+    <pre><code>git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup</code></pre>
+    <p lang-zh>看到 <code>gstack ready (claude).</code> 就成功。它會自動下載 Playwright 瀏覽器（/qa 和 /browse 需要）。</p>
+    <p lang-en>You'll see <code>gstack ready (claude).</code> when done. It auto-downloads a Playwright browser for /qa and /browse.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第二步：加入專案（每個專案一次）</div>
+    <div class="section-label" lang-en>Step 2: Add to a Project (per project)</div>
+    <pre><code>cd ~/your-project && cp -Rf ~/.claude/skills/gstack .claude/skills/gstack && rm -rf .claude/skills/gstack/.git && cd .claude/skills/gstack && ./setup && echo "✅ Done"</code></pre>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-title" lang-zh>cp：複製 gstack 進專案</div><div class="step-title" lang-en>cp: Copy gstack into project</div><div class="step-desc" lang-zh><code>cp -Rf</code> 把全域的 gstack 整個複製到專案的 <code>.claude/skills/</code>。</div><div class="step-desc" lang-en><code>cp -Rf</code> copies the global gstack into your project's <code>.claude/skills/</code>.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-title" lang-zh>rm -rf .git：移除 git 歷史</div><div class="step-title" lang-en>rm -rf .git: Remove git history</div><div class="step-desc" lang-zh>gstack 帶著自己的 git 歷史，會干擾你的 repo，所以移除。</div><div class="step-desc" lang-en>gstack carries its own git history which would conflict with your repo — remove it.</div></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body"><div class="step-title" lang-zh>./setup：在專案裡初始化</div><div class="step-title" lang-en>./setup: Initialize in project</div><div class="step-desc" lang-zh>讓 Claude Code 認識這個專案裡的 gstack skill 設定。</div><div class="step-desc" lang-en>Registers gstack skills so Claude Code recognizes them in this project.</div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第三步：進入 Claude Code 確認</div>
+    <div class="section-label" lang-en>Step 3: Verify in Claude Code</div>
+    <pre><code>cd ~/your-project
+claude</code></pre>
+    <div class="cc-box">
+      <div class="cc-box-label" lang-zh>Claude Code 操作</div>
+      <div class="cc-box-label" lang-en>Claude Code Action</div>
+      <p lang-zh>進入 Claude Code 後，打 <code>/</code> — 看到 <code>/qa</code>、<code>/review</code>、<code>/ship</code> 出現在選單就完成了。</p>
+      <p lang-en>Once inside Claude Code, type <code>/</code> — if you see <code>/qa</code>, <code>/review</code>, <code>/ship</code> in the menu, you're done.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>看不到指令？</div>
+      <div class="callout-title" lang-en>Commands not showing?</div>
+      <p lang-zh>舊 session 不認識新 skill。用 <code>/exit</code> 或 Ctrl+C 退出，重新開 <code>claude</code>。還是沒有：進到 <code>.claude/skills/gstack</code> 重跑 <code>./setup</code>。</p>
+      <p lang-en>Old sessions don't recognize new skills. Exit with <code>/exit</code> or Ctrl+C and reopen <code>claude</code>. Still missing: go to <code>.claude/skills/gstack</code> and rerun <code>./setup</code>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 03: AFTER INSTALL ══ -->
+<div class="page" id="page-after-install">
+  <div class="eyebrow" lang-zh>03 · 裝完之後</div>
+  <div class="eyebrow" lang-en>03 · After Install</div>
+  <h1 class="page-title" lang-zh>裝完<em>先做什麼</em></h1>
+  <h1 class="page-title" lang-en>What to Do <em>First</em></h1>
+  <p class="page-lead" lang-zh>剛裝好 gstack，先做這四件事，讓它在 Claude Code 裡真正好用。</p>
+  <p class="page-lead" lang-en>Just installed gstack. Do these four things first to get the most out of it in Claude Code.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>馬上做</div>
+    <div class="section-label" lang-en>Do These Now</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body">
+        <div class="step-tag" lang-zh>確認</div><div class="step-tag" lang-en>Verify</div>
+        <div class="step-title" lang-zh>在 Claude Code 打 <code>/</code> 瀏覽所有指令</div>
+        <div class="step-title" lang-en>Type <code>/</code> in Claude Code to browse all commands</div>
+        <div class="step-desc" lang-zh>確認 gstack 在運作。不用全部看懂，先知道有哪些角色。</div>
+        <div class="step-desc" lang-en>Confirm gstack is working. You don't need to understand every command yet — just see what's available.</div>
+      </div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body">
+        <div class="step-tag" lang-zh>熱身</div><div class="step-tag" lang-en>Warm Up</div>
+        <div class="step-title" lang-zh>在 Claude Code 跑一次 <code>/plan-ceo-review</code></div>
+        <div class="step-title" lang-en>Run <code>/plan-ceo-review</code> in Claude Code once</div>
+        <div class="cc-box">
+          <div class="cc-box-label" lang-zh>Claude Code 裡怎麼做</div>
+          <div class="cc-box-label" lang-en>How to do it in Claude Code</div>
+          <p lang-zh>進入你的專案 session，直接打 <code>/plan-ceo-review</code>，然後告訴它你現在的專案是什麼。不是為了改什麼，只是感受它的問題框架。讀推理過程比讀輸出更有價值。</p>
+          <p lang-en>Inside your project session, type <code>/plan-ceo-review</code> and describe what you're building. Not to change anything — just feel how it frames questions. Reading the reasoning is more valuable than the conclusions.</p>
+        </div>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body">
+        <div class="step-tag" lang-zh>設定瀏覽器</div><div class="step-tag" lang-en>Browser Setup</div>
+        <div class="step-title" lang-zh>有登入功能：在 Claude Code 跑 <code>/setup-browser-cookies</code></div>
+        <div class="step-title" lang-en>If your app has login: run <code>/setup-browser-cookies</code> in Claude Code</div>
+        <div class="step-desc" lang-zh>讓 /qa 和 /browse 能進到需要登入的頁面。沒設定的話 QA 只能測到登入頁，後面的功能全部測不到。</div>
+        <div class="step-desc" lang-en>Lets /qa and /browse access pages behind login. Without this, QA can only reach the login page — everything else is invisible.</div>
+      </div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-body">
+        <div class="step-tag" lang-zh>建立設計基準</div><div class="step-tag" lang-en>Design Baseline</div>
+        <div class="step-title" lang-zh>有 UI：在 Claude Code 跑 <code>/design-consultation</code></div>
+        <div class="step-title" lang-en>If you have UI: run <code>/design-consultation</code> in Claude Code</div>
+        <div class="step-desc" lang-zh>讓 Claude Code 建立 DESIGN.md 設計基準。之後跑 /design-review 都會對照這個標準。沒有它評分會很模糊。</div>
+        <div class="step-desc" lang-en>Claude Code creates DESIGN.md as your design baseline. All future /design-review runs reference this. Without it, grading has no standard.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>加進 CLAUDE.md</div>
+    <div class="section-label" lang-en>Add to CLAUDE.md</div>
+    <p lang-zh>在你的全域或專案 CLAUDE.md 加上這段，讓每次 Claude Code session 開始時就知道 gstack 的存在：</p>
+    <p lang-en>Add this to your global or project CLAUDE.md so every Claude Code session knows gstack is available:</p>
+    <pre><code>## gstack Skills
+Use /browse skill for all web browsing, not mcp__claude-in-chrome__* tools
+
+Available skills:
+/office-hours, /plan-ceo-review, /plan-eng-review, /plan-design-review,
+/design-consultation, /review, /ship, /browse, /qa, /qa-only,
+/design-review, /setup-browser-cookies, /retro, /document-release,
+/careful, /freeze, /guard, /investigate, /cso, /benchmark</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>最重要的心態</div>
+    <div class="section-label" lang-en>Most Important Mindset</div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>gstack 是角色切換，不是魔法按鈕</div>
+      <div class="callout-title" lang-en>gstack is a role switch, not a magic button</div>
+      <p lang-zh>/plan-ceo-review 給你的是框架和問題，不是答案。在 Claude Code 裡跟它討論，push back 你不同意的地方。</p>
+      <p lang-en>/plan-ceo-review gives you a framework and questions, not answers. Discuss and push back in Claude Code when you disagree.</p>
+      <p lang-zh><strong>你才是決策者，gstack 讓你思考更結構化。</strong></p>
+      <p lang-en><strong>You are the decision-maker. gstack makes your thinking more structured.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 04: CORE COMMANDS ══ -->
+<div class="page" id="page-commands-core">
+  <div class="eyebrow" lang-zh>04 · 核心指令</div>
+  <div class="eyebrow" lang-en>04 · Core Commands</div>
+  <h1 class="page-title" lang-zh>你<em>最常用</em>的 5 個</h1>
+  <h1 class="page-title" lang-en>The <em>5 You'll Use</em> Most</h1>
+  <p class="page-lead" lang-zh>先把這 5 個在 Claude Code 裡練熟，已經覆蓋 80% 的使用場景。點擊展開詳細說明。</p>
+  <p class="page-lead" lang-en>Master these 5 in Claude Code and you'll cover 80% of use cases. Click to expand each one.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>核心 5 個（點擊展開）</div>
+    <div class="section-label" lang-en>The Core 5 (click to expand)</div>
+
+    <div class="cmd-expand" id="cmd-ceo">
+      <div class="cmd-expand-header" onclick="toggleCmd('cmd-ceo')">
+        <span class="cmd-expand-name">/plan-ceo-review</span>
+        <span class="cmd-expand-short" lang-zh>CEO 視角重新審視需求，找出你真正該做的產品</span>
+        <span class="cmd-expand-short" lang-en>CEO perspective — find what you should actually build</span>
+        <div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div>
+        <span class="cmd-expand-chevron">▼</span>
+      </div>
+      <div class="cmd-expand-body"><div class="cmd-expand-inner">
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>角色</span><span class="cmd-detail-label" lang-en>Role</span><span class="cmd-detail-val" lang-zh>CEO / Founder，看過幾千個 startup 的產品顧問</span><span class="cmd-detail-val" lang-en>CEO / Founder — someone who's evaluated thousands of startups</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>做什麼</span><span class="cmd-detail-label" lang-en>Does</span><span class="cmd-detail-val" lang-zh>問你四個問題：這給誰用？解決什麼問題？有沒有更聰明的做法？發布後怎麼知道成功？</span><span class="cmd-detail-val" lang-en>Asks four questions: Who is this for? What problem does it solve? Is there a smarter approach? How will you know it succeeded?</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>何時用</span><span class="cmd-detail-label" lang-en>When</span><span class="cmd-detail-val" lang-zh>在 Claude Code 開始任何新功能<strong>之前</strong>，不確定方向對不對</span><span class="cmd-detail-val" lang-en><strong>Before</strong> starting any new feature in Claude Code when you're unsure about direction</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>注意</span><span class="cmd-detail-label" lang-en>Note</span><span class="cmd-detail-val" lang-zh><strong>讀推理過程，不要照單全收。</strong> 跟 Claude Code 討論，push back 你不同意的地方</span><span class="cmd-detail-val" lang-en><strong>Read the reasoning, don't follow it blindly.</strong> Discuss and push back in Claude Code</span></div>
+        <div class="cc-box">
+          <div class="cc-box-label" lang-zh>Claude Code 使用情境</div>
+          <div class="cc-box-label" lang-en>Claude Code Context</div>
+          <p lang-zh>在 Claude Code 裡，當你即將叫它「幫我實作 XX 功能」之前，先打 <code>/plan-ceo-review</code>。它會問你為什麼要做這個、用戶是誰、有沒有更簡單的做法能達到同樣效果。這 10 分鐘，省掉你叫 Claude Code 做了 2 週後發現方向錯了的時間。</p>
+          <p lang-en>In Claude Code, before you type "implement feature X," run <code>/plan-ceo-review</code> first. It'll ask why you're building this, who the user is, and whether there's a simpler path. 10 minutes here saves 2 weeks of Claude Code building the wrong thing.</p>
+        </div>
+        <div class="cmd-analogy"><p lang-zh>比喻：你去找一個看過幾千個創業公司的顧問聊 30 分鐘。他不告訴你答案，但他的問題讓你發現盲點。<strong>花 10 分鐘，省掉做錯方向的 2 週。</strong></p><p lang-en>Like talking to a startup advisor who's seen thousands of companies. They won't give you answers — but their questions reveal blind spots. <strong>10 minutes saves 2 weeks of building the wrong thing.</strong></p></div>
+      </div></div>
+    </div>
+
+    <div class="cmd-expand" id="cmd-eng">
+      <div class="cmd-expand-header" onclick="toggleCmd('cmd-eng')">
+        <span class="cmd-expand-name">/plan-eng-review</span>
+        <span class="cmd-expand-short" lang-zh>Engineering Manager 審查架構和技術風險</span>
+        <span class="cmd-expand-short" lang-en>Engineering Manager — architecture and technical risk review</span>
+        <div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div>
+        <span class="cmd-expand-chevron">▼</span>
+      </div>
+      <div class="cmd-expand-body"><div class="cmd-expand-inner">
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>角色</span><span class="cmd-detail-label" lang-en>Role</span><span class="cmd-detail-val" lang-zh>Engineering Manager，做過很多次架構設計的工程師</span><span class="cmd-detail-val" lang-en>Engineering Manager with deep architecture experience</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>做什麼</span><span class="cmd-detail-label" lang-en>Does</span><span class="cmd-detail-val" lang-zh>確認 schema 設計、API 結構、技術選型、edge case、concurrent 問題</span><span class="cmd-detail-val" lang-en>Reviews schema design, API structure, tech choices, edge cases, concurrency issues</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>典型發現</span><span class="cmd-detail-label" lang-en>Finds</span><span class="cmd-detail-val" lang-zh>缺少 status 欄位、沒考慮到 race condition、事務邊界設計錯誤</span><span class="cmd-detail-val" lang-en>Missing status fields, unhandled race conditions, wrong transaction boundaries</span></div>
+        <div class="cc-box">
+          <div class="cc-box-label" lang-zh>Claude Code 使用情境</div>
+          <div class="cc-box-label" lang-en>Claude Code Context</div>
+          <p lang-zh>你用 Claude Code 設計完 database schema、API 結構之後，在叫它「開始建表」或「開始寫 API」之前，先打 <code>/plan-eng-review</code>。把你的設計草稿貼給它看，讓它找漏洞。Schema 設計錯了，Claude Code 之後幫你改要 migration，代價很高。</p>
+          <p lang-en>After using Claude Code to sketch out your database schema and API structure, but before telling it to "start building," run <code>/plan-eng-review</code>. Paste your design draft and let it find flaws. Schema errors caught here save painful migrations later.</p>
+        </div>
+        <div class="cmd-analogy"><p lang-zh>比喻：蓋房子之前讓結構工程師看設計圖。<strong>Schema 設計錯了，之後 migration 是噩夢。現在改很便宜。</strong></p><p lang-en>Like having a structural engineer review blueprints before breaking ground. <strong>Schema errors caught now are cheap. Caught in production, they're a nightmare.</strong></p></div>
+      </div></div>
+    </div>
+
+    <div class="cmd-expand" id="cmd-rv">
+      <div class="cmd-expand-header" onclick="toggleCmd('cmd-rv')">
+        <span class="cmd-expand-name">/review</span>
+        <span class="cmd-expand-short" lang-zh>Senior 工程師視角 code review，找 bug 和安全漏洞</span>
+        <span class="cmd-expand-short" lang-en>Senior engineer code review — bugs and security vulnerabilities</span>
+        <div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div>
+        <span class="cmd-expand-chevron">▼</span>
+      </div>
+      <div class="cmd-expand-body"><div class="cmd-expand-inner">
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>角色</span><span class="cmd-detail-label" lang-en>Role</span><span class="cmd-detail-val" lang-zh>偏執狂 Senior Engineer，只想找能讓你網站掛掉或被駭的東西</span><span class="cmd-detail-val" lang-en>Paranoid Senior Engineer whose only goal is finding things that could crash or compromise your site</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>最佳用法</span><span class="cmd-detail-label" lang-en>Best Use</span><span class="cmd-detail-val" lang-zh>告訴它重點：<code>/review，這個 PR 改了付款流程，重點檢查金額計算</code></span><span class="cmd-detail-val" lang-en>Tell it the focus: <code>/review, this PR changes payment flow, focus on amount calculation</code></span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>上限</span><span class="cmd-detail-label" lang-en>Limits</span><span class="cmd-detail-val" lang-zh>看不到執行期行為，有 false positive，把輸出當清單不是判決</span><span class="cmd-detail-val" lang-en>Can't see runtime behavior, has false positives — treat output as a checklist, not a verdict</span></div>
+        <div class="cc-box">
+          <div class="cc-box-label" lang-zh>Claude Code 使用情境</div>
+          <div class="cc-box-label" lang-en>Claude Code Context</div>
+          <p lang-zh>每次你在 Claude Code 裡完成一個功能模組、準備要 push 之前，先打 <code>/review</code>。告訴它這個 PR 改了什麼、重點看哪裡。它會用 Senior Engineer 的視角掃一遍，找你自己在實作過程中沒注意到的安全問題。</p>
+          <p lang-en>Every time you finish a feature module in Claude Code and are about to push, run <code>/review</code> first. Tell it what this PR changes and where to focus. It scans with a Senior Engineer perspective and catches security issues you missed while building.</p>
+        </div>
+        <div class="cmd-analogy"><p lang-zh>比喻：每次 push 前把 code 給一個不知疲倦的 reviewer。他不管縮排，只找 bug。<strong>不帶情緒，不放水，每次同樣嚴格。</strong></p><p lang-en>Like having an tireless reviewer check every push. They don't care about style — only bugs. <strong>No emotions, no favoritism, same strictness every time.</strong></p></div>
+      </div></div>
+    </div>
+
+    <div class="cmd-expand" id="cmd-qa">
+      <div class="cmd-expand-header" onclick="toggleCmd('cmd-qa')">
+        <span class="cmd-expand-name">/qa</span>
+        <span class="cmd-expand-short" lang-zh>開真實 Playwright 瀏覽器點擊網站，找到 bug 直接修</span>
+        <span class="cmd-expand-short" lang-en>Real Playwright browser clicks through your site and fixes bugs</span>
+        <div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div>
+        <span class="cmd-expand-chevron">▼</span>
+      </div>
+      <div class="cmd-expand-body"><div class="cmd-expand-inner">
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>前提</span><span class="cmd-detail-label" lang-en>Requires</span><span class="cmd-detail-val" lang-zh>dev server 在跑（<code>npm run dev</code>）。有登入先跑 <code>/setup-browser-cookies</code></span><span class="cmd-detail-val" lang-en>Dev server running (<code>npm run dev</code>). For login-gated pages run <code>/setup-browser-cookies</code> first</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>vs /qa-only</span><span class="cmd-detail-label" lang-en>vs /qa-only</span><span class="cmd-detail-val" lang-zh>/qa 找到直接修，/qa-only 只出報告讓你自己決定</span><span class="cmd-detail-val" lang-en>/qa finds and fixes, /qa-only reports only — you decide what to fix</span></div>
+        <div class="cc-box">
+          <div class="cc-box-label" lang-zh>Claude Code 使用情境</div>
+          <div class="cc-box-label" lang-en>Claude Code Context</div>
+          <p lang-zh>在 Claude Code 裡跑 /review 之後、準備 /ship 之前，打 <code>/qa</code>。告訴它要測哪個流程、包含哪些邊界情況。Claude Code 會開 Playwright 瀏覽器，真的點你的網站，截圖記錄所有問題，然後直接幫你修。你在旁邊看輸出就好。</p>
+          <p lang-en>In Claude Code, after /review and before /ship, run <code>/qa</code>. Tell it which user flow to test and edge cases to cover. Claude Code opens a real Playwright browser, clicks through your site, screenshots every issue, and fixes them directly. You just watch the output.</p>
+        </div>
+        <div class="cmd-analogy"><p lang-zh>比喻：雇了一個 QA 測試員，他進網站從頭點到尾，截圖記錄所有問題然後<strong>直接幫你修。你在旁邊看就好。</strong></p><p lang-en>Like hiring a QA tester who clicks through your entire app, documents every bug, and <strong>fixes them all while you watch.</strong></p></div>
+      </div></div>
+    </div>
+
+    <div class="cmd-expand" id="cmd-ship">
+      <div class="cmd-expand-header" onclick="toggleCmd('cmd-ship')">
+        <span class="cmd-expand-name">/ship</span>
+        <span class="cmd-expand-short" lang-zh>一鍵 sync main、跑測試、push、開 PR</span>
+        <span class="cmd-expand-short" lang-en>One command: sync main, run tests, push, open PR</span>
+        <div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div>
+        <span class="cmd-expand-chevron">▼</span>
+      </div>
+      <div class="cmd-expand-body"><div class="cmd-expand-inner">
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>標準組合</span><span class="cmd-detail-label" lang-en>Standard</span><span class="cmd-detail-val" lang-zh><code>/review</code> → <code>/qa</code> → <code>/ship</code> — 每次 push 的標配，不能跳</span><span class="cmd-detail-val" lang-en><code>/review</code> → <code>/qa</code> → <code>/ship</code> — standard SOP for every push, never skip</span></div>
+        <div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>之後</span><span class="cmd-detail-label" lang-en>After</span><span class="cmd-detail-val" lang-zh>跑 <code>/land-and-deploy</code> merge PR 並部署，重要功能先 <code>/canary</code></span><span class="cmd-detail-val" lang-en>Run <code>/land-and-deploy</code> to merge PR and deploy, use <code>/canary</code> for high-risk features</span></div>
+        <div class="cc-box">
+          <div class="cc-box-label" lang-zh>Claude Code 使用情境</div>
+          <div class="cc-box-label" lang-en>Claude Code Context</div>
+          <p lang-zh>/review 和 /qa 都跑完、問題都修好之後，在 Claude Code 打 <code>/ship</code>。它會自動完成整個 git 流程：pull origin main、resolve conflicts、run tests、push、open PR。你不需要切出去開 terminal 手動跑 git 指令。</p>
+          <p lang-en>After /review and /qa are both done and issues are fixed, type <code>/ship</code> in Claude Code. It handles the entire git workflow: pull origin main, resolve conflicts, run tests, push, open PR. No need to leave Claude Code and run git commands manually.</p>
+        </div>
+        <div class="cmd-analogy"><p lang-zh>比喻：以前你要手動跑一堆 git 指令，現在打 <code>/ship</code> 全部搞定。<strong>不是偷懶，是把人腦從重複流程中解放出來。</strong></p><p lang-en>Like automating the git dance you do before every PR. <strong>Not lazy — freeing your brain from repetitive process.</strong></p></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 05: ALL COMMANDS ══ -->
+<div class="page" id="page-commands-all">
+  <div class="eyebrow" lang-zh>05 · 全部指令</div>
+  <div class="eyebrow" lang-en>05 · All Commands</div>
+  <h1 class="page-title" lang-zh>全部 <em>26</em> 個指令</h1>
+  <h1 class="page-title" lang-en>All <em>26</em> Commands</h1>
+  <p class="page-lead" lang-zh>在 Claude Code 裡打 <code>/</code> 可以看到所有指令。點擊展開詳細說明。</p>
+  <p class="page-lead" lang-en>Type <code>/</code> in Claude Code to see all commands. Click to expand each one.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>產品 & 規劃</div>
+    <div class="section-label" lang-en>Product & Planning</div>
+    <div class="cmd-expand" id="a1"><div class="cmd-expand-header" onclick="toggleCmd('a1')"><span class="cmd-expand-name">/plan-ceo-review</span><span class="cmd-expand-short" lang-zh>CEO 視角審視，找出真正該做的產品</span><span class="cmd-expand-short" lang-en>CEO perspective, find what you should actually build</span><div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 開始實作新功能之前跑。把你的想法告訴它，讓它問你正確的問題。</span><span class="cmd-detail-val" lang-en>Run in Claude Code before starting any new feature. Tell it your idea and let it ask the right questions.</span></div></div></div></div>
+    <div class="cmd-expand" id="a2"><div class="cmd-expand-header" onclick="toggleCmd('a2')"><span class="cmd-expand-name">/plan-eng-review</span><span class="cmd-expand-short" lang-zh>Engineering Manager 審查架構決策</span><span class="cmd-expand-short" lang-en>Engineering Manager architecture review</span><div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 開始建表或寫 API 之前跑。把 schema 草稿貼給它看。</span><span class="cmd-detail-val" lang-en>Run in Claude Code before building tables or writing APIs. Paste your schema draft for review.</span></div></div></div></div>
+    <div class="cmd-expand" id="a3"><div class="cmd-expand-header" onclick="toggleCmd('a3')"><span class="cmd-expand-name">/plan-design-review</span><span class="cmd-expand-short" lang-zh>設計師視角審查 UI 規劃</span><span class="cmd-expand-short" lang-en>Designer perspective on your UI plan</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 開始刻 UI 之前，先確定設計方向對不對。</span><span class="cmd-detail-val" lang-en>Run in Claude Code before building UI to validate your design direction first.</span></div></div></div></div>
+    <div class="cmd-expand" id="a4"><div class="cmd-expand-header" onclick="toggleCmd('a4')"><span class="cmd-expand-name">/design-consultation</span><span class="cmd-expand-short" lang-zh>建立完整設計系統，產出 DESIGN.md</span><span class="cmd-expand-short" lang-en>Build a design system, outputs DESIGN.md</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，在專案開始的時候跑一次。告訴它品牌調性，它產出色彩、字型、間距系統，存成 DESIGN.md。</span><span class="cmd-detail-val" lang-en>Run once in Claude Code at project start. Tell it your brand tone; it outputs color, typography, and spacing system saved as DESIGN.md.</span></div></div></div></div>
+    <div class="cmd-expand" id="a5"><div class="cmd-expand-header" onclick="toggleCmd('a5')"><span class="cmd-expand-name">/autoplan</span><span class="cmd-expand-short" lang-zh>自動分析 codebase，規劃下一步</span><span class="cmd-expand-short" lang-en>Auto-analyze codebase and plan next steps</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>不知道 Claude Code session 從哪裡繼續時，跑這個讓它分析現況再規劃。</span><span class="cmd-detail-val" lang-en>When you don't know where to resume in a Claude Code session, run this to analyze current state and plan next steps.</span></div></div></div></div>
+    <div class="cmd-expand" id="a6"><div class="cmd-expand-header" onclick="toggleCmd('a6')"><span class="cmd-expand-name">/office-hours</span><span class="cmd-expand-short" lang-zh>顧問模式，問技術和產品問題不打斷開發</span><span class="cmd-expand-short" lang-en>Advisory mode — ask questions without interrupting development</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 開發途中有問題想問，但不想中斷主線任務時。它回答完你繼續開發。</span><span class="cmd-detail-val" lang-en>When you have a question mid-development in Claude Code but don't want to derail the main task. It answers and you keep building.</span></div></div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>開發中保護</div>
+    <div class="section-label" lang-en>Development Guards</div>
+    <div class="cmd-expand" id="b1"><div class="cmd-expand-header" onclick="toggleCmd('b1')"><span class="cmd-expand-name">/careful</span><span class="cmd-expand-short" lang-zh>謹慎模式，Claude Code 每步先說明再動手</span><span class="cmd-expand-short" lang-en>Careful mode — Claude Code explains before every action</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 開始改動付款邏輯、認證系統等高風險 code 之前，先打這個。它會在每個動作前告訴你它要做什麼，讓你確認。</span><span class="cmd-detail-val" lang-en>Before Claude Code starts modifying high-risk code like payment logic or auth systems. It tells you what it's about to do before every action.</span></div><div class="cmd-analogy"><p lang-zh>比喻：外科手術和剪頭髮的差別。<strong>改錯代價很高的地方，讓 Claude Code 拿手術刀，不是剪刀。</strong></p><p lang-en>The difference between surgery and a haircut. <strong>For high-stakes changes, make Claude Code use a scalpel, not scissors.</strong></p></div></div></div></div>
+    <div class="cmd-expand" id="b2"><div class="cmd-expand-header" onclick="toggleCmd('b2')"><span class="cmd-expand-name">/freeze</span><span class="cmd-expand-short" lang-zh>凍結 code，防止 Claude Code 在審查時亂動</span><span class="cmd-expand-short" lang-en>Freeze code — prevents Claude Code from editing during review</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 跑 /review 或 /design-review 時，不想讓它在審查過程中動到現有 code，先跑這個。</span><span class="cmd-detail-val" lang-en>Run before /review or /design-review in Claude Code if you don't want it to touch existing code during the review process.</span></div></div></div></div>
+    <div class="cmd-expand" id="b3"><div class="cmd-expand-header" onclick="toggleCmd('b3')"><span class="cmd-expand-name">/guard</span><span class="cmd-expand-short" lang-zh>保護特定檔案不被 Claude Code 修改</span><span class="cmd-expand-short" lang-en>Protect specific files from Claude Code edits</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>指定 schema 檔、config 檔等不想讓 Claude Code 碰的關鍵檔案。</span><span class="cmd-detail-val" lang-en>Specify schema files, config files, or any critical files you don't want Claude Code to touch.</span></div></div></div></div>
+    <div class="cmd-expand" id="b4"><div class="cmd-expand-header" onclick="toggleCmd('b4')"><span class="cmd-expand-name">/unfreeze</span><span class="cmd-expand-short" lang-zh>解除凍結，恢復 Claude Code 正常編輯</span><span class="cmd-expand-short" lang-en>Unfreeze — restore Claude Code's edit access</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>跑完 /freeze 保護的審查後，讓 Claude Code 恢復正常編輯模式。</span><span class="cmd-detail-val" lang-en>After a /freeze-protected review, restore Claude Code to normal editing mode.</span></div></div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>Review & QA</div>
+    <div class="section-label" lang-en>Review & QA</div>
+    <div class="cmd-expand" id="c1"><div class="cmd-expand-header" onclick="toggleCmd('c1')"><span class="cmd-expand-name">/review</span><span class="cmd-expand-short" lang-zh>Senior 工程師 code review</span><span class="cmd-expand-short" lang-en>Senior engineer code review</span><div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>最佳實踐</span><span class="cmd-detail-label" lang-en>Best Practice</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡說清楚：「/review，這個 PR 改了付款邏輯，重點看 race condition」</span><span class="cmd-detail-val" lang-en>In Claude Code, be specific: "/review, this PR changes payment logic, focus on race conditions"</span></div></div></div></div>
+    <div class="cmd-expand" id="c2"><div class="cmd-expand-header" onclick="toggleCmd('c2')"><span class="cmd-expand-name">/qa</span><span class="cmd-expand-short" lang-zh>真實瀏覽器點擊測試，找到直接修</span><span class="cmd-expand-short" lang-en>Real browser click-through testing, auto-fixes bugs</span><div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>前提</span><span class="cmd-detail-label" lang-en>Requires</span><span class="cmd-detail-val" lang-zh>dev server 要在跑。在 Claude Code 跑之前先確認 <code>npm run dev</code> 成功了。</span><span class="cmd-detail-val" lang-en>Dev server must be running. Confirm <code>npm run dev</code> succeeds before running in Claude Code.</span></div></div></div></div>
+    <div class="cmd-expand" id="c3"><div class="cmd-expand-header" onclick="toggleCmd('c3')"><span class="cmd-expand-name">/qa-only</span><span class="cmd-expand-short" lang-zh>只出 QA 報告，不修 code</span><span class="cmd-expand-short" lang-en>QA report only — you decide what to fix</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>vs /qa</span><span class="cmd-detail-label" lang-en>vs /qa</span><span class="cmd-detail-val" lang-zh>/qa 找到直接修，/qa-only 只回報讓你在 Claude Code 裡自己決定怎麼改。</span><span class="cmd-detail-val" lang-en>/qa finds and fixes; /qa-only reports so you decide in Claude Code how to address each issue.</span></div></div></div></div>
+    <div class="cmd-expand" id="c4"><div class="cmd-expand-header" onclick="toggleCmd('c4')"><span class="cmd-expand-name">/design-review</span><span class="cmd-expand-short" lang-zh>視覺 QA，A-F 評分</span><span class="cmd-expand-short" lang-en>Visual QA — A to F grade</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，讓它開瀏覽器截圖你的 UI，對照 DESIGN.md 找設計問題，給出 A-F 評分。</span><span class="cmd-detail-val" lang-en>In Claude Code, it opens a browser, screenshots your UI, checks against DESIGN.md, and grades design issues A–F.</span></div></div></div></div>
+    <div class="cmd-expand" id="c5"><div class="cmd-expand-header" onclick="toggleCmd('c5')"><span class="cmd-expand-name">/cso</span><span class="cmd-expand-short" lang-zh>Chief Security Officer，OWASP + STRIDE 安全審查</span><span class="cmd-expand-short" lang-en>Chief Security Officer — OWASP + STRIDE audit</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>金流、用戶資料、API 模組完成後，在 Claude Code 裡跑。比 /review 的安全標準更嚴格。每個月定期跑一次。</span><span class="cmd-detail-val" lang-en>After finishing payment, user data, or API modules in Claude Code. More rigorous security standard than /review. Run monthly.</span></div></div></div></div>
+    <div class="cmd-expand" id="c6"><div class="cmd-expand-header" onclick="toggleCmd('c6')"><span class="cmd-expand-name">/benchmark</span><span class="cmd-expand-short" lang-zh>效能測試，找出瓶頸</span><span class="cmd-expand-short" lang-en>Performance test — find bottlenecks</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，上線前或感覺系統變慢時跑。找 N+1 query、缺少 index、不必要的資料載入。</span><span class="cmd-detail-val" lang-en>In Claude Code before launch or when the system feels slow. Finds N+1 queries, missing indexes, unnecessary data loading.</span></div></div></div></div>
+    <div class="cmd-expand" id="c7"><div class="cmd-expand-header" onclick="toggleCmd('c7')"><span class="cmd-expand-name">/investigate</span><span class="cmd-expand-short" lang-zh>深度調查 bug 根因</span><span class="cmd-expand-short" lang-en>Deep bug root cause investigation</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡有個奇怪的 bug 一直找不到根因時，跑這個。它不急著修，先追到問題真正的來源。</span><span class="cmd-detail-val" lang-en>When Claude Code keeps hitting a weird bug with no clear cause, run this. It doesn't rush to fix — it traces the real root first.</span></div></div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>瀏覽器自動化</div>
+    <div class="section-label" lang-en>Browser Automation</div>
+    <div class="cmd-expand" id="d1"><div class="cmd-expand-header" onclick="toggleCmd('d1')"><span class="cmd-expand-name">/browse</span><span class="cmd-expand-short" lang-zh>Claude Code 控制真實瀏覽器，截圖、點擊、驗證</span><span class="cmd-expand-short" lang-en>Claude Code controls a real browser — screenshots, clicks, verify</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>想確認網站在瀏覽器的實際狀況，不需要離開 Claude Code session。</span><span class="cmd-detail-val" lang-en>When you want to verify how your site looks in a real browser without leaving your Claude Code session.</span></div></div></div></div>
+    <div class="cmd-expand" id="d2"><div class="cmd-expand-header" onclick="toggleCmd('d2')"><span class="cmd-expand-name">/setup-browser-cookies</span><span class="cmd-expand-short" lang-zh>讓 Claude Code 的瀏覽器有登入狀態</span><span class="cmd-expand-short" lang-en>Give Claude Code's browser a logged-in session</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>為什麼</span><span class="cmd-detail-label" lang-en>Why</span><span class="cmd-detail-val" lang-zh>沒設定就跑 /qa，Claude Code 的瀏覽器只能測到登入頁，後面全部測不到。必須先跑這個。</span><span class="cmd-detail-val" lang-en>Without this, Claude Code's browser can only reach the login page. Everything behind it is invisible to /qa and /browse.</span></div></div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>發布 & 部署</div>
+    <div class="section-label" lang-en>Ship & Deploy</div>
+    <div class="cmd-expand" id="e1"><div class="cmd-expand-header" onclick="toggleCmd('e1')"><span class="cmd-expand-name">/ship</span><span class="cmd-expand-short" lang-zh>一鍵 sync main、跑測試、push、開 PR</span><span class="cmd-expand-short" lang-en>One command: sync, test, push, PR</span><div class="cmd-expand-badges"><span class="cmd-badge badge-core" lang-zh>核心</span><span class="cmd-badge badge-core" lang-en>Core</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>/review 和 /qa 都跑完之後，在 Claude Code 打 /ship。它自動完成所有 git 流程。</span><span class="cmd-detail-val" lang-en>After /review and /qa in Claude Code, type /ship. It handles the entire git flow automatically.</span></div></div></div></div>
+    <div class="cmd-expand" id="e2"><div class="cmd-expand-header" onclick="toggleCmd('e2')"><span class="cmd-expand-name">/land-and-deploy</span><span class="cmd-expand-short" lang-zh>merge PR 並部署</span><span class="cmd-expand-short" lang-en>Merge PR and deploy</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，/ship 開完 PR 之後跑這個 merge 並部署。</span><span class="cmd-detail-val" lang-en>In Claude Code, run after /ship has opened the PR to merge and deploy.</span></div></div></div></div>
+    <div class="cmd-expand" id="e3"><div class="cmd-expand-header" onclick="toggleCmd('e3')"><span class="cmd-expand-name">/canary</span><span class="cmd-expand-short" lang-zh>先小流量測試再全量</span><span class="cmd-expand-short" lang-en>Small traffic test before full rollout</span><div class="cmd-expand-badges"><span class="cmd-badge badge-adv" lang-zh>進階</span><span class="cmd-badge badge-adv" lang-en>Advanced</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>重要功能在 Claude Code 完成後，先用 /canary 讓 5-10% 流量測試，確認沒問題再全量。</span><span class="cmd-detail-val" lang-en>After completing a critical feature in Claude Code, use /canary to route 5–10% of traffic first before full rollout.</span></div></div></div></div>
+    <div class="cmd-expand" id="e4"><div class="cmd-expand-header" onclick="toggleCmd('e4')"><span class="cmd-expand-name">/setup-deploy</span><span class="cmd-expand-short" lang-zh>設定部署環境</span><span class="cmd-expand-short" lang-en>Configure deployment environment</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，第一次部署新專案之前跑。</span><span class="cmd-detail-val" lang-en>In Claude Code, run before deploying a new project for the first time.</span></div></div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>文件 & 事後</div>
+    <div class="section-label" lang-en>Docs & Retrospective</div>
+    <div class="cmd-expand" id="f1"><div class="cmd-expand-header" onclick="toggleCmd('f1')"><span class="cmd-expand-name">/retro</span><span class="cmd-expand-short" lang-zh>Sprint retrospective，記錄學到的東西</span><span class="cmd-expand-short" lang-en>Sprint retrospective — document what you learned</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>每次在 Claude Code 完成一個版本發布後跑。三個月後你會感謝自己做了記錄。</span><span class="cmd-detail-val" lang-en>Run in Claude Code after every release. Three months from now you'll be glad you did.</span></div></div></div></div>
+    <div class="cmd-expand" id="f2"><div class="cmd-expand-header" onclick="toggleCmd('f2')"><span class="cmd-expand-name">/document-release</span><span class="cmd-expand-short" lang-zh>自動產出 release notes</span><span class="cmd-expand-short" lang-en>Auto-generate release notes</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，/ship 之後跑，讓它整理這次版本改了什麼。</span><span class="cmd-detail-val" lang-en>In Claude Code, run after /ship to document what changed in this release.</span></div></div></div></div>
+    <div class="cmd-expand" id="f3"><div class="cmd-expand-header" onclick="toggleCmd('f3')"><span class="cmd-expand-name">/codex</span><span class="cmd-expand-short" lang-zh>產出 codebase 說明文件</span><span class="cmd-expand-short" lang-en>Generate codebase documentation</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>用法</span><span class="cmd-detail-label" lang-en>Use</span><span class="cmd-detail-val" lang-zh>在 Claude Code 裡，讓它分析你的整個 codebase 並產出說明文件，讓未來的自己或新成員快速看懂。</span><span class="cmd-detail-val" lang-en>In Claude Code, let it analyze your entire codebase and produce documentation so future-you or new team members can get up to speed fast.</span></div></div></div></div>
+    <div class="cmd-expand" id="f4"><div class="cmd-expand-header" onclick="toggleCmd('f4')"><span class="cmd-expand-name">/gstack-upgrade</span><span class="cmd-expand-short" lang-zh>更新 gstack 到最新版本</span><span class="cmd-expand-short" lang-en>Update gstack to latest version</span><div class="cmd-expand-badges"><span class="cmd-badge badge-util" lang-zh>工具</span><span class="cmd-badge badge-util" lang-en>Util</span></div><span class="cmd-expand-chevron">▼</span></div><div class="cmd-expand-body"><div class="cmd-expand-inner"><div class="cmd-detail-row"><span class="cmd-detail-label" lang-zh>注意</span><span class="cmd-detail-label" lang-en>Note</span><span class="cmd-detail-val" lang-zh>更新後各專案的 copy 不會自動更新。要對每個專案重新跑安裝的第二步。</span><span class="cmd-detail-val" lang-en>After updating, each project's copy doesn't auto-update. Re-run the Step 2 install command for each project.</span></div></div></div></div>
+  </div>
+</div>
+
+<!-- ══ 06: WORKFLOW ══ -->
+<div class="page" id="page-workflow">
+  <div class="eyebrow" lang-zh>06 · 工作流程</div>
+  <div class="eyebrow" lang-en>06 · Workflow</div>
+  <h1 class="page-title" lang-zh>Claude Code 裡的<em>標準流程</em></h1>
+  <h1 class="page-title" lang-en><em>Standard Workflow</em> in Claude Code</h1>
+  <p class="page-lead" lang-zh>gstack 照著軟體開發生命週期設計。在 Claude Code 每個開發階段，切換到對應的角色指令。</p>
+  <p class="page-lead" lang-en>gstack mirrors the software development lifecycle. In Claude Code, switch to the right role command at each stage.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>完整 8 步驟</div>
+    <div class="section-label" lang-en>The Full 8 Steps</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body">
+        <div class="step-tag" lang-zh>叫 Claude Code 實作之前</div><div class="step-tag" lang-en>Before telling Claude Code to build</div>
+        <div class="step-title" lang-zh>先在 Claude Code 跑 /plan-ceo-review</div>
+        <div class="step-title" lang-en>Run /plan-ceo-review in Claude Code first</div>
+        <div class="step-cmd">/plan-ceo-review</div>
+        <div class="step-desc" lang-zh>你即將叫 Claude Code 做一個功能之前，先切換到 CEO 模式問自己這個功能值不值得做。它的問題會讓你發現你沒想到的盲點，省掉做錯方向的時間。</div>
+        <div class="step-desc" lang-en>Before telling Claude Code to build a feature, switch to CEO mode and question whether it's worth building at all. Its questions reveal blind spots that save you from building in the wrong direction.</div>
+      </div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body">
+        <div class="step-tag" lang-zh>叫 Claude Code 建表之前</div><div class="step-tag" lang-en>Before telling Claude Code to create tables</div>
+        <div class="step-title" lang-zh>先在 Claude Code 跑 /plan-eng-review</div>
+        <div class="step-title" lang-en>Run /plan-eng-review in Claude Code first</div>
+        <div class="step-cmd">/plan-eng-review</div>
+        <div class="step-desc" lang-zh>把你設計的 schema 和 API 結構告訴它，讓它審查完之後再叫 Claude Code 開始建。Schema 改架構的代價比改 code 高很多。</div>
+        <div class="step-desc" lang-en>Tell it your schema and API structure, let it review, then tell Claude Code to start building. Changing schemas costs far more than changing code.</div>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body">
+        <div class="step-tag" lang-zh>叫 Claude Code 刻 UI 之前</div><div class="step-tag" lang-en>Before telling Claude Code to build UI</div>
+        <div class="step-title" lang-zh>有 UI 先跑 /design-consultation</div>
+        <div class="step-title" lang-en>Run /design-consultation first if you have UI</div>
+        <div class="step-cmd">/design-consultation → DESIGN.md</div>
+        <div class="step-desc" lang-zh>告訴它你的品牌調性，讓它建立設計系統基準存成 DESIGN.md。之後叫 Claude Code 刻 UI 時，它有設計標準可以參考。沒有這個基準，每個元件的顏色和間距都是隨機的。</div>
+        <div class="step-desc" lang-en>Tell it your brand tone and let it build a design system baseline saved as DESIGN.md. When Claude Code builds UI later, it has design standards to follow. Without this, colors and spacing are arbitrary.</div>
+      </div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-body">
+        <div class="step-tag" lang-zh>Claude Code 開發中</div><div class="step-tag" lang-en>While Claude Code is building</div>
+        <div class="step-title" lang-zh>高風險改動用 /careful，要暫停審查用 /freeze</div>
+        <div class="step-title" lang-en>Use /careful for high-risk changes, /freeze to pause safely</div>
+        <div class="step-cmd">/careful · /freeze · /investigate</div>
+        <div class="step-desc" lang-zh>Claude Code 要改動付款邏輯、認證系統等高風險 code 時，先打 /careful 讓它每步確認。要中途暫停讓人工審查時，用 /freeze 保護現有 code 不被動到。</div>
+        <div class="step-desc" lang-en>When Claude Code is about to modify high-risk code like payments or auth, run /careful so it confirms each step. To pause for human review mid-session, use /freeze to protect existing code.</div>
+      </div></div>
+      <div class="step"><div class="step-n">5</div><div class="step-body">
+        <div class="step-tag" lang-zh>Claude Code 完成功能模組後</div><div class="step-tag" lang-en>After Claude Code finishes a feature module</div>
+        <div class="step-title" lang-zh>跑 /review，告訴它這個模組的重點</div>
+        <div class="step-title" lang-en>Run /review and tell it where to focus</div>
+        <div class="step-cmd">/review</div>
+        <div class="step-desc" lang-zh>不要只打 /review，要說清楚：「這個 PR 改了付款邏輯，重點看金額計算和 webhook 驗證」。Claude Code 在實作過程中很容易漏掉安全問題，這一步是固定的安全網。</div>
+        <div class="step-desc" lang-en>Don't just type /review — be specific: "This PR changes payment logic, focus on amount calculation and webhook verification." Claude Code easily misses security issues during implementation; this step is the safety net.</div>
+      </div></div>
+      <div class="step"><div class="step-n">6</div><div class="step-body">
+        <div class="step-tag" lang-zh>push 之前</div><div class="step-tag" lang-en>Before pushing</div>
+        <div class="step-title" lang-zh>跑 /qa，讓 Claude Code 用真實瀏覽器測試</div>
+        <div class="step-title" lang-en>Run /qa and let Claude Code test with a real browser</div>
+        <div class="step-cmd">/setup-browser-cookies → /qa</div>
+        <div class="step-desc" lang-zh>有登入先設定 cookies，然後告訴它要測哪個流程、包含哪些邊界情況。Claude Code 會開 Playwright 瀏覽器真的點一遍，找到 bug 直接修。</div>
+        <div class="step-desc" lang-en>Set cookies first if login-gated, then tell it which flow to test including edge cases. Claude Code opens a real Playwright browser, clicks through everything, and fixes what it finds.</div>
+      </div></div>
+      <div class="step"><div class="step-n">7</div><div class="step-body">
+        <div class="step-tag" lang-zh>發布</div><div class="step-tag" lang-en>Ship</div>
+        <div class="step-title" lang-zh>在 Claude Code 打 /ship，一鍵發布</div>
+        <div class="step-title" lang-en>Type /ship in Claude Code — one-command release</div>
+        <div class="step-cmd">/ship → /land-and-deploy（重要功能先 /canary）</div>
+        <div class="step-desc" lang-zh>/review 和 /qa 都過了，在 Claude Code 打 /ship，它自動完成所有 git 流程並開 PR。重要功能先 /canary 小流量測試，確認沒問題再 /land-and-deploy 全量。</div>
+        <div class="step-desc" lang-en>After /review and /qa pass, type /ship in Claude Code. It auto-completes the full git flow and opens a PR. For critical features, use /canary for partial rollout before /land-and-deploy goes full.</div>
+      </div></div>
+      <div class="step"><div class="step-n">8</div><div class="step-body">
+        <div class="step-tag" lang-zh>發布之後</div><div class="step-tag" lang-en>After shipping</div>
+        <div class="step-title" lang-zh>在 Claude Code 跑 /document-release 和 /retro</div>
+        <div class="step-title" lang-en>Run /document-release and /retro in Claude Code</div>
+        <div class="step-cmd">/document-release → /retro</div>
+        <div class="step-desc" lang-zh>讓 Claude Code 產出 release notes，然後做 retrospective。記錄這次哪裡花最多時間、哪個 gstack 指令最有用、下次怎麼改進。</div>
+        <div class="step-desc" lang-en>Let Claude Code generate release notes, then run a retrospective. Document where time was spent, which gstack command was most useful, and how to improve next time.</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 07: SCENARIOS ══ -->
+<div class="page" id="page-scenarios">
+  <div class="eyebrow" lang-zh>07 · 使用情境</div>
+  <div class="eyebrow" lang-en>07 · Scenarios</div>
+  <h1 class="page-title" lang-zh>Claude Code 情境 <em>&amp;</em> 比喻</h1>
+  <h1 class="page-title" lang-en>Claude Code <em>Scenarios</em> & Analogies</h1>
+  <p class="page-lead" lang-zh>你在 Claude Code 裡遇到的情境，對應的 gstack 指令，以及為什麼這樣用。</p>
+  <p class="page-lead" lang-en>Situations you'll hit in Claude Code, the right gstack command, and why it works.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>點擊展開詳細說明</div>
+    <div class="section-label" lang-en>Click to expand</div>
+
+    <div class="cmd-expand" id="s1"><div class="cmd-expand-header" onclick="toggleCmd('s1')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>即將叫 Claude Code 實作新功能</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>About to tell Claude Code to build something</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-core">/plan-ceo-review</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>你在 Claude Code session 裡，準備說「幫我實作 OO 功能」。在打這句話之前，先打 /plan-ceo-review，告訴它你想做什麼，讓它問你一輪問題。這 10 分鐘，省掉你叫 Claude Code 做了 2 週後發現方向錯了的時間。</p><p lang-en>You're in a Claude Code session, about to type "implement X feature." Before you do, run /plan-ceo-review, describe what you want, and let it question you. This 10-minute conversation saves 2 weeks of Claude Code building the wrong thing.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：找一個看過幾千個 startup 的顧問聊 30 分鐘。他不告訴你答案，但他的問題讓你發現盲點。<strong>花 10 分鐘，省掉做錯方向的 2 週。</strong></p><p lang-en>Like 30 minutes with a startup advisor who's seen thousands of companies. They won't give answers — but their questions reveal blind spots. <strong>10 minutes saves 2 weeks of wrong-direction work.</strong></p></div>
+    </div></div></div>
+
+    <div class="cmd-expand" id="s2"><div class="cmd-expand-header" onclick="toggleCmd('s2')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>Claude Code 要開始建 schema</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>Claude Code is about to build the schema</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-core">/plan-eng-review</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>你已經和 Claude Code 討論出 schema 草稿，準備叫它「開始建表」。先打 /plan-eng-review，把草稿貼給它看，讓它從 Engineering Manager 的角度找漏洞。等它審查完再叫 Claude Code 建。</p><p lang-en>You've worked out a schema draft with Claude Code and are about to say "start building the tables." Run /plan-eng-review first, paste the draft, and let it find holes from an Engineering Manager perspective. Then tell Claude Code to build.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：蓋房子之前讓結構工程師看設計圖。<strong>Schema 錯了之後 migration 是噩夢。現在改很便宜。</strong></p><p lang-en>Like getting a structural engineer to review blueprints before breaking ground. <strong>Schema errors are cheap now. In production, they're a nightmare.</strong></p></div>
+    </div></div></div>
+
+    <div class="cmd-expand" id="s3"><div class="cmd-expand-header" onclick="toggleCmd('s3')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>Claude Code 完成功能，準備 push</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>Claude Code finished, ready to push</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-core">/review → /qa → /ship</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>Claude Code 說「完成了」之後，不要直接叫它 push。固定跑這三個：/review（找 code 層面的問題）→ /qa（用瀏覽器測 UI 流程）→ /ship（自動發布）。這三個組合是每次 push 的 SOP。</p><p lang-en>After Claude Code says "done," don't immediately tell it to push. Run these three every time: /review (code-level issues) → /qa (browser-test UI flows) → /ship (automated release). This trio is the non-negotiable SOP for every push.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：飛機起飛前的 checklist。機師不管多資深都要跑一遍。<strong>不是不信任自己，是系統性的檢查比人腦記憶可靠。</strong></p><p lang-en>Like a pre-flight checklist. Every pilot runs it regardless of experience. <strong>Not distrust — systematic checks beat human memory.</strong></p></div>
+    </div></div></div>
+
+    <div class="cmd-expand" id="s4"><div class="cmd-expand-header" onclick="toggleCmd('s4')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>叫 Claude Code 改高風險 code</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>Telling Claude Code to modify high-risk code</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-adv">/careful + /freeze</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>你要叫 Claude Code 改付款流程、認證系統、或任何改錯代價很高的 code。先打 /careful，讓 Claude Code 進入謹慎模式，每個步驟都先告訴你要做什麼再動手。要保護某些檔案不被動到，用 /freeze 指定。</p><p lang-en>You're telling Claude Code to modify payment flow, auth systems, or anything where errors are expensive. Run /careful first to put Claude Code in cautious mode — it explains every step before acting. Use /freeze to protect specific files from being touched.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：外科手術和剪頭髮的差別。<strong>改錯代價很高的地方，讓 Claude Code 拿手術刀，不是剪刀。</strong></p><p lang-en>Surgery vs. a haircut. <strong>For expensive-to-fix changes, make Claude Code use a scalpel, not scissors.</strong></p></div>
+    </div></div></div>
+
+    <div class="cmd-expand" id="s5"><div class="cmd-expand-header" onclick="toggleCmd('s5')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>Claude Code 刻完 UI</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>Claude Code finished building UI</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-adv">/design-review</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>Claude Code 刻完了一批 UI，打 /design-review，讓 Claude Code 開 Playwright 瀏覽器截圖你的 UI，對照 DESIGN.md 的標準找問題，給出 A-F 評分。它找到的問題 Claude Code 可以直接修。</p><p lang-en>Claude Code has finished a batch of UI. Run /design-review and Claude Code opens a Playwright browser, screenshots your UI, checks against DESIGN.md, and grades it A–F. Issues it finds can be fixed directly in Claude Code.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：找一個設計師朋友幫你看，他不客氣，直接說「這個按鈕太小」、「顏色對比不夠」。<strong>然後給你 A-F 評分。</strong></p><p lang-en>Like having a designer friend review your work — they'll say "this button is too small" and "contrast is insufficient." <strong>With a letter grade attached.</strong></p></div>
+    </div></div></div>
+
+    <div class="cmd-expand" id="s6"><div class="cmd-expand-header" onclick="toggleCmd('s6')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>金流或用戶資料功能完成</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>Payment or user data feature complete</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-adv">/review + /cso</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>Claude Code 完成了 Stripe 付款或用戶資料相關的模組。先跑 /review 做通用 code review，再跑 /cso 做專門的安全審查（OWASP + STRIDE）。金流類的 code，兩個都要跑。</p><p lang-en>Claude Code has finished a Stripe payment or user data module. Run /review for general code review, then /cso for a dedicated security audit (OWASP + STRIDE). For payment-related code, run both — no exceptions.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：請一個偏執狂安全工程師過來，他只想找能讓你系統被駭的地方。<strong>OWASP Top 10 逐一檢查。</strong></p><p lang-en>Like hiring a paranoid security engineer whose only goal is finding ways to compromise your system. <strong>OWASP Top 10, one by one.</strong></p></div>
+    </div></div></div>
+
+    <div class="cmd-expand" id="s7"><div class="cmd-expand-header" onclick="toggleCmd('s7')">
+      <span class="cmd-expand-name" style="min-width:200px" lang-zh>Claude Code 遇到奇怪的 bug</span>
+      <span class="cmd-expand-name" style="min-width:200px" lang-en>Claude Code hits a weird bug</span>
+      <span class="cmd-expand-short"></span>
+      <div class="cmd-expand-badges"><span class="cmd-badge badge-util">/investigate</span></div>
+      <span class="cmd-expand-chevron">▼</span>
+    </div><div class="cmd-expand-body"><div class="cmd-expand-inner">
+      <div class="cc-box"><div class="cc-box-label" lang-zh>Claude Code 情境</div><div class="cc-box-label" lang-en>Claude Code Context</div><p lang-zh>Claude Code 一直在修同一個 bug 但沒有修好，或你不確定問題真正在哪裡。打 /investigate，讓 Claude Code 切換成調查模式：不急著修，先追到問題真正的來源，把根因告訴你，再決定怎麼修。</p><p lang-en>Claude Code keeps fixing the same bug without success, or you're not sure where the real problem is. Run /investigate to switch Claude Code to investigation mode: don't rush to fix, trace the actual root cause first, then decide how to address it.</p></div>
+      <div class="cmd-analogy"><p lang-zh>比喻：很多時候你修的是症狀，不是病因。<strong>/investigate 先找到病因，再決定怎麼治。</strong></p><p lang-en>Often you're treating symptoms, not the cause. <strong>/investigate finds the disease before prescribing treatment.</strong></p></div>
+    </div></div></div>
+  </div>
+</div>
+
+<!-- ══ 08: TRAPS ══ -->
+<div class="page" id="page-traps">
+  <div class="eyebrow" lang-zh>08 · 踩雷</div>
+  <div class="eyebrow" lang-en>08 · Common Mistakes</div>
+  <h1 class="page-title" lang-zh>Claude Code 裡的<em>常見錯誤</em></h1>
+  <h1 class="page-title" lang-en><em>Common Mistakes</em> in Claude Code</h1>
+  <p class="page-lead" lang-zh>在 Claude Code 裡使用 gstack 時最容易踩的雷，每個附上原因和解法。</p>
+  <p class="page-lead" lang-en>The most common mistakes when using gstack inside Claude Code — each with cause and fix.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>安裝問題</div>
+    <div class="section-label" lang-en>Installation Issues</div>
+    <div class="traps">
+      <div class="trap"><div class="trap-title" lang-zh>在 Claude Code 打 / 看不到指令</div><div class="trap-title" lang-en>Type / in Claude Code but no commands appear</div><p lang-zh>你的 Claude Code session 是在裝 gstack 之前開的，它不認識新 skill。</p><p lang-en>Your Claude Code session was opened before gstack was installed — it doesn't know the new skills exist.</p><div class="fix" lang-zh>→ 打 /exit 或 Ctrl+C 退出，重新開 claude</div><div class="fix" lang-en>→ Type /exit or Ctrl+C, then reopen claude</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>重開 Claude Code 還是沒有</div><div class="trap-title" lang-en>Reopened Claude Code but still missing</div><p lang-zh>setup 沒有正確跑完，或複製進專案的步驟有問題。</p><p lang-en>The setup didn't complete correctly, or the project copy step had an issue.</p><div class="fix" lang-zh>→ cd 到 .claude/skills/gstack，重新跑 ./setup</div><div class="fix" lang-en>→ cd into .claude/skills/gstack and rerun ./setup</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>在沒裝 gstack 的專案用 Claude Code</div><div class="trap-title" lang-en>Using Claude Code in a project without gstack</div><p lang-zh>gstack 是安裝在每個專案的 .claude/skills/ 裡。在沒有安裝的專案裡開 Claude Code，打 /qa 會找不到。</p><p lang-en>gstack lives in each project's .claude/skills/. Opening Claude Code in a project without it won't find /qa or any gstack commands.</p><div class="fix" lang-zh>→ 確認在有裝 gstack 的專案目錄下開 Claude Code</div><div class="fix" lang-en>→ Confirm you're opening Claude Code inside a project that has gstack installed</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>使用誤區</div>
+    <div class="section-label" lang-en>Usage Mistakes</div>
+    <div class="traps">
+      <div class="trap"><div class="trap-title" lang-zh>在 Claude Code 直接開始實作，跳過規劃</div><div class="trap-title" lang-en>Jumping straight to "implement" in Claude Code</div><p lang-zh>最常見的錯誤。直接叫 Claude Code 做功能，跳過 /plan-ceo-review 和 /plan-eng-review，結果做出來方向不對或架構有問題，改起來更痛苦。</p><p lang-en>Most common mistake. Telling Claude Code to build without /plan-ceo-review and /plan-eng-review means wrong direction or bad architecture — painful to fix later.</p><div class="fix" lang-zh>→ 讓 Claude Code 做之前，先切換到規劃模式問清楚</div><div class="fix" lang-en>→ Always switch to planning mode in Claude Code before building</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>在 Claude Code 同一個 session 混用多個角色</div><div class="trap-title" lang-en>Mixing roles in the same Claude Code session</div><p lang-zh>「叫 Claude Code 邊 review 邊修 bug」或「一邊規劃一邊實作」。gstack 的角色要分開用，混在一起 Claude Code 的輸出品質下降。</p><p lang-en>Asking Claude Code to "review and fix at the same time" or "plan while implementing." Mixed roles degrade Claude Code's output quality.</p><div class="fix" lang-zh>→ 一個 Claude Code session 一個角色。/review 完再開新任務去修。</div><div class="fix" lang-en>→ One role per Claude Code session. After /review, start a new task to fix.</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>Claude Code 的 /review 建議照單全收</div><div class="trap-title" lang-en>Taking Claude Code's /review output as gospel</div><p lang-zh>/review 的輸出有 false positive。你要自己判斷哪些是真的問題，哪些是它誤判的。</p><p lang-en>/review has false positives. You need to judge which issues are real and which are Claude Code's mistakes.</p><div class="fix" lang-zh>→ 把 /review 輸出當清單，每條自己判斷一遍再交給 Claude Code 修</div><div class="fix" lang-en>→ Treat /review output as a checklist — judge each item before telling Claude Code to fix it</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>在 Claude Code 跑 /qa 之前沒啟動 dev server</div><div class="trap-title" lang-en>Running /qa in Claude Code without a running dev server</div><p lang-zh>Claude Code 的 /qa 需要 localhost 有回應。沒先跑 dev server，它會截圖到 404，回報一堆假問題。</p><p lang-en>Claude Code's /qa needs localhost to respond. Without a running dev server, it screenshots a 404 and reports fake issues.</p><div class="fix" lang-zh>→ 在 Claude Code 跑 /qa 之前，先確認 npm run dev 成功</div><div class="fix" lang-en>→ Before running /qa in Claude Code, confirm npm run dev is running successfully</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>沒設定 cookies 就叫 Claude Code 測試登入後的頁面</div><div class="trap-title" lang-en>Testing login-gated pages without setting cookies</div><p lang-zh>Claude Code 的瀏覽器沒有登入狀態，/qa 和 /browse 只能測到登入頁，所有登入後的功能都測不到。</p><p lang-en>Claude Code's browser has no session — /qa and /browse can only reach the login page. All post-login features are invisible.</p><div class="fix" lang-zh>→ 先在 Claude Code 跑 /setup-browser-cookies，再跑 /qa 或 /browse</div><div class="fix" lang-en>→ Run /setup-browser-cookies in Claude Code before /qa or /browse</div></div>
+      <div class="trap"><div class="trap-title" lang-zh>跑完 /review 期待 Claude Code 自動修</div><div class="trap-title" lang-en>Expecting Claude Code to auto-fix after /review</div><p lang-zh>/review 是回報問題，不是直接修。你要自己判斷後再叫 Claude Code 去修，或改用 /qa（它找到直接修）。</p><p lang-en>/review reports issues — it doesn't fix them. You judge and then tell Claude Code to fix, or use /qa which fixes automatically.</p><div class="fix" lang-zh>→ /review 看報告 → 自己判斷 → 叫 Claude Code 修。或直接用 /qa。</div><div class="fix" lang-en>→ /review: read report → judge each item → tell Claude Code to fix. Or just use /qa.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 09: HABITS ══ -->
+<div class="page" id="page-habits">
+  <div class="eyebrow" lang-zh>09 · 習慣流程</div>
+  <div class="eyebrow" lang-en>09 · Daily Habits</div>
+  <h1 class="page-title" lang-zh>Claude Code 的<em>日常節奏</em></h1>
+  <h1 class="page-title" lang-en>Your <em>Daily Rhythm</em> in Claude Code</h1>
+  <p class="page-lead" lang-zh>把 gstack 融入 Claude Code 工作流程的建議節奏。找到適合你的版本。</p>
+  <p class="page-lead" lang-en>Recommended rhythm for integrating gstack into your Claude Code workflow. Find the version that fits you.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>Claude Code 日常節奏</div>
+    <div class="section-label" lang-en>Claude Code Daily Rhythm</div>
+    <div class="timeline">
+      <div class="tl-row"><div class="tl-when" lang-zh>叫 Claude Code 開始新功能前</div><div class="tl-when" lang-en>Before Claude Code builds new feature</div><div class="tl-cmds"><span class="tl-cmd">/plan-ceo-review</span><span class="tl-arrow">→</span><span class="tl-cmd">/plan-eng-review</span><span class="tl-arrow">→</span><span class="tl-cmd">/design-consultation</span></div></div>
+      <div class="tl-row"><div class="tl-when" lang-zh>Claude Code 開發中（視需要）</div><div class="tl-when" lang-en>While Claude Code builds</div><div class="tl-cmds"><span class="tl-cmd">/careful</span><span class="tl-cmd">/freeze</span><span class="tl-cmd">/investigate</span><span class="tl-cmd">/office-hours</span></div></div>
+      <div class="tl-row"><div class="tl-when" lang-zh>Claude Code 說「完成了」之後</div><div class="tl-when" lang-en>After Claude Code says "done"</div><div class="tl-cmds"><span class="tl-cmd">/review</span><span class="tl-arrow">→</span><span class="tl-cmd">/qa</span><span class="tl-arrow">→</span><span class="tl-cmd">/ship</span></div></div>
+      <div class="tl-row"><div class="tl-when" lang-zh>發布後</div><div class="tl-when" lang-en>After shipping</div><div class="tl-cmds"><span class="tl-cmd">/document-release</span><span class="tl-arrow">→</span><span class="tl-cmd">/retro</span></div></div>
+      <div class="tl-row"><div class="tl-when" lang-zh>每個月</div><div class="tl-when" lang-en>Monthly</div><div class="tl-cmds"><span class="tl-cmd">/cso</span><span class="tl-cmd">/benchmark</span><span class="tl-cmd">/gstack-upgrade</span></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>三個不能跳的組合</div>
+    <div class="section-label" lang-en>Three Non-Negotiable Combos</div>
+    <div class="callout"><div class="callout-title" lang-zh>叫 Claude Code 開始做之前</div><div class="callout-title" lang-en>Before telling Claude Code to build</div><p lang-zh><code>/plan-ceo-review</code> + <code>/plan-eng-review</code> — 確認方向對，架構對，再讓 Claude Code 開始。</p><p lang-en><code>/plan-ceo-review</code> + <code>/plan-eng-review</code> — Confirm direction and architecture before Claude Code starts.</p></div>
+    <div class="callout"><div class="callout-title" lang-zh>Claude Code 說「完成了」之後（不能跳）</div><div class="callout-title" lang-en>After Claude Code says "done" (non-negotiable)</div><p lang-zh><code>/review</code> → <code>/qa</code> → <code>/ship</code> — Claude Code 完成不代表沒問題，這三個是安全網。</p><p lang-en><code>/review</code> → <code>/qa</code> → <code>/ship</code> — "Done" in Claude Code doesn't mean problem-free. These three are the safety net.</p></div>
+    <div class="callout"><div class="callout-title" lang-zh>發布後</div><div class="callout-title" lang-en>After every release</div><p lang-zh><code>/document-release</code> → <code>/retro</code> — 讓 Claude Code 記錄發布了什麼，學到了什麼。</p><p lang-en><code>/document-release</code> → <code>/retro</code> — Let Claude Code document what shipped and what you learned.</p></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>最後</div>
+    <div class="section-label" lang-en>Final Thought</div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>gstack 不是讓 Claude Code 更強，是讓它更穩定</div>
+      <div class="callout-title" lang-en>gstack doesn't make Claude Code smarter — it makes it consistent</div>
+      <p lang-zh>當你在 Claude Code 裡打 <code>/plan-ceo-review</code>，你在說的是「我現在需要產品思維，不是工程實作」。這個切換行為本身就是價值。</p>
+      <p lang-en>When you type <code>/plan-ceo-review</code> in Claude Code, you're saying "I need product thinking right now, not engineering execution." That switching behavior is the value itself.</p>
+      <p lang-zh><strong>大多數 AI 開發失敗不是因為 Claude Code 不夠強，是因為在錯誤的時間用了錯誤的思維。gstack 讓你不會「忘記」切換。</strong></p>
+      <p lang-en><strong>Most AI-assisted development fails not because Claude Code isn't capable — but because the wrong mental mode was used at the wrong time. gstack makes sure you never forget to switch.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 10: REVIEW TRUTH ══ -->
+<div class="page" id="page-review-truth">
+  <div class="eyebrow" lang-zh>10 · 深度分析</div>
+  <div class="eyebrow" lang-en>10 · Deep Dive</div>
+  <h1 class="page-title" lang-zh>Claude Code 的 <em>/review</em> 真的有用嗎？</h1>
+  <h1 class="page-title" lang-en>Does Claude Code's <em>/review</em> Actually Work?</h1>
+  <p class="page-lead" lang-zh>誠實的評估：這個指令是真正嚴謹的 code review，還是一個假裝嚴謹的 agent？</p>
+  <p class="page-lead" lang-en>An honest assessment: is this rigorous code review or a well-disguised illusion of rigor?</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>結論先說</div>
+    <div class="section-label" lang-en>Conclusion First</div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>直接的答案</div>
+      <div class="callout-title" lang-en>The Direct Answer</div>
+      <p lang-zh><strong>Claude Code 的 /review 是真實有用的，但它不是萬能的。</strong>它能找到很多你在實作時沒注意到的問題，但有明確的上限。正確定位它才能正確使用它。</p>
+      <p lang-en><strong>Claude Code's /review genuinely works — but it's not omniscient.</strong> It catches many issues you missed during implementation, but has clear limits. Understanding those limits is how you use it correctly.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>Claude Code /review 做得到</div>
+    <div class="section-label" lang-en>What Claude Code /review Can Do</div>
+    <div class="verdict-row">
+      <div class="verdict-box good"><div class="verdict-label" lang-zh>✓ 做得到</div><div class="verdict-label" lang-en>✓ Does well</div><p lang-zh><strong>靜態程式碼分析</strong></p><p lang-zh>SQL injection、XSS、未處理的 null、型別不匹配。這些人腦在實作時容易跳過，Claude Code 不會。</p><p lang-en><strong>Static code analysis</strong></p><p lang-en>SQL injection, XSS, unhandled nulls, type mismatches. Easy for humans to miss mid-implementation — not for Claude Code.</p></div>
+      <div class="verdict-box good"><div class="verdict-label" lang-zh>✓ 做得到</div><div class="verdict-label" lang-en>✓ Does well</div><p lang-zh><strong>OWASP 常見漏洞</strong></p><p lang-zh>未驗證的輸入、明文密碼、API key 在 client side、CORS 設定錯誤。</p><p lang-en><strong>OWASP common vulnerabilities</strong></p><p lang-en>Unvalidated input, plaintext passwords, client-side API keys, misconfigured CORS.</p></div>
+      <div class="verdict-box good"><div class="verdict-label" lang-zh>✓ 做得到</div><div class="verdict-label" lang-en>✓ Does well</div><p lang-zh><strong>邏輯一致性</strong></p><p lang-zh>if/else 漏掉某個 case、狀態機死路、async 沒 await。Claude Code 在實作時很容易引入這些問題，/review 幫你抓。</p><p lang-en><strong>Logic consistency</strong></p><p lang-en>Missing if/else cases, dead-end state machines, missing awaits. Claude Code often introduces these during implementation — /review catches them.</p></div>
+      <div class="verdict-box good"><div class="verdict-label" lang-zh>✓ 做得到</div><div class="verdict-label" lang-en>✓ Does well</div><p lang-zh><strong>不知疲倦、不帶情緒</strong></p><p lang-zh>不因為 Claude Code 剛做完就放水，不因為看了很多 code 就馬虎。每次同樣嚴格。</p><p lang-en><strong>Tireless and unbiased</strong></p><p lang-en>Doesn't go easy because Claude Code just finished. Doesn't get careless after reading lots of code. Same standard every time.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>Claude Code /review 做不到</div>
+    <div class="section-label" lang-en>What Claude Code /review Can't Do</div>
+    <div class="verdict-row">
+      <div class="verdict-box bad"><div class="verdict-label" lang-zh>✗ 做不到</div><div class="verdict-label" lang-en>✗ Can't do</div><p lang-zh><strong>執行期行為</strong></p><p lang-zh>Race condition、memory leak、特定負載才出現的問題。Claude Code 的 /review 只看靜態 code，不執行你的程式。</p><p lang-en><strong>Runtime behavior</strong></p><p lang-en>Race conditions, memory leaks, load-dependent issues. Claude Code's /review reads static code — it doesn't run your program.</p><div class="fix" lang-zh>→ 搭配 Claude Code 的 /qa 和 /benchmark</div><div class="fix" lang-en>→ Pair with Claude Code's /qa and /benchmark</div></div>
+      <div class="verdict-box bad"><div class="verdict-label" lang-zh>✗ 做不到</div><div class="verdict-label" lang-en>✗ Can't do</div><p lang-zh><strong>業務邏輯正確性</strong></p><p lang-zh>你的商業規則 Claude Code 不知道。code 語法合法，但業務邏輯寫錯了，/review 看不出來。</p><p lang-en><strong>Business logic correctness</strong></p><p lang-en>Claude Code doesn't know your business rules. Code that's syntactically valid but logically wrong passes /review without issue.</p><div class="fix" lang-zh>→ 在給 Claude Code 的 prompt 裡說清楚業務邏輯規則</div><div class="fix" lang-en>→ Specify business logic rules clearly in your Claude Code prompts</div></div>
+      <div class="verdict-box bad"><div class="verdict-label" lang-zh>✗ 做不到</div><div class="verdict-label" lang-en>✗ Can't do</div><p lang-zh><strong>跨檔案隱性依賴</strong></p><p lang-zh>Claude Code 改了一個 function，它被 10 個地方呼叫，那些呼叫者在其他檔案，/review 可能追不完。</p><p lang-en><strong>Cross-file implicit dependencies</strong></p><p lang-en>Claude Code changes a function called from 10 places in other files — /review may not trace all callers.</p><div class="fix" lang-zh>→ 在 Claude Code 的 /review 指令裡明確說「同時看這幾個相關檔案」</div><div class="fix" lang-en>→ In Claude Code's /review command, explicitly say "also look at these related files"</div></div>
+      <div class="verdict-box bad"><div class="verdict-label" lang-zh>⚠ 注意</div><div class="verdict-label" lang-en>⚠ Watch out</div><p lang-zh><strong>有 false positive</strong></p><p lang-zh>Claude Code 說「這裡有 SQL injection」，但那裡已經有 ORM 保護了。它的 false positive 率不是零。</p><p lang-en><strong>False positives exist</strong></p><p lang-en>Claude Code says "SQL injection risk here" but there's already ORM protection. Its false positive rate is not zero.</p><div class="fix" lang-zh>→ 把輸出當清單，每條自己判斷後再決定是否讓 Claude Code 修</div><div class="fix" lang-en>→ Treat output as a checklist — judge each item before telling Claude Code to fix it</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>跟真實 senior engineer 比</div>
+    <div class="section-label" lang-en>vs. a Real Senior Engineer</div>
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-title" lang-zh>Claude Code /review 贏的地方</div>
+        <div class="info-title" lang-en>Where Claude Code /review wins</div>
+        <p lang-zh>不累、不放水、24 小時可用、不帶情緒。2 分鐘掃完 senior 要 30 分鐘看的 PR。每次同樣的嚴格標準。</p>
+        <p lang-en>Never tired, never partial, always available, no emotions. Scans in 2 minutes what a senior takes 30. Same standard every time.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-title" lang-zh>真實 senior 贏的地方</div>
+        <div class="info-title" lang-en>Where a real senior wins</div>
+        <p lang-zh>知道 codebase 歷史、知道技術債在哪、知道你們的部署環境有什麼奇怪行為。能說「這個三個月前改過，你這樣改會把那個 edge case 重新引入」。</p>
+        <p lang-en>Knows the codebase history, technical debt, and quirks of your deployment. Can say "we changed this three months ago — your change reintroduces that edge case."</p>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>正確定位</div>
+      <div class="callout-title" lang-en>The Right Way to Think About It</div>
+      <p lang-zh>Claude Code 的 /review 是「一個永遠不累、永遠不放水的初級到中級 code reviewer」。它讓真正的 code review 更有效率，而不是取代它。<strong>在 Claude Code 裡每次 push 前跑一遍，讓它抓掉它能抓的。剩下的用 /qa 和你自己的判斷補。</strong></p>
+      <p lang-en>Claude Code's /review is "a tireless, unbiased junior-to-mid-level code reviewer." It makes real code review more efficient — it doesn't replace it. <strong>Run it before every push in Claude Code. Let it catch what it can. Fill the gaps with /qa and your own judgment.</strong></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>怎麼讓它在 Claude Code 裡更有效</div>
+    <div class="section-label" lang-en>How to Get More from It in Claude Code</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-title" lang-zh>在 Claude Code 裡給它更多 context</div><div class="step-title" lang-en>Give more context in Claude Code</div><div class="step-desc" lang-zh>不要只打 <code>/review</code>，說：「/review，這個 PR 改了付款邏輯，重點看金額計算、webhook 驗證和 race condition」。context 越清楚，Claude Code 找得越準。</div><div class="step-desc" lang-en>Don't just type <code>/review</code>. Say: "/review, this PR changes payment logic, focus on amount calculation, webhook verification, and race conditions." More context = more precision from Claude Code.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-title" lang-zh>讓 Claude Code 同時看相關檔案</div><div class="step-title" lang-en>Tell Claude Code to look at related files together</div><div class="step-desc" lang-zh>在 Claude Code 的 /review 指令後加上：「同時看 api/orders.ts、hooks/useOrder.ts、components/Checkout.tsx」。跨檔案的問題才能被追到。</div><div class="step-desc" lang-en>After /review in Claude Code, add: "also look at api/orders.ts, hooks/useOrder.ts, components/Checkout.tsx." Cross-file issues need cross-file context.</div></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body"><div class="step-title" lang-zh>有安全疑慮：在 Claude Code 同時跑 /cso</div><div class="step-title" lang-en>Security concerns: run /cso alongside in Claude Code</div><div class="step-desc" lang-zh>/review 是通用 review，/cso 是專門安全審查。金流、用戶資料的模組，在 Claude Code 裡兩個都跑。</div><div class="step-desc" lang-en>/review is general; /cso is dedicated security. For payment and user data modules in Claude Code, run both.</div></div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-body"><div class="step-title" lang-zh>把 Claude Code 的輸出當清單，不是判決</div><div class="step-title" lang-en>Treat Claude Code's output as a checklist, not a verdict</div><div class="step-desc" lang-zh>逐條判斷「這個是真的問題」還是「Claude Code 誤判了，因為它沒看到 ORM 那一層」。這個判斷過程本身就會讓你的 code sense 變強。</div><div class="step-desc" lang-en>For each item: "real problem" or "Claude Code missed the ORM layer." This judgment process itself sharpens your code sense.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 11: REAL PROJECT ══ -->
+<div class="page" id="page-real-project">
+  <div class="eyebrow" lang-zh>11 · 模擬開發</div>
+  <div class="eyebrow" lang-en>11 · Simulated Project</div>
+  <h1 class="page-title" lang-zh>用 Claude Code 開發<em>預約系統</em></h1>
+  <h1 class="page-title" lang-en>Building a <em>Booking System</em> with Claude Code</h1>
+  <p class="page-lead" lang-zh>假設你要用 Claude Code + Next.js + Supabase 開發一個線上預約/電商系統，gstack 的完整使用流程應該長這樣。</p>
+  <p class="page-lead" lang-en>You're building an online booking or e-commerce system with Claude Code + Next.js + Supabase. Here's exactly how gstack fits in.</p>
+
+  <div class="section">
+    <div class="section-label" lang-zh>專案背景</div>
+    <div class="section-label" lang-en>Project Setup</div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>情境設定</div>
+      <div class="callout-title" lang-en>Scenario</div>
+      <p lang-zh>開發<strong>線上預約 + 結帳系統</strong>（服務業、診所、電商皆適用）。功能：用戶登入、瀏覽服務、選時段預約、Stripe 付款、訂單管理。Stack：Next.js 15 + Supabase + Tailwind + Stripe + shadcn/ui，部署在 Vercel。</p>
+      <p lang-en>Building an <strong>online booking + checkout system</strong> (applicable to service businesses, clinics, e-commerce). Features: user login, browse services, book time slots, Stripe payment, order management. Stack: Next.js 15 + Supabase + Tailwind + Stripe + shadcn/ui, deployed on Vercel.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第一階段：叫 Claude Code 開始之前（Day 1-2）</div>
+    <div class="section-label" lang-en>Phase 1: Before Telling Claude Code to Build (Day 1–2)</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body">
+        <div class="step-tag" lang-zh>Day 1 · 在 Claude Code 開始之前</div><div class="step-tag" lang-en>Day 1 · Before Claude Code starts</div>
+        <div class="step-title" lang-zh>先跑 /plan-ceo-review</div><div class="step-title" lang-en>Run /plan-ceo-review first</div>
+        <div class="step-cmd">/plan-ceo-review</div>
+        <div class="step-desc" lang-zh>你告訴它：「我要做線上預約系統，讓客人選時段、線上付款。目標是服務業老闆。」它問：現有客人怎麼預約？老闆最大的痛點是空白時段太多、客人爽約、還是記帳麻煩？<br><br><strong>典型發現：</strong>你原本打算叫 Claude Code 做複雜的動態排班，但 CEO review 讓你發現老闆最痛的是「客人爽約沒收訂金」。功能優先順序完全不同，Claude Code 第一個 sprint 要做的東西也完全不同。</div>
+        <div class="step-desc" lang-en>You describe: "I'm building an online booking system for service businesses — customers pick time slots and pay online." It asks: How do customers currently book? Is the biggest pain empty slots, no-shows, or tracking payments?<br><br><strong>Typical discovery:</strong> You were going to tell Claude Code to build complex dynamic scheduling. CEO review reveals the real pain is "no-shows without deposits." Completely different priority — Claude Code's first sprint changes entirely.</div>
+      </div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body">
+        <div class="step-tag" lang-zh>Day 1 · 叫 Claude Code 建表之前</div><div class="step-tag" lang-en>Day 1 · Before Claude Code creates tables</div>
+        <div class="step-title" lang-zh>跑 /plan-eng-review</div><div class="step-title" lang-en>Run /plan-eng-review</div>
+        <div class="step-cmd">/plan-eng-review</div>
+        <div class="step-desc" lang-zh>把 schema 草稿告訴它：users、services、appointments、payments 的關係。<br><br>它問：同一個時段能不能被兩人預約（concurrency）？付款失敗的訂單怎麼處理？<br><br><strong>典型發現：</strong>你的 appointments 表沒有 status 欄位，無法區分「待付款 / 已確認 / 已取消 / 已完成」。現在跟 Claude Code 說要加很便宜，等它建完表再加要 migration。</div>
+        <div class="step-desc" lang-en>Share your schema draft: relationships between users, services, appointments, payments.<br><br>It asks: Can two people book the same slot simultaneously (concurrency)? What happens to failed payments?<br><br><strong>Typical discovery:</strong> Your appointments table has no status field — can't distinguish "pending payment / confirmed / cancelled / completed." Telling Claude Code to add it now is cheap. After tables are built, it requires a migration.</div>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body">
+        <div class="step-tag" lang-zh>Day 2 · 叫 Claude Code 刻 UI 之前</div><div class="step-tag" lang-en>Day 2 · Before Claude Code builds UI</div>
+        <div class="step-title" lang-zh>跑 /design-consultation</div><div class="step-title" lang-en>Run /design-consultation</div>
+        <div class="step-cmd">/design-consultation → DESIGN.md</div>
+        <div class="step-desc" lang-zh>告訴它你的品牌調性（例如：專業服務業，走簡潔現代風）。它產出：色彩系統、字型建議、間距、元件規範，存成 DESIGN.md。<br><br><strong>為什麼先做：</strong>沒有設計系統就叫 Claude Code 刻 UI，每個元件的顏色和間距都是隨機的，到最後全部要重構。</div>
+        <div class="step-desc" lang-en>Describe your brand tone (e.g., professional service business, clean modern aesthetic). It outputs: color system, typography, spacing, component specs — saved as DESIGN.md.<br><br><strong>Why first:</strong> Without a design system, every component Claude Code builds has arbitrary colors and spacing. Everything needs a rewrite at the end.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第二階段：Claude Code 開發中（Week 1-3）</div>
+    <div class="section-label" lang-en>Phase 2: Claude Code Building (Week 1–3)</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">4</div><div class="step-body">
+        <div class="step-tag" lang-zh>Week 1 · Claude Code 完成登入系統後</div><div class="step-tag" lang-en>Week 1 · After Claude Code finishes auth</div>
+        <div class="step-title" lang-zh>跑 /review，重點指定 JWT 和 RLS</div><div class="step-title" lang-en>Run /review, specify JWT and RLS focus</div>
+        <div class="step-cmd">/review — 重點：JWT 處理、session 安全、Supabase RLS Policy</div>
+        <div class="step-desc" lang-zh><strong>Claude Code 常見的問題：</strong>用 localStorage 存 token（XSS 漏洞），或 Supabase RLS Policy 沒設對，讓用戶能讀到別人的資料。在 /review 階段找到，比上線後發現好太多。</div>
+        <div class="step-desc" lang-en><strong>Common Claude Code issues here:</strong> Storing tokens in localStorage (XSS vulnerability), or misconfigured Supabase RLS letting users read each other's data. Caught in /review — far better than discovering it post-launch.</div>
+      </div></div>
+      <div class="step"><div class="step-n">5</div><div class="step-body">
+        <div class="step-tag" lang-zh>Week 2 · Claude Code 開發預約系統</div><div class="step-tag" lang-en>Week 2 · Claude Code builds booking system</div>
+        <div class="step-title" lang-zh>先跑 /careful 再讓 Claude Code 開發，完成後 /review</div><div class="step-title" lang-en>Run /careful before Claude Code builds, then /review after</div>
+        <div class="step-cmd">/careful → Claude Code 開發 → /review（重點：race condition、時區、狀態管理）</div>
+        <div class="step-desc" lang-zh>預約系統是最容易出問題的地方：時區轉換、雙重預約（兩人同時搶同一個時段）、取消流程的狀態管理。先打 /careful 讓 Claude Code 每步確認，用 /freeze 保護已確認的部分，完成後跑 /review 把重點告訴它。</div>
+        <div class="step-desc" lang-en>Booking is where most bugs hide: timezone conversion, double-booking (two users grabbing the same slot simultaneously), cancellation state management. Run /careful first so Claude Code confirms each step, use /freeze to protect confirmed sections, then /review with focused context after.</div>
+      </div></div>
+      <div class="step"><div class="step-n">6</div><div class="step-body">
+        <div class="step-tag" lang-zh>Week 3 · Claude Code 開發金流</div><div class="step-tag" lang-en>Week 3 · Claude Code builds payments</div>
+        <div class="step-title" lang-zh>這個模組兩個都要跑：/review + /cso</div><div class="step-title" lang-en>This module requires both: /review + /cso</div>
+        <div class="step-cmd">/review → /cso（重點：webhook 驗證、金額計算、冪等性）</div>
+        <div class="step-desc" lang-zh><strong>Claude Code 常見的金流問題：</strong>沒有驗證 Stripe webhook signature（任何人都能偽造付款成功通知）、金額在前端計算（用戶可以改）、webhook 冪等性沒處理（同一個事件被 Claude Code 處理兩次，扣兩次錢）。</div>
+        <div class="step-desc" lang-en><strong>Common Claude Code payment issues:</strong> Missing Stripe webhook signature validation (anyone can fake a payment success), amounts calculated client-side (users can change them), webhook idempotency not handled (same event processed twice by Claude Code — double charge).</div>
+      </div></div>
+      <div class="step"><div class="step-n">7</div><div class="step-body">
+        <div class="step-tag" lang-zh>Week 4 · Claude Code 刻完所有 UI</div><div class="step-tag" lang-en>Week 4 · Claude Code finishes all UI</div>
+        <div class="step-title" lang-zh>跑 /design-review，對著 localhost</div><div class="step-title" lang-en>Run /design-review against localhost</div>
+        <div class="step-cmd">/design-review（Claude Code 開瀏覽器截圖，對照 DESIGN.md）</div>
+        <div class="step-desc" lang-zh><strong>Claude Code 刻 UI 的典型問題：</strong>按鈕觸控區域太小（行動裝置難點）、文字對比度不夠（無障礙問題）、付款中沒有 loading spinner、購物車空的時候只有空白、hover state 沒做。</div>
+        <div class="step-desc" lang-en><strong>Typical Claude Code UI issues:</strong> Touch targets too small (mobile), insufficient text contrast (accessibility), no loading spinner during payment, empty cart shows nothing, missing hover states.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第三階段：上線前</div>
+    <div class="section-label" lang-en>Phase 3: Pre-Launch</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">8</div><div class="step-body">
+        <div class="step-tag" lang-zh>上線前 · 在 Claude Code 跑 QA</div><div class="step-tag" lang-en>Pre-launch · QA in Claude Code</div>
+        <div class="step-title" lang-zh>設定 cookies 後跑 /qa</div><div class="step-title" lang-en>Set cookies then run /qa</div>
+        <div class="step-cmd">/setup-browser-cookies → /qa（完整預約 + 付款流程）</div>
+        <div class="step-desc" lang-zh>告訴 Claude Code：「測試完整預約流程，包含：選已滿的時段、付款頁面返回、手機版整個流程。」<br><br><strong>Claude Code 的 /qa 通常找到：</strong>付款後沒跳轉到確認頁、手機版按鈕被 keyboard 擋住、某個 loading state 卡死不結束。</div>
+        <div class="step-desc" lang-en>Tell Claude Code: "Test the full booking flow including: selecting a full slot, returning from payment page, entire mobile flow."<br><br><strong>Claude Code's /qa typically finds:</strong> No redirect after payment, mobile button hidden by keyboard, loading state that never ends.</div>
+      </div></div>
+      <div class="step"><div class="step-n">9</div><div class="step-body">
+        <div class="step-tag" lang-zh>上線前 · 效能</div><div class="step-tag" lang-en>Pre-launch · Performance</div>
+        <div class="step-title" lang-zh>在 Claude Code 跑 /benchmark</div><div class="step-title" lang-en>Run /benchmark in Claude Code</div>
+        <div class="step-cmd">/benchmark</div>
+        <div class="step-desc" lang-zh><strong>常見的 Claude Code 效能問題：</strong>沒有加 index 的 query、N+1 query（每個預約都單獨查一次用戶資料）、首頁載入了太多不需要的資料。</div>
+        <div class="step-desc" lang-en><strong>Common Claude Code performance issues:</strong> Queries without indexes, N+1 queries (separate user lookup per booking), homepage loading far more data than needed.</div>
+      </div></div>
+      <div class="step"><div class="step-n">10</div><div class="step-body">
+        <div class="step-tag" lang-zh>上線</div><div class="step-tag" lang-en>Launch</div>
+        <div class="step-title" lang-zh>在 Claude Code 跑 /ship → /canary → /land-and-deploy</div><div class="step-title" lang-en>In Claude Code: /ship → /canary → /land-and-deploy</div>
+        <div class="step-cmd">/ship → /canary（先小流量） → /land-and-deploy</div>
+        <div class="step-desc" lang-zh>所有檢查過了，在 Claude Code 打 /ship 開 PR。第一次上線用 /canary 讓 5-10% 流量測試，確認沒問題再 /land-and-deploy 全量部署。</div>
+        <div class="step-desc" lang-en>All checks passed — type /ship in Claude Code to open the PR. For first launch, use /canary to route 5–10% of traffic. Once confirmed stable, /land-and-deploy for full rollout.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>第四階段：上線後</div>
+    <div class="section-label" lang-en>Phase 4: Post-Launch</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">11</div><div class="step-body">
+        <div class="step-tag" lang-zh>發布後</div><div class="step-tag" lang-en>After launch</div>
+        <div class="step-title" lang-zh>在 Claude Code 跑 /document-release 和 /retro</div><div class="step-title" lang-en>Run /document-release and /retro in Claude Code</div>
+        <div class="step-cmd">/document-release → /retro</div>
+        <div class="step-desc" lang-zh>讓 Claude Code 產出 release notes。做 retrospective：哪裡花最多時間？哪個 gstack 指令最有用？Claude Code 哪裡最容易出問題？下次怎麼改進？</div>
+        <div class="step-desc" lang-en>Let Claude Code generate release notes. Then retrospective: where did time go? Which gstack command was most useful? Where did Claude Code struggle most? How to improve next time?</div>
+      </div></div>
+      <div class="step"><div class="step-n">12</div><div class="step-body">
+        <div class="step-tag" lang-zh>每個月</div><div class="step-tag" lang-en>Monthly</div>
+        <div class="step-title" lang-zh>在 Claude Code 定期跑安全和效能維護</div><div class="step-title" lang-en>Regular maintenance in Claude Code</div>
+        <div class="step-cmd">/cso（安全審查）+ /benchmark（效能）+ /gstack-upgrade</div>
+        <div class="step-desc" lang-zh>系統上線不是結束。每個月在 Claude Code 跑安全審查，確認沒有新漏洞。隨著資料量增長，定期跑 /benchmark 確認 query 效能。</div>
+        <div class="step-desc" lang-en>Launch isn't the end. Monthly security audits in Claude Code confirm no new vulnerabilities. As data grows, regular /benchmark runs confirm query performance stays acceptable.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>完整時間線</div>
+    <div class="section-label" lang-en>Full Timeline</div>
+    <div class="timeline">
+      <div class="tl-row"><div class="tl-when">Day 1–2</div><div class="tl-cmds"><span class="tl-cmd">/plan-ceo-review</span><span class="tl-arrow">→</span><span class="tl-cmd">/plan-eng-review</span><span class="tl-arrow">→</span><span class="tl-cmd">/design-consultation</span></div></div>
+      <div class="tl-row"><div class="tl-when">Week 1</div><div class="tl-cmds"><span class="tl-cmd" lang-zh>Claude Code 做登入</span><span class="tl-cmd" lang-en>CC builds auth</span><span class="tl-arrow">→</span><span class="tl-cmd">/review（JWT/RLS）</span></div></div>
+      <div class="tl-row"><div class="tl-when">Week 2</div><div class="tl-cmds"><span class="tl-cmd">/careful</span><span class="tl-arrow">→</span><span class="tl-cmd" lang-zh>Claude Code 做預約</span><span class="tl-cmd" lang-en>CC builds booking</span><span class="tl-arrow">→</span><span class="tl-cmd">/review</span></div></div>
+      <div class="tl-row"><div class="tl-when">Week 3</div><div class="tl-cmds"><span class="tl-cmd">/careful</span><span class="tl-arrow">→</span><span class="tl-cmd" lang-zh>Claude Code 做金流</span><span class="tl-cmd" lang-en>CC builds payments</span><span class="tl-arrow">→</span><span class="tl-cmd">/review</span><span class="tl-arrow">→</span><span class="tl-cmd">/cso</span></div></div>
+      <div class="tl-row"><div class="tl-when">Week 4</div><div class="tl-cmds"><span class="tl-cmd">/design-review</span><span class="tl-arrow">→</span><span class="tl-cmd">/qa</span><span class="tl-arrow">→</span><span class="tl-cmd">/benchmark</span><span class="tl-arrow">→</span><span class="tl-cmd">/ship</span></div></div>
+      <div class="tl-row"><div class="tl-when" lang-zh>上線後</div><div class="tl-when" lang-en>Post-launch</div><div class="tl-cmds"><span class="tl-cmd">/document-release</span><span class="tl-cmd">/retro</span><span class="tl-cmd" lang-zh>/cso 每月</span><span class="tl-cmd" lang-en>/cso monthly</span><span class="tl-cmd" lang-zh>/benchmark 每月</span><span class="tl-cmd" lang-en>/benchmark monthly</span></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" lang-zh>這個流程的核心邏輯</div>
+    <div class="section-label" lang-en>The Core Logic</div>
+    <div class="callout">
+      <div class="callout-title" lang-zh>gstack 讓 Claude Code 不會「忘記」做這些事</div>
+      <div class="callout-title" lang-en>gstack makes sure Claude Code doesn't skip these steps</div>
+      <p lang-zh>每一個 gstack 指令對應一個你在專業開發團隊裡本來就該做的事：產品評審、架構評審、code review、QA、安全審查、效能測試、發布管理。</p>
+      <p lang-en>Every gstack command corresponds to something a professional development team already does: product review, architecture review, code review, QA, security audit, performance testing, release management.</p>
+      <p lang-zh><strong>gstack 讓一個人用 Claude Code 獨立完成這些事變得可行。不是因為 Claude Code 比人聰明，是因為它讓你不會「忘記」走這些步驟。</strong></p>
+      <p lang-en><strong>gstack makes it feasible for one person with Claude Code to do all of this alone. Not because Claude Code is smarter than a team — but because it ensures you never skip the steps.</strong></p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+let lang = 'zh';
+let current = 'what';
+
+// LANG
+document.getElementById('btn-zh').addEventListener('click', () => setLang('zh'));
+document.getElementById('btn-en').addEventListener('click', () => setLang('en'));
+
+function setLang(l) {
+  lang = l;
+  document.body.classList.toggle('en', l === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', l === 'zh');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.documentElement.lang = l === 'en' ? 'en' : 'zh-TW';
+  document.title = l === 'en' ? 'gstack Complete Guide' : 'gstack 完整教學';
+}
+
+// NAV
+function goTo(pageId) {
+  if (pageId === current) return;
+  const oldEl = document.getElementById('page-' + current);
+  const newEl = document.getElementById('page-' + pageId);
+  if (!newEl) return;
+  if (oldEl) {
+    oldEl.classList.add('exit');
+    setTimeout(() => oldEl.classList.remove('active', 'exit'), 220);
+  }
+  setTimeout(() => {
+    newEl.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, 110);
+  document.querySelectorAll('.nav-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.page === pageId)
+  );
+  current = pageId;
+}
+
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => goTo(tab.dataset.page));
+});
+
+// CMD EXPAND
+function toggleCmd(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
