@@ -897,18 +897,24 @@ function clearData() {
 }
 
 window.addEventListener('load', () => {
-  const saved = localStorage.getItem('gymData');
-  if (saved) {
-    try {
-      trainingData = JSON.parse(saved);
-      if (trainingData.length) { updateAll(); return; }
-    } catch(e) {}
-  }
-  const parsed = parseTSV(RAW_DATA);
-  if (parsed.length) {
-    trainingData = dedup(parsed);
-    localStorage.setItem('gymData', JSON.stringify(trainingData));
-    updateAll();
+  try {
+    const saved = localStorage.getItem('gymData');
+    if (saved) {
+      try {
+        trainingData = JSON.parse(saved);
+        if (trainingData.length) { updateAll(); return; }
+      } catch(e) {}
+    }
+    const parsed = parseTSV(RAW_DATA);
+    if (parsed.length) {
+      trainingData = dedup(parsed);
+      localStorage.setItem('gymData', JSON.stringify(trainingData));
+      updateAll();
+    } else {
+      document.body.insertAdjacentHTML('afterbegin', '<pre style="color:orange;padding:20px">WARNING: parseTSV returned 0 records</pre>');
+    }
+  } catch(e) {
+    document.body.insertAdjacentHTML('afterbegin', '<pre style="color:red;padding:20px">ERROR: ' + e.message + '\n' + e.stack + '</pre>');
   }
 });
 </script>
