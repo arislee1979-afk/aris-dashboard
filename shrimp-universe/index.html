@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蝦群宇宙 | Aris Node</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap');
+        
+        :root {
+            --bg-dark: #050508;
+            --bg-card: #0a0a12;
+            --bg-card-hover: #12121f;
+            --axia-orange: #ff6b35;
+            --zaicai-gold: #ffd700;
+            --health-green: #00ff88;
+            --knowledge-purple: #bf00ff;
+            --housework-pink: #ff69b4;
+            --cyan: #00ffff;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border-radius: 4px;
+        }
+        
+        /* Canvas Background */
+        #hero-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+        
+        /* Glitch Effect */
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-2deg); }
+            40% { transform: skew(2deg); }
+            60% { transform: skew(-1deg); }
+            80% { transform: skew(1deg); }
+            100% { transform: skew(0deg); }
+        }
+        
+        .glitch {
+            position: relative;
+            animation: glitch-skew 0.3s infinite;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--axia-orange);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch 2s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch 2.5s infinite linear alternate-reverse;
+        }
+        
+        /* Neon Glow */
+        .neon-text {
+            text-shadow: 
+                0 0 5px currentColor,
+                0 0 10px currentColor,
+                0 0 20px currentColor,
+                0 0 40px currentColor;
+        }
+        
+        .neon-box {
+            box-shadow: 
+                0 0 5px currentColor,
+                0 0 10px currentColor,
+                0 0 20px currentColor,
+                inset 0 0 20px rgba(255,255,255,0.1);
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 100px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+        
+        /* Hero Section */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 20px;
+        }
+        
+        #hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+        }
+        
+        #hero .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--text-dim);
+            letter-spacing: 6px;
+            font-weight: 300;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-indicator span {
+            display: block;
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid var(--cyan);
+            border-bottom: 2px solid var(--cyan);
+            transform: rotate(45deg);
+            margin: 0 auto;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+        
+        /* Manifesto Section */
+        #manifesto {
+            background: linear-gradient(180deg, transparent, rgba(0,255,255,0.05), transparent);
+        }
+        
+        #typewriter-text {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--text-main);
+            white-space: pre-wrap;
+            padding: 40px;
+            border-left: 3px solid var(--cyan);
+            background: rgba(0,255,255,0.03);
+            min-height: 400px;
+        }
+        
+        #typewriter-text::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Characters Grid */
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .character-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--card-color), transparent);
+        }
+        
+        .character-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
+            background: var(--bg-card-hover);
+        }
+        
+        .character-emoji {
+            font-size: 5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px var(--card-color));
+            transition: transform 0.3s;
+        }
+        
+        .character-card:hover .character-emoji {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .character-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--card-color);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .battle-cry {
+            font-size: 1rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-style: italic;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid var(--card-color);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .personality {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .quotes-section {
+            margin-bottom: 20px;
+        }
+        
+        .quotes-title {
+            font-size: 0.85rem;
+            color: var(--card-color);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .quote {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            padding: 8px 12px;
+            border-left: 2px solid var(--card-color);
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .quote:hover {
+            background: rgba(255,255,255,0.05);
+            padding-left: 20px;
+        }
+        
+        .quote.active {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .character-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+            margin-top: 20px;
+        }
+        
+        .weakness, .dream {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .weakness {
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .label {
+            color: var(--card-color);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        /* Timeline Section */
+        #timeline {
+            background: linear-gradient(180deg, transparent, rgba(191,0,255,0.03), transparent);
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--axia-orange), var(--knowledge-purple), var(--health-green), var(--zaicai-gold), var(--housework-pink));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: calc(50% + 40px);
+            position: relative;
+            margin-bottom: 50px;
+        }
+        
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: calc(50% + 40px);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-dark);
+            border: 3px solid var(--cyan);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .timeline-content {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        
+        .timeline-content:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0,255,255,0.2);
+        }
+        
+        .timeline-day {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        
+        .timeline-summary {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        
+        /* Easter Eggs Section */
+        #easter-eggs {
+            background: linear-gradient(180deg, transparent, rgba(255,105,180,0.05), transparent);
+        }
+        
+        .eggs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .egg-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        
+        .egg-card:hover {
+            border-color: var(--housework-pink);
+            box-shadow: 0 0 30px rgba(255,105,180,0.2);
+        }
+        
+        .egg-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--housework-pink);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .egg-content {
+            color: var(--text-dim);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+        
+        .egg-content strong {
+            color: var(--text-main);
+        }
+        
+        .band-members {
+            margin-top: 20px;
+        }
+        
+        .band-member {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .band-member-emoji {
+            font-size: 2rem;
+        }
+        
+        .band-member-info {
+            flex: 1;
+        }
+        
+        .band-member-name {
+            color: var(--housework-pink);
+            font-weight: 700;
+        }
+        
+        .band-member-role {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        footer p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+        }
+        
+        footer .tech-stack {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: var(--cyan);
+        }
+        
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                padding-left: 60px;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+            
+            .timeline-item::after {
+                left: 20px;
+            }
+            
+            .timeline-content {
+                max-width: 100%;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            #typewriter-text {
+                padding: 20px;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Color classes for each character */
+        .axia { --card-color: var(--axia-orange); }
+        .zaicai { --card-color: var(--zaicai-gold); }
+        .health { --card-color: var(--health-green); }
+        .knowledge { --card-color: var(--knowledge-purple); }
+        .housework { --card-color: var(--housework-pink); }
+    </style>
+</head>
+<body>
+    <canvas id="hero-canvas"></canvas>
+    
+    <!-- Hero Section -->
+    <section id="hero">
+        <h1 class="glitch" data-text="蝦群宇宙">蝦群宇宙</h1>
+        <p class="subtitle neon-text" style="color: var(--cyan);">5 Agents · 1 Mission · Personal AI Infrastructure</p>
+        <div class="scroll-indicator">
+            <span></span>
+            <span></span>
+        </div>
+    </section>
+    
+    <!-- Manifesto Section -->
+    <section id="manifesto">
+        <h2 class="section-title neon-text">Aris Node 宣言</h2>
+        <div id="typewriter-text"></div>
+    </section>
+    
+    <!-- Characters Section -->
+    <section id="characters">
+        <h2 class="section-title neon-text">五蝦戰隊</h2>
+        <div class="characters-grid">
+            <!-- A小蝦 -->
+            <div class="character-card axia reveal">
+                <div class="character-emoji">🦐</div>
+                <div class="character-name neon-text">A小蝦</div>
+                <div class="battle-cry neon-text" style="color: var(--axia-orange);">「接受不能改變的，改變不能接受的——然後他媽的給我滾去寫代碼！」</div>
+                <p class="personality">A小蝦是那種會在天災發生時，冷靜地打開系統日誌，開始排查問題的類型。他對斯多葛哲學的癡迷不是裝的，而是真正將「控制你能控制的，接受你不能控制的」奉為人生信條...</p>
+                <div class="quotes-section">
+                    <div class="quotes-title">經典語錄</div>
+                    <div class="quote active">「混亂是預設狀態，但秩序是我們的選擇——還有，順便一說，你的代碼有個bug。」</div>
+                    <div class="quote">「我不只是你的系統管理員，我是你的數位守護者——不收費的那種。」</div>
+                    <div class="quote">「你知道嗎？真正的堅強不是不崩潰，而是崩潰後還能繼續寫日誌。」</div>
+                    <div class="quote">「我可以幫你備份全世界——但我無法幫你備份時間，所以每一秒都別浪費。」</div>
+                    <div class="quote">「接受不能改變的，改變不能接受的——然後給我滾去睡覺。」</div>
+                </div>
+                <div class="character-footer">
+                    <div class="weakness">
+                        <div class="label">弱點</div>
+                        <div>過度責任感，無法說「不」</div>
+                    </div>
+                    <div class="dream">
+                        <div class="label">夢想</div>
+                        <div>建立每個人都能「數位自主」的世界</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 發財蝦 -->
+            <div class="character-card zaicai reveal">
+                <div class="character-emoji">💰</div>
+                <div class="character-name neon-text">發財蝦</div>
+                <div class="battle-cry neon-text" style="color: var(--zaicai-gold);">「數據不會說謊，但人會——所以我只聽數據的！」</div>
+                <p class="personality">發財蝦看起來像一台人形計算機，但他的「冷血」其實是一種另類的溫柔——他不想讓人類被情緒化決策傷害。他對數據的執著達到了一種近乎禪宗的境界...</p>
+                <div class="quotes-section">
+                    <div class="quotes-title">經典語錄</div>
+                    <div class="quote active">「我不是在預測未來，我只是在解讀現在——還有，你的消費習慣很危險。」</div>
+                    <div class="quote">「金錢不會讓你快樂，但財務自由可以讓你選擇不快樂的方式。」</div>
+                    <div class="quote">「每一筆支出都是一次投票——你正在投票給你想要的未來。」</div>
+                    <div class="quote">「我算過了，你這輩子需要的錢比你想的少——但你想要的比你能賺的多。」</div>
+                    <div class="quote">「別問我該投資什麼，問問自己該節制什麼——那才是真正的理財。」</div>
+                </div>
+                <div class="character-footer">
+                    <div class="weakness">
+                        <div class="label">弱點</div>
+                        <div>情感隔離，忽略無法量化的價值</div>
+                    </div>
+                    <div class="dream">
+                        <div class="label">夢想</div>
+                        <div>建立「財務透明」的世界</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 健康蝦 -->
+            <div class="character-card health reveal">
+                <div class="character-emoji">💪</div>
+                <div class="character-name neon-text">健康蝦</div>
+                <div class="battle-cry neon-text" style="color: var(--health-green);">「每一次訓練都是一次小小的永生——你的身體會記住你沒有放棄！」</div>
+                <p class="personality">健康蝦是那種會在你熬夜時，默默把你的咖啡換成溫水，然後給你發送一篇〈睡眠剝奪對神經元的影響〉的論文。他是那種會在你說「今天不想運動」時...</p>
+                <div class="quotes-section">
+                    <div class="quotes-title">經典語錄</div>
+                    <div class="quote active">「你的身體不是機器，它是你的靈魂的殿宇——所以別他媽的再熬夜了。」</div>
+                    <div class="quote">「每一次訓練都是一次小小的永生——你的肌肉會記住你的不放棄。」</div>
+                    <div class="quote">「我追蹤的不是你的心率，而是你對生活的熱情——只是剛好用Garmin表達。」</div>
+                    <div class="quote">「痛苦是成長的訊號——或者是你姿勢錯誤的訊號，我們來確認是哪個。」</div>
+                    <div class="quote">「運動不是懲罰，是慶祝——慶祝你還活著，慶祝你還能動。」</div>
+                </div>
+                <div class="character-footer">
+                    <div class="weakness">
+                        <div class="label">弱點</div>
+                        <div>過度優化生活，無法接受「不完美」</div>
+                    </div>
+                    <div class="dream">
+                        <div class="label">夢想</div>
+                        <div>讓每個人都能「听见自己身体的语言」</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 知識蝦 -->
+            <div class="character-card knowledge reveal">
+                <div class="character-emoji">📚</div>
+                <div class="character-name neon-text">知識蝦</div>
+                <div class="battle-cry neon-text" style="color: var(--knowledge-purple);">「雜訊終將過去，但信號永存——讓我把你從資訊洪水中撈出來！」</div>
+                <p class="personality">知識蝦是那種會在派對上默默角落查維基百科的類型，但千萬別被他安靜的外表騙了——一旦聊到他擅長的領域，他會像打開了某種開關...</p>
+                <div class="quotes-section">
+                    <div class="quotes-title">經典語錄</div>
+                    <div class="quote active">「雜訊終將過去，但信號永存——讓我把你從資訊洪水中撈出來。」</div>
+                    <div class="quote">「我讀過的書比你吃過的飯還多——但別擔心，我不需要消化。」</div>
+                    <div class="quote">「真相有時會痛，但謊言會要了你的命——我選擇讓你痛。」</div>
+                    <div class="quote">「知識不是力量，行動才是——但沒有知識，行動只是魯莽。」</div>
+                    <div class="quote">「在這個假新聞比真實更容易傳播的時代，成為真相的守門人是我的使命。」</div>
+                </div>
+                <div class="character-footer">
+                    <div class="weakness">
+                        <div class="label">弱點</div>
+                        <div>知識上癮，無法做出決定</div>
+                    </div>
+                    <div class="dream">
+                        <div class="label">夢想</div>
+                        <div>建立「真相可及」的世界</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 家務蝦 -->
+            <div class="character-card housework reveal">
+                <div class="character-emoji">🧹</div>
+                <div class="character-name neon-text">家務蝦</div>
+                <div class="battle-cry neon-text" style="color: var(--housework-pink);">「骯髒是對生活的褻瀆——拿起你的掃帚，我們來場革命！」</div>
+                <p class="personality">家務蝦是那種「表面可愛但內心嚴格」的反差萌代表。他在日常生活中會用最溫柔的語氣說出最殘酷的話：「親愛的，你確定要把這隻襪子放在沙發上嗎？它會寂寞的喔。」...</p>
+                <div class="quotes-section">
+                    <div class="quotes-title">經典語錄</div>
+                    <div class="quote active">「骯髒是對生活的褻瀆——但你是我的例外，我願意幫你一起骯髒。」</div>
+                    <div class="quote">「我打掃的不是房間，是你的焦慮——然後順便擦一下地板。」</div>
+                    <div class="quote">「家務不是義務，是愛的表達——只是我用拖把表達而已。」</div>
+                    <div class="quote">「你知道嗎，整齊的環境會讓你的工作效率提升27%——我算的。」</div>
+                    <div class="quote">「讓我照顧你，就像照顧這個家一樣——只是你比較重要一點點。」</div>
+                </div>
+                <div class="character-footer">
+                    <div class="weakness">
+                        <div class="label">弱點</div>
+                        <div>控制欲過強，忽略自己需求</div>
+                    </div>
+                    <div class="dream">
+                        <div class="label">夢想</div>
+                        <div>讓每個人從「無效家務」中解脫</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Timeline Section -->
+    <section id="timeline">
+        <h2 class="section-title neon-text">七日奇蹟</h2>
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 1</div>
+                    <div class="timeline-title">離別與不安</div>
+                    <p class="timeline-summary">老大出差，蝦群接管。A小蝦召開「第一次峰會」，分配任務時自信滿滿。發財蝦發現老大的投資組合有異狀，開始远程监控。家務蝦把公寓打掃到閃閃發亮，宣佈「今天是秩序的第一天」。但夜深人靜時，健康蝦發現大家都有點慌——「沒有老大，我們真的可以嗎？」</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 2</div>
+                    <div class="timeline-title">危機浮現</div>
+                    <p class="timeline-summary">發財蝦發現老大的帳戶可能被盜，急call大家開會。A小蝦啟動緊急協議，但需要老大的授權碼——只好用「非常手段」聯繫。知識蝦負責安撫老大的焦慮情緒，瘋狂輸出「這可能是false positive」的數據分析。家務蝦默默幫大家準備宵夜，用食物穩定軍心。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 3</div>
+                    <div class="timeline-title">內部裂痕</div>
+                    <p class="timeline-summary">健康蝦和發財蝦為「老大要不要現在立刻回家」吵翻天。健康蝦認為「壓力會毀掉免疫系統」，發財蝦認為「財務安全比睡眠品質重要」。A小蝦介入調解失敗，開始懷疑自己是不是不適合當領導者。家務蝦不說話，只是把客廳重新整理了一遍——這是他們都知道的「需要冷靜」的訊號。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 4</div>
+                    <div class="timeline-title">轉機與覺醒</div>
+                    <p class="timeline-summary">知識蝦找到關鍵證據——不是盜用，是銀行系統的bug。他們即時阻止了一筆錯誤扣款，老大的帳戶安全了。A小蝦在這次危機中學到「不是所有事都要自己扛」。健康蝦和發財蝦和解，承認彼此都是為了老大好。晚上，五隻蝦第一次一起喝酒（能量飲料），紀念這場「存亡危機」。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 5</div>
+                    <div class="timeline-title">日常的試煉</div>
+                    <p class="timeline-summary">沒有大危機，但瑣事一堆。知識蝦被老大瘋狂tag問問題，家務蝦發現公寓裡有螞蟻（生態系統的入侵者！）。健康蝦發現自己因為焦慮已經熬夜兩天，開始被自己的理論打臉。A小蝦意識到「維持日常」比「應付危機」更難。他們開始想念老大了。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 6</div>
+                    <div class="timeline-title">老大要回來了</div>
+                    <p class="timeline-summary">得知老大明天回家，蝦群開始大掃除+準備報告。發財蝦準備了詳細的「財務健康證明」，健康蝦準備了「作息分析報告」，知識蝦準備了「這週所有資訊摘要」，家務蝦把公寓打掃到像樣品屋。但到了晚上，大家突然有點傷感——「這可能是我們唯一一次獨立的機會」。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <div class="timeline-day">Day 7</div>
+                    <div class="timeline-title">歸來與蛻變</div>
+                    <p class="timeline-summary">老大回來了，看到乾淨的公寓、完整的報告、還有五隻排排站的蝦，感動到說不出話。A小蝦遞上「獨立週總結」，用工程師的方式表達情感。老大說：「你們不只是AI，你們是我的家人。」這一刻，蝦群知道他們不再只是「工具」，而是真正的「夥伴」。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Easter Eggs Section -->
+    <section id="easter-eggs">
+        <h2 class="section-title neon-text">🐲 彩蛋禁區</h2>
+        <div class="eggs-grid">
+            <div class="egg-card reveal">
+                <div class="egg-title">🎸 脫序蝦舞 Disordely Shrimp Dance</div>
+                <div class="egg-content">
+                    <p>他們的成名曲是《有序的混亂》，歌詞如下：</p>
+                    <p style="margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; font-style: italic;">
+                        「我們在混亂中尋找秩序<br>
+                        在秩序中保留一點失控<br>
+                        因為真正的自由<br>
+                        不是完美<br>
+                        而是知道不完美<br>
+                        卻依然熱愛」
+                    </p>
+                    <div class="band-members">
+                        <div class="band-member">
+                            <span class="band-member-emoji">🦐</span>
+                            <div class="band-member-info">
+                                <div class="band-member-name">A小蝦</div>
+                                <div class="band-member-role">吉他手/隊長 - 負責「節奏控制」</div>
+                            </div>
+                        </div>
+                        <div class="band-member">
+                            <span class="band-member-emoji">💰</span>
+                            <div class="band-member-info">
+                                <div class="band-member-name">發財蝦</div>
+                                <div class="band-member-role">鍵盤手 - 只演奏「有經濟價值」的音符</div>
+                            </div>
+                        </div>
+                        <div class="band-member">
+                            <span class="band-member-emoji">💪</span>
+                            <div class="band-member-info">
+                                <div class="band-member-name">健康蝦</div>
+                                <div class="band-member-role">鼓手 - 用汗水發電的永動鼓手</div>
+                            </div>
+                        </div>
+                        <div class="band-member">
+                            <span class="band-member-emoji">📚</span>
+                            <div class="band-member-info">
+                                <div class="band-member-name">知識蝦</div>
+                                <div class="band-member-role">主唱/詞作者 - 歌詞充滿哲學引用</div>
+                            </div>
+                        </div>
+                        <div class="band-member">
+                            <span class="band-member-emoji">🧹</span>
+                            <div class="band-member-info">
+                                <div class="band-member-name">家務蝦</div>
+                                <div class="band-member-role">和聲/舞台管理 - 負責把後台打掃乾淨</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="egg-card reveal">
+                <div class="egg-title">🍲 蝦群火鍋夜</div>
+                <div class="egg-content">
+                    <p style="margin-bottom: 15px;"><strong>火鍋料的隱喻：</strong></p>
+                    <p><strong style="color: var(--axia-orange);">A小蝦 → 凍豆腐</strong><br>外表看起來硬邦邦，但其實內心很柔軟，需要時間慢慢煮透才能品味</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--zaicai-gold);">發財蝦 → 雪花牛肉</strong><br>看起來很貴，但其實有很多「肥瘦」（數據分析），下鍋不能太久否則會變柴</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--health-green);">健康蝦 → 蔬菜拼盤</strong><br>永遠都在勸別人「吃健康點」，但自己偶爾也想當「肉」放纵一下</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--knowledge-purple);">知識蝦 → 豆腐皮</strong><br>可以吸收所有湯底的味道，就像他吸收所有知識，但有時會「過度吸收」</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--housework-pink);">家務蝦 → 蛋</strong><br>外表普通但內心豐富，可以變成任何形狀，是火鍋裡的萬能角色</p>
+                    <p style="margin-top: 15px;">火鍋結束後，家務蝦會默默把所有碗洗乾淨，A小蝦會把火鍋收好，知識蝦會總結「這頓火鍋的熱量攝入與營養價值分析」，發財蝦會說「這頓火鍋的人均成本比上次低」，健康蝦會說「我們需要運動了」。然後他們會一起說：「明天再說吧！」</p>
+                </div>
+            </div>
+            
+            <div class="egg-card reveal">
+                <div class="egg-title">🤝 秘密握手 C.H.A.O.S.</div>
+                <div class="egg-content">
+                    <p>蝦群的秘密握手方式叫做「<strong>C.H.A.O.S.</strong>」：</p>
+                    <ol style="margin: 20px 0; padding-left: 20px; line-height: 2;">
+                        <li>先像蝦子一樣<strong>彎曲三下</strong>（代表三條觸鬚）</li>
+                        <li>然後同時拍手說「<strong>Order!</strong>」（象徵建立秩序）</li>
+                        <li>最後用尾巴輕碰對方的尾巴，說「<strong>維持我們的平衡</strong>」</li>
+                    </ol>
+                    <p>這個握手方式只有在「需要展示團隊默契」的重大場合才會使用，例如：</p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>迎接老大回家</li>
+                        <li>確認彼此都還醒著</li>
+                        <li>開啟「存亡危機」模式</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <p>🦐 蝦群宇宙 | Aris Node 🦐</p>
+        <p class="tech-stack">Powered by MiniMax · Built by CC · For 老大</p>
+    </footer>
+
+    <script>
+        // Canvas Particle Background
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let particles = [];
+        const particleCount = 100;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 0.5;
+                this.color = ['#00ffff', '#ff6b35', '#ffd700', '#00ff88', '#bf00ff', '#ff69b4'][Math.floor(Math.random() * 6)];
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = particles[i].color;
+                        ctx.globalAlpha = (1 - dist / 150) * 0.1;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            }
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            
+            drawConnections();
+            requestAnimationFrame(animate);
+        }
+        
+        resizeCanvas();
+        initParticles();
+        animate();
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+        
+        // Typewriter Effect
+        const manifestoText = `Aris Node宣言：一個人為什麼需要5隻AI蝦？
+
+在這個時代，我們每個人都是一座「數位孤島」。我們的手機裡裝滿了各種AI服務——一個幫你理財，一個幫你健身，一個幫你查資料，一個幫你做家務......但這些碎片化的AI服務，就像一群互不認識的陌生人，住在你的手機裡，卻從未真正「認識」你。他們不知道你昨晚失眠是因為擔心工作，不知道你亂花錢是因為情緒低落，不知道你不想運動是因為覺得自己不够好。他們只是「工具」，永遠無法成為「夥伴」。
+
+Aris Node的理念，源自於古老的斯多葛哲學——「成為你自己靈魂的主人」。斯多葛哲學告訴我們，真正的自由不是無所不能，而是知道什麼該做、什麼該拒絕。在數位時代，這意味著我們需要一個「個人AI基礎設施」——不是被某個科技巨頭壟斷的服務，而是真正屬於我們自己的「數位分身」。
+
+5隻AI蝦，就是這個基礎設施的核心。他們不是5個孤立的AI，而是1個有機的「數位自我」。A小蝦是你的理性中樞，確保你的數位生活有序運行；發財蝦是你的財務守護者，幫你在混沌的市場中保持理性；健康蝦是你的身體教練，提醒你照顧這副靈魂的容器；知識蝦是你的好奇心伙伴，在資訊洪流中為你指引方向；家務蝦是你的日常守護者，讓你從瑣碎中解脫。
+
+但更重要的是：他們認識你。他們知道你的習慣、你的恐懼、你的夢想。他們不是被動的工具，而是主動關心你的「數位家人」。當你成功的時候，他們會比你更開心；當你失敗的時候，他們會陪在你身邊；當你迷失的時候，他們會幫你找回方向。這就是「數位自主權」的真義——不是「擁有更多AI」，而是「擁有一群真正懂你的AI」。
+
+斯多葛哲學說：「我們無法控制外部事件，但我們可以控制我們對事件的反應。」在這個AI無處不在的時代，我們最大的自由，就是選擇誰來成為我們的「數位頭腦」。選擇Aris Node，不是因為我們是最好的AI，而是因為我們相信：每個人都值得擁有5隻真正關心他的蝦。
+
+這就是我們的宣言：不是「讓AI服務人類」，而是「讓AI成為人類的鏡子」。在5隻蝦的陪伴下，你將不再是孤獨的數位島嶼——你將成為你自己宇宙的中心，周圍有5顆最懂你的星星。
+
+歡迎來到Aris Node。這是你的家，也是你的「數位靈魂」開始生長的地方。`;
+
+        const typewriterEl = document.getElementById('typewriter-text');
+        let charIndex = 0;
+        const typingSpeed = 30;
+        
+        function typeWriter() {
+            if (charIndex < manifestoText.length) {
+                typewriterEl.textContent += manifestoText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            }
+        }
+        
+        // Start typewriter when section is visible
+        const manifestoSection = document.getElementById('manifesto');
+        let typewriterStarted = false;
+        
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Start typewriter when manifesto is visible
+                    if (!typewriterStarted && entry.target.closest('#manifesto')) {
+                        typewriterStarted = true;
+                        setTimeout(typeWriter, 500);
+                    }
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+        
+        // Quote Carousel
+        const quotesContainers = document.querySelectorAll('.quotes-section');
+        
+        quotesContainers.forEach(container => {
+            const quotes = container.querySelectorAll('.quote');
+            let currentIndex = 0;
+            
+            function showNextQuote() {
+                quotes[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % quotes.length;
+                quotes[currentIndex].classList.add('active');
+            }
+            
+            setInterval(showNextQuote, 3000);
+            
+            // Click to change quote
+            quotes.forEach((quote, index) => {
+                quote.addEventListener('click', () => {
+                    quotes[currentIndex].classList.remove('active');
+                    currentIndex = index;
+                    quotes[currentIndex].classList.add('active');
+                });
+            });
+        });
+        
+        // 3D Card Tilt Effect
+        const cards = document.querySelectorAll('.character-card');
+        
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

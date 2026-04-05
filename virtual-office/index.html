@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw Virtual Office</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 10px; }
+  
+  .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+  
+  .wrapper { position: relative; }
+  
+  /* Office floor */
+  .office {
+    position: relative;
+    width: 960px; height: 580px;
+    background: #5a7a5a;
+    border: 4px solid #2a2a4a;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+  
+  /* Floor pattern */
+  .floor {
+    position: absolute; inset: 0;
+    background:
+      repeating-conic-gradient(#c8b89a 0% 25%, #bfaf8f 0% 50%) 0 0 / 64px 64px;
+  }
+  
+  /* Wall */
+  .wall {
+    position: absolute; top: 0; left: 0; right: 0; height: 64px;
+    background: linear-gradient(180deg, #7a8aaa 0%, #6a7a9a 70%, #5a6a8a 100%);
+    border-bottom: 4px solid #4a5a7a;
+    z-index: 1;
+  }
+  .wall-title {
+    position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+    color: #cdf; font-size: 16px; font-weight: bold; letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(170,200,255,0.6);
+  }
+  
+  /* Decoration sprites */
+  .deco {
+    position: absolute;
+    image-rendering: pixelated;
+    z-index: 3;
+  }
+
+  /* ── Workstation: desk + animated character ── */
+  .workstation {
+    position: absolute;
+    width: 128px; height: 160px;
+    z-index: 5;
+  }
+
+  /* The desk image sits at bottom, covering character's lower body */
+  .workstation .desk-img {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 128px; height: 128px;
+    image-rendering: pixelated;
+    z-index: 12;
+  }
+
+  /* Animated character IN FRONT of desk (back facing camera, upper body covers desk) */
+  .workstation .char-container {
+    position: absolute;
+    /* Character sits at desk, back to camera, upper body overlaps desk */
+    bottom: 24px; left: 32px;
+    width: 64px; height: 64px;
+    overflow: hidden;
+    z-index: 14; /* Above desk (z-index 12) so upper body covers it */
+    image-rendering: pixelated;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border: 0; outline: 0;
+    will-change: contents;
+  }
+  /* Show top portion - head + shoulders + upper torso visible above desk */
+  .workstation .char-container.seated {
+    height: 48px;
+    overflow: hidden;
+    clip-path: inset(0 0 0 0);
+    -webkit-clip-path: inset(0 0 0 0);
+  }
+  .workstation .char-sprite {
+    position: absolute;
+    top: -1px; left: 0;
+    height: 66px;  /* 64 + 2px to compensate for clip */
+    image-rendering: pixelated;
+    will-change: transform;
+    clip-path: inset(1px 0);
+    -webkit-clip-path: inset(1px 0);
+    /* 6 frames, each 64px wide = 384px total */
+    animation: work-anim 1.2s steps(6) infinite;
+  }
+  @keyframes work-anim {
+    from { transform: translateX(0); }
+    to { transform: translateX(-384px); }
+  }
+
+  /* Idle: slower subtle animation */
+  .workstation.idle .char-sprite {
+    animation: work-anim 2.4s steps(6) infinite;
+  }
+
+  /* Offline: no character, just empty desk */
+  .workstation.offline .char-container { display: none; }
+
+  /* Name label */
+  .workstation .label {
+    position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 11px; color: #fff;
+    background: rgba(0,0,0,0.75);
+    padding: 2px 8px;
+    border-radius: 3px;
+    z-index: 20;
+  }
+  
+  /* Status dot */
+  .workstation .status-dot {
+    position: absolute; top: 0px; right: 0px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.4);
+    z-index: 20;
+    animation: pulse 2s infinite;
+  }
+  
+  /* Task bubble on hover */
+  .workstation .task-bubble {
+    position: absolute; bottom: -38px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 10px; color: #ddd;
+    background: rgba(20,20,50,0.95);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #556;
+    z-index: 30;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .workstation:hover .task-bubble { opacity: 1; }
+  
+  /* Busy typing indicator */
+  .workstation.busy::after {
+    content: '💬';
+    position: absolute; top: -12px; left: 12px;
+    font-size: 18px;
+    animation: float-bubble 1.5s ease-in-out infinite;
+    z-index: 25;
+  }
+  @keyframes float-bubble {
+    0%, 100% { transform: translateY(0); opacity: 0.8; }
+    50% { transform: translateY(-10px); opacity: 1; }
+  }
+
+  /* ── Walking character ── */
+  .walker {
+    position: absolute;
+    width: 64px; height: 64px;
+    overflow: hidden;
+    clip-path: inset(0 0 0 0);
+    -webkit-clip-path: inset(0 0 0 0);
+    z-index: 10;
+    /* transition duration set dynamically via JS */
+    transition-property: left, top;
+    transition-timing-function: linear;
+    image-rendering: pixelated;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border: 0; outline: 0;
+  }
+  .walker .sprite-sheet {
+    position: absolute; top: -1px; left: 0;
+    height: 66px;  /* 64 + 2px to compensate for clip */
+    image-rendering: pixelated;
+    will-change: transform;
+    clip-path: inset(1px 0);
+    -webkit-clip-path: inset(1px 0);
+    animation: walk-cycle 0.5s steps(6) infinite;
+  }
+  @keyframes walk-cycle {
+    from { transform: translateX(0); }
+    to { transform: translateX(-384px); }
+  }
+  .walker .walker-label {
+    position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 9px; color: #ff0; 
+    background: rgba(0,0,0,0.7);
+    padding: 1px 5px; border-radius: 2px;
+  }
+  
+  /* Status colors */
+  .st-online { background: #4f4; box-shadow: 0 0 6px #4f4; }
+  .st-busy { background: #fa0; box-shadow: 0 0 6px #fa0; }
+  .st-idle { background: #48f; box-shadow: 0 0 6px #48f; }
+  .st-offline { background: #666; box-shadow: none; animation: none; }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  /* Side panel */
+  .panel {
+    position: absolute; top: 10px; right: -240px;
+    width: 225px;
+    background: rgba(15,15,35,0.95);
+    border: 2px solid #446;
+    border-radius: 8px;
+    padding: 14px;
+    color: #ccc;
+    font-size: 11px;
+  }
+  .panel h3 {
+    color: #8af; font-size: 14px; margin-bottom: 10px;
+    border-bottom: 1px solid #335; padding-bottom: 6px;
+  }
+  .agent-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #1a1a3a;
+  }
+  .agent-row .dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .agent-row .aname { color: #eee; font-weight: bold; font-size: 12px; }
+  .agent-row .astatus { color: #888; font-size: 9px; margin-top: 1px; }
+  
+  /* Clock */
+  .clock {
+    position: absolute; top: 10px; left: -180px;
+    width: 165px;
+    background: rgba(15,15,35,0.95);
+    border: 2px solid #446;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #8af;
+    font-size: 22px; font-weight: bold;
+    text-align: center;
+  }
+  .clock .date { font-size: 11px; color: #888; margin-top: 2px; }
+  .clock .uptime { font-size: 9px; color: #666; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="clock">
+    <div id="time">00:00:00</div>
+    <div class="date" id="date"></div>
+    <div class="uptime">Gateway uptime: —</div>
+    <div class="uptime" id="last-update">更新: --:--:--</div>
+  </div>
+
+  <div class="office">
+    <div class="floor"></div>
+    <div class="wall">
+      <div class="wall-title">🏢 OpenClaw Virtual Office</div>
+    </div>
+    
+    <!-- Decorations -->
+    <img class="deco" src="assets/office/plant.png" style="left:16px; top:72px; width:48px; height:48px;">
+    <img class="deco" src="assets/office/plant.png" style="left:896px; top:72px; width:48px; height:48px;">
+    <img class="deco" src="assets/office/coffee-maker.png" style="left:820px; top:440px; width:96px; height:96px;">
+    <img class="deco" src="assets/office/cabinet.png" style="left:16px; top:440px; width:96px; height:96px;">
+    <img class="deco" src="assets/office/printer.png" style="left:130px; top:460px; width:80px; height:80px;">
+    <img class="deco" src="assets/office/water-cooler.png" style="left:740px; top:480px; width:48px; height:96px;">
+    <img class="deco" src="assets/office/office-partitions-1.png" style="left:16px; top:300px; width:96px; height:96px;">
+    
+    <!-- Meeting table -->
+    <img class="deco" src="assets/office/writing-table.png" style="left:400px; top:380px; width:160px; height:160px;">
+    
+    <!-- Rest area: chairs (vertical layout) -->
+    <img class="deco" src="assets/office/chair.png" style="left:280px; top:440px; width:48px; height:48px;">
+    <img class="deco" src="assets/office/chair.png" style="left:280px; top:500px; width:48px; height:48px;">
+    <!-- Sink (far right, vertical layout) -->
+    <img class="deco" src="assets/office/sink.png" style="left:890px; top:380px; width:64px; height:64px;">
+    
+    <!-- Dynamic agent workstations -->
+    <div id="agents-container"></div>
+    
+    <!-- Walkers container (multiple idle agents) -->
+    <div id="walkers-container"></div>
+  </div>
+
+  <div class="panel">
+    <h3>📊 Agents: <span id="online-count">0</span>/0 在線</h3>
+    <div id="agent-list"></div>
+  </div>
+</div>
+
+<script>
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+const statusLabels = {
+  online: { cls: 'st-online', label: '🟢 在線' },
+  busy: { cls: 'st-busy', label: '🟠 忙碌中' },
+  idle: { cls: 'st-idle', label: '🔵 閒置' },
+  offline: { cls: 'st-offline', label: '⚫ 離線' },
+};
+
+// Sprite mapping: agent id → MetroCity sprite prefix
+const SPRITE_MAP = {
+  main:      'agent-boss',
+  tech:      'agent-tech',
+  admin:     'agent-admin',
+  listing:   'agent-listing',
+  marketing: 'agent-marketing',
+  dev:       'agent-dev',
+};
+
+const DESK_POSITIONS = [
+  { left: 60,  top: 80 },
+  { left: 210, top: 80 },
+  { left: 360, top: 80 },
+  { left: 510, top: 80 },
+  { left: 660, top: 80 },
+  { left: 810, top: 80 },
+];
+
+// ── Collision zones: rectangles where walkers cannot go ──
+// Format: {x, y, w, h} — furniture/deco bounding boxes
+const OBSTACLES = [
+  // Desks row (6 desks, with margin)
+  { x: 40, y: 60, w: 900, h: 200 },
+  // Plants
+  { x: 0, y: 60, w: 70, h: 60 },
+  { x: 880, y: 60, w: 80, h: 60 },
+  // Office partitions
+  { x: 0, y: 280, w: 120, h: 110 },
+  // Cabinet + printer
+  { x: 0, y: 400, w: 240, h: 160 },
+  // Writing/meeting table (large margin — characters must go AROUND)
+  { x: 330, y: 310, w: 280, h: 260 },
+  // Coffee maker area
+  { x: 810, y: 430, w: 110, h: 110 },
+  // Water cooler
+  { x: 725, y: 465, w: 70, h: 110 },
+  // Sink (far right)
+  { x: 880, y: 370, w: 80, h: 80 },
+  // Chairs area (vertical)
+  { x: 270, y: 430, w: 65, h: 130 },
+  // Wall
+  { x: 0, y: 0, w: 960, h: 70 },
+];
+
+function isWalkable(x, y, size = 64) {
+  // Check bounds
+  if (x < 10 || x + size > 950 || y < 70 || y + size > 570) return false;
+  // Check obstacles
+  for (const o of OBSTACLES) {
+    if (x + size > o.x && x < o.x + o.w && y + size > o.y && y < o.y + o.h) return false;
+  }
+  return true;
+}
+
+// Check if the entire path from (x1,y1) to (x2,y2) is clear
+function isPathClear(x1, y1, x2, y2) {
+  const steps = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) / 16; // check every 16px
+  for (let i = 0; i <= steps; i++) {
+    const t = steps > 0 ? i / steps : 0;
+    const px = x1 + (x2 - x1) * t;
+    const py = y1 + (y2 - y1) * t;
+    if (!isWalkable(px, py)) return false;
+  }
+  return true;
+}
+
+// Rest spots: places idle agents like to hang out
+const REST_SPOTS = [
+  { x: 800, y: 370, label: 'coffee' },    // In front of coffee maker
+  { x: 750, y: 410, label: 'water' },     // In front of water cooler
+  { x: 340, y: 450, label: 'chair1' },    // In front of chairs (standing)
+  { x: 340, y: 510, label: 'chair2' },    // In front of chair 2
+  { x: 870, y: 320, label: 'sink' },      // In front of sink
+  { x: 200, y: 340, label: 'walk1' },     // Open floor left
+  { x: 700, y: 310, label: 'walk2' },     // Open floor right
+  { x: 150, y: 400, label: 'walk3' },     // Near partitions
+];
+
+function randomWalkablePoint() {
+  // 70% chance: go to a rest spot, 30% chance: random walkable point
+  if (Math.random() < 0.7) {
+    const spot = REST_SPOTS[Math.floor(Math.random() * REST_SPOTS.length)];
+    // Add slight randomness so multiple agents don't stack exactly
+    return { x: spot.x + (Math.random() - 0.5) * 20, y: spot.y + (Math.random() - 0.5) * 20 };
+  }
+  // Random walkable point
+  for (let i = 0; i < 50; i++) {
+    const x = 30 + Math.random() * 880;
+    const y = 270 + Math.random() * 250;
+    if (isWalkable(x, y)) return { x, y };
+  }
+  return { x: 300, y: 320 };
+}
+
+// Track active walkers
+let activeWalkers = {}; // keyed by agent id
+
+function renderAgents(agents) {
+  const container = document.getElementById('agents-container');
+  const listEl = document.getElementById('agent-list');
+  const walkersContainer = document.getElementById('walkers-container');
+  container.innerHTML = '';
+  listEl.innerHTML = '';
+  
+  let onlineCount = 0;
+  let idleAgents = [];
+  
+  agents.forEach((a, i) => {
+    const pos = DESK_POSITIONS[i] || { left: 60 + i * 170, top: 100 };
+    const s = statusLabels[a.status] || statusLabels.offline;
+    if (a.status !== 'offline') onlineCount++;
+    if (a.status === 'idle' || a.status === 'online') idleAgents.push(a);
+    
+    const spritePrefix = SPRITE_MAP[a.id] || 'agent-boss';
+    const isOccupied = a.status === 'busy';
+    const isIdle = a.status === 'idle' || a.status === 'online';
+    const isOffline = a.status === 'offline';
+    
+    const timeStr = a.lastActive >= 0 ? `${a.lastActive}m ago` : '—';
+    
+    // Workstation — only show character seated if busy
+    const ws = document.createElement('div');
+    ws.className = `workstation ${isOccupied ? 'busy' : ''} ${isIdle ? 'idle' : ''} ${isOffline ? 'offline' : ''}`;
+    ws.style.left = pos.left + 'px';
+    ws.style.top = pos.top + 'px';
+    
+    ws.innerHTML = `
+      <img class="desk-img" src="assets/office/desk-with-pc.png">
+      ${isOccupied ? `<div class="char-container seated">
+        <img class="char-sprite" src="assets/office/${esc(spritePrefix)}-walk-up.png" style="width:384px;">
+      </div>` : ''}
+      <div class="status-dot ${s.cls}"></div>
+      <div class="label">${esc(a.name)}</div>
+      <div class="task-bubble">${esc(a.task)} (${esc(timeStr)})</div>
+    `;
+    container.appendChild(ws);
+    
+    // Panel row
+    const row = document.createElement('div');
+    row.className = 'agent-row';
+    row.innerHTML = `
+      <div class="dot ${s.cls}"></div>
+      <div>
+        <div class="aname">${esc(a.name)}</div>
+        <div class="astatus">${esc(s.label)} · ${esc(a.task)}</div>
+        ${a.tokens ? `<div class="astatus">🔤 ${(a.tokens/1000).toFixed(1)}k tokens</div>` : ''}
+      </div>
+    `;
+    listEl.appendChild(row);
+  });
+  
+  document.getElementById('online-count').textContent = `${onlineCount}/${agents.length}`;
+  
+  // ── Create/update walkers for idle agents ──
+  const currentIds = new Set(idleAgents.map(a => a.id));
+  
+  // Remove walkers that are no longer idle
+  for (const id of Object.keys(activeWalkers)) {
+    if (!currentIds.has(id)) {
+      activeWalkers[id].el.remove();
+      delete activeWalkers[id];
+    }
+  }
+  
+  // Add new walkers
+  for (const a of idleAgents) {
+    if (activeWalkers[a.id]) continue;
+    const prefix = SPRITE_MAP[a.id] || 'agent-boss';
+    const start = randomWalkablePoint();
+    
+    const el = document.createElement('div');
+    el.className = 'walker';
+    el.style.left = start.x + 'px';
+    el.style.top = start.y + 'px';
+    el.innerHTML = `
+      <img class="sprite-sheet" src="assets/office/${prefix}-walk-right.png" style="width:384px;">
+      <div class="walker-label">${esc(a.name)} ☕</div>
+    `;
+    walkersContainer.appendChild(el);
+    
+    activeWalkers[a.id] = { el, prefix, x: start.x, y: start.y, moveTimer: null };
+  }
+  
+  // Start/restart walker movement
+  startWalkers();
+}
+
+// --- WebSocket with fallback to polling ---
+let ws = null;
+let wsRetry = 0;
+
+function onStatusUpdate(data) {
+  renderAgents(data.agents);
+  const t = new Date(data.timestamp).toLocaleTimeString('zh-TW', {hour12:false});
+  document.getElementById('last-update').textContent = '⚡ ' + t;
+}
+
+function connectWS() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}/ws`);
+  
+  ws.onopen = () => {
+    console.log('🔌 WebSocket connected');
+    wsRetry = 0;
+    document.getElementById('last-update').textContent = '⚡ 即時連線';
+  };
+  
+  ws.onmessage = (e) => {
+    try { onStatusUpdate(JSON.parse(e.data)); } catch(err) { console.warn('WS parse error', err); }
+  };
+  
+  ws.onclose = () => {
+    console.log('🔌 WebSocket disconnected, retrying...');
+    document.getElementById('last-update').textContent = '⏳ 重連中...';
+    wsRetry++;
+    setTimeout(connectWS, Math.min(wsRetry * 2000, 30000));
+  };
+  
+  ws.onerror = () => { ws.close(); };
+}
+
+async function fetchStatus() {
+  try {
+    const resp = await fetch('status.json?t=' + Date.now());
+    const data = await resp.json();
+    onStatusUpdate(data);
+  } catch(e) { console.warn('Poll failed:', e); }
+}
+
+try { connectWS(); } catch(e) { fetchStatus(); setInterval(fetchStatus, 30000); }
+fetchStatus();
+
+// Walking characters - move all idle agents with consistent speed
+const dirMap = { right: 'walk-right', left: 'walk-left', down: 'walk-down', up: 'walk-up' };
+const WALK_SPEED = 40; // pixels per second (slow, casual pace)
+
+function moveWalkerById(id) {
+  const w = activeWalkers[id];
+  if (!w) return;
+  
+  const target = randomWalkablePoint();
+  const dx = target.x - w.x, dy = target.y - w.y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  
+  if (dist < 20) { // too close, try again
+    w.moveTimer = setTimeout(() => moveWalkerById(id), 1000);
+    return;
+  }
+  
+  // Direction based on movement
+  let dir;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    dir = dx > 0 ? 'right' : 'left';
+  } else {
+    dir = dy > 0 ? 'down' : 'up';
+  }
+  
+  // Calculate duration based on distance for consistent speed
+  const duration = dist / WALK_SPEED;
+  
+  // 1. Set sprite direction FIRST (before moving)
+  w.el.querySelector('.sprite-sheet').src = `assets/office/${w.prefix}-${dirMap[dir]}.png`;
+  
+  // 2. Set transition duration based on distance
+  w.el.style.transitionDuration = `${duration}s`;
+  
+  // 3. Move (slight delay to ensure sprite swap renders first)
+  requestAnimationFrame(() => {
+    w.el.style.left = target.x + 'px';
+    w.el.style.top = target.y + 'px';
+  });
+  
+  w.x = target.x;
+  w.y = target.y;
+  
+  // Schedule next move: longer pause at rest spots (3-6s), shorter for walking (1-2s)
+  const isRestSpot = REST_SPOTS.some(s => Math.abs(s.x - target.x) < 30 && Math.abs(s.y - target.y) < 30);
+  const pause = isRestSpot ? (3000 + Math.random() * 3000) : (1000 + Math.random() * 1500);
+  
+  // At rest spots, switch to down-facing (idle stance) after arriving
+  if (isRestSpot) {
+    setTimeout(() => {
+      if (activeWalkers[id]) {
+        w.el.querySelector('.sprite-sheet').src = `assets/office/${w.prefix}-walk-down.png`;
+      }
+    }, duration * 1000 + 200);
+  }
+  
+  w.moveTimer = setTimeout(() => moveWalkerById(id), duration * 1000 + pause);
+}
+
+// Start walkers with staggered timing
+function startWalkers() {
+  let delay = 0;
+  for (const id of Object.keys(activeWalkers)) {
+    const w = activeWalkers[id];
+    if (w.moveTimer) clearTimeout(w.moveTimer);
+    setTimeout(() => moveWalkerById(id), delay);
+    delay += 800; // stagger each walker by 800ms
+  }
+}
+
+// Clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById('time').textContent = now.toLocaleTimeString('zh-TW', {hour12: false});
+  document.getElementById('date').textContent = now.toLocaleDateString('zh-TW', {year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'});
+}
+updateClock();
+setInterval(updateClock, 1000);
+</script>
+</body>
+</html>

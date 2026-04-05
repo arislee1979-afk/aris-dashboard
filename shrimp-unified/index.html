@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 蝦群角色設定</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Noto Sans TC', system-ui, sans-serif; min-height: 100vh; }
+.hero { text-align: center; padding: 80px 20px 60px; background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.08) 0%, transparent 50%); pointer-events: none; }
+.hero h1 { font-size: 2.8rem; margin-bottom: 12px; position: relative; }
+.hero h1 span { background: linear-gradient(135deg, #f97316, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: #7d8590; font-size: 1.1rem; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px 80px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; overflow: hidden; transition: all 0.3s ease; position: relative; }
+.card::before { content: ''; position: absolute; inset: 0; border-radius: 16px; padding: 1px; background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.3s; }
+.card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); border-color: #3b82f6; }
+.card:hover::before { opacity: 1; }
+.card-img { width: 100%; height: 240px; object-fit: cover; }
+.card-body { padding: 20px; }
+.card-title { font-size: 1.2rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.card-sub { color: #7d8590; font-size: 0.8rem; margin-bottom: 12px; display: flex; gap: 6px; }
+.tag { padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; }
+.tag-orange { background: rgba(249,115,22,0.15); color: #f97316; }
+.tag-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.tag-green { background: rgba(34,197,94,0.15); color: #34d399; }
+.tag-purple { background: rgba(168,85,247,0.15); color: #a855f7; }
+.tag-pink { background: rgba(236,72,153,0.15); color: #ec4899; }
+.card-prompt { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; font-size: 0.78rem; line-height: 1.6; color: #8b949e; margin-bottom: 14px; }
+.card-prompt strong { color: #58a6ff; }
+.audio-bar { display: flex; align-items: center; gap: 8px; padding: 12px; background: #0d1117; border-radius: 10px; border: 1px solid #21262d; }
+.play-btn { flex: 1; padding: 8px 14px; border-radius: 8px; border: none; background: linear-gradient(135deg, #22d3ee, #8b5cf6); color: #000; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+.play-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,211,238,0.3); }
+.stop-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #30363d; background: transparent; color: #8b949e; font-size: 0.8rem; cursor: pointer; }
+.stop-btn:hover { border-color: #22d3ee; color: #22d3ee; }
+audio { display: none; }
+.wave { display: flex; gap: 2px; align-items: center; height: 16px; }
+.wave span { width: 2px; background: #22d3ee; border-radius: 2px; animation: wave 0.8s ease-in-out infinite; }
+.wave span:nth-child(2) { animation-delay: .1s }
+.wave span:nth-child(3) { animation-delay: .2s }
+.wave span:nth-child(4) { animation-delay: .3s }
+.wave span:nth-child(5) { animation-delay: .4s }
+@keyframes wave { 0%,100% { height: 4px } 50% { height: 16px } }
+@media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>🦞 <span>蝦群</span> 角色設定</h1>
+  <p>彩虹小馬風格 · AI Agent 角色視覺化</p>
+</div>
+<div class="container">
+  <div class="cards">
+
+    <div class="card">
+      <img src="file_97---8010eca1-b2ce-4d46-a167-b1136205a180.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🦞 A小蝦（系統蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-orange">橘紅色</span>
+          <span class="tag tag-orange">船長</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體橘紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>海軍船長帽</strong>（金色錨徽與繩飾），戴著飛行員護目鏡，站在<strong>遊艇甲板上</strong>，背景是夕陽暖色天空與遠處船桅，高質感 3D 絨毛渲染，溫暖悠閒有質感的氛圍</div>
+        <div class="audio-bar">
+          <audio id="audio-axia" src="axia-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('axia')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('axia')">■</button>
+          <div class="wave" id="wave-axia" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="zaicai-selected.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">💰 發財蝦（財務蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-blue">黃色</span>
+          <span class="tag tag-blue">工程師</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體黃色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>黃色工程師安全帽</strong>附頭燈，腰間工具腰包（露出扳手和鉗子），手拿大型扳手，站在<strong>伺服器機房/數據中心走廊</strong>，兩側有機櫃和彩色 LED 狀態燈，專業可靠又可愛的工程師風格</div>
+        <div class="audio-bar">
+          <audio id="audio-zaicai" src="zaicai-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('zaicai')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('zaicai')">■</button>
+          <div class="wave" id="wave-zaicai" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="file_95---03ee8b21-bf1b-464a-bdb1-a290a1043ad2.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🏃 健康蝦（健身蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-green">藍綠色</span>
+          <span class="tag tag-green">教練</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體<strong>藍綠色</strong>，鬃毛和尾巴是彩虹漸層色，頭戴<strong>白色運動頭帶</strong>（附小愛心標記），穿運動背心，腳穿彩虹條紋運動鞋，手拿啞鈴，旁邊有水壺，站在<strong>現代健身房室內</strong>，背景有跑步機和健身器材，活力健康陽光動感可愛卡通風格</div>
+        <div class="audio-bar">
+          <audio id="audio-health" src="health-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('health')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('health')">■</button>
+          <div class="wave" id="wave-health" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="knowledge-2.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🧠 知識蝦（學習蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-purple">紫色</span>
+          <span class="tag tag-purple">魔法師</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體紫色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，頭戴<strong>魔法師帽子</strong>（帶星星裝飾），戴著小小的圓框金屬眼鏡，坐在<strong>圖書館書桌前</strong>，周圍堆滿彩色書本、鍵盤和筆，背景是溫暖的木質書架和柔和的檯燈光，知識探索博學風格可愛卡通</div>
+        <div class="audio-bar">
+          <audio id="audio-knowledge" src="knowledge-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('knowledge')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('knowledge')">■</button>
+          <div class="wave" id="wave-knowledge" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="housework-3.jpg" class="card-img">
+      <div class="card-body">
+        <h2 class="card-title">🦐 家務蝦（生活蝦）</h2>
+        <div class="card-sub">
+          <span class="tag tag-pink">淺粉紅</span>
+          <span class="tag tag-pink">家事達人</span>
+        </div>
+        <div class="card-prompt">一隻可愛卡通小馬，身體淺粉紅色，<strong>鬃毛和尾巴是彩虹漸層色</strong>，戴著<strong>粉色橡膠家事手套</strong>，腰間掛著各種清潔工具，拿著小拖把，站在<strong>舒適的客廳</strong>，背景有溫暖的窗台陽光和整齊的書架，清新家務可愛卡通風格</div>
+        <div class="audio-bar">
+          <audio id="audio-housework" src="housework-intro.mp3"></audio>
+          <button class="play-btn" onclick="playAudio('housework')">▶ 播放語音</button>
+          <button class="stop-btn" onclick="stopAudio('housework')">■</button>
+          <div class="wave" id="wave-housework" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+let currentAudio = null;
+let currentId = null;
+function playAudio(id) {
+  if (currentAudio && currentAudio.id !== 'audio-' + id) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    document.getElementById('wave-' + currentId).style.display = 'none';
+  }
+  var audio = document.getElementById('audio-' + id);
+  audio.play();
+  currentAudio = audio;
+  currentId = id;
+  document.getElementById('wave-' + id).style.display = 'flex';
+  audio.onended = function() {
+    document.getElementById('wave-' + id).style.display = 'none';
+  };
+}
+function stopAudio(id) {
+  var audio = document.getElementById('audio-' + id);
+  audio.pause();
+  audio.currentTime = 0;
+  document.getElementById('wave-' + id).style.display = 'none';
+}
+</script>
+</body>
+</html>
