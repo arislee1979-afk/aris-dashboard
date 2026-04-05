@@ -1286,9 +1286,8 @@ function renderAnalysis(data, avgT, avgD, avgR, avgE, avgBed) {
   document.getElementById('analysisContent').innerHTML = html;
 }
 
-window.addEventListener('load', function() { try { updateAll(); } catch(e) { document.body.innerHTML = '<pre style="color:red;padding:20px">ERROR: ' + e.message + '\n' + e.stack + '</pre>' + document.body.innerHTML; } });
-})();
-};
+try { updateAll(); } catch(e) { console.error('Sleep init error:', e); }
+})();};
 </script>
 
 <script>
