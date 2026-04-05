@@ -201,16 +201,10 @@ body { background: var(--bg-dark); color: var(--text-primary); font-family: 'Int
     </div>
   </div>
 </div>
-
-
   </div>
 
   <!-- ── SLEEP ── -->
   <div id="panel-sleep" class="tab-panel">
-<div class="data-verify">
-    <div class="verify-main">
-      <span class="label">最後睡眠紀錄</span>
-      <span class="date" id="lastDate">--</span>
     </div>
     <div class="verify-meta">
       <div class="item"><div class="num" id="nightCount">--</div><div class="sub">夜</div></div>
@@ -273,18 +267,14 @@ body { background: var(--bg-dark); color: var(--text-primary); font-family: 'Int
     <div id="analysisContent"></div>
   </div>
 </div>
+  </div>
 
+  </div>
 
   </div>
 
   <!-- ── BODY ── -->
   <div id="panel-body" class="tab-panel">
-<div class="stats-grid">
-    <div class="stat-card weight" id="cardWeight">
-      <h3>&#26368;&#26032;&#39636;&#37325;</h3>
-      <div class="stat-value" id="latestWeight">--</div>
-      <div class="stat-label">kg</div>
-      <div class="stat-delta neutral" id="deltaWeight"></div>
     </div>
     <div class="stat-card bf" id="cardBf">
       <h3>&#39636;&#33026;&#29575;</h3>
@@ -334,624 +324,719 @@ body { background: var(--bg-dark); color: var(--text-primary); font-family: 'Int
     </table>
   </div>
 </div>
-
-
   </div>
+  </div>
+
 </div>
-
-
-
-
-
-
-
-
   </div>
 
-  <!-- SLEEP PANEL -->
-  <div id="panel-sleep" class="tab-panel">
-<div class="data-verify">
-    <div class="verify-main">
-      <span class="label">最後睡眠紀錄</span>
-      <span class="date" id="lastDate">--</span>
-    </div>
-    <div class="verify-meta">
-      <div class="item"><div class="num" id="nightCount">--</div><div class="sub">夜</div></div>
-      <div class="item"><div class="num" id="dataSpan">--</div><div class="sub">天跨度</div></div>
-      <div class="item"><div class="num" id="avgTotal">--</div><div class="sub">平均睡眠(h)</div></div>
-    </div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card total"><h3>平均睡眠</h3><div class="stat-value" id="avgSleep">--</div><div class="stat-label">小時</div></div>
-    <div class="stat-card deep"><h3>平均深睡</h3><div class="stat-value" id="avgDeep">--</div><div class="stat-label">分鐘 (目標 ≥60)</div></div>
-    <div class="stat-card rem"><h3>平均 REM</h3><div class="stat-value" id="avgRem">--</div><div class="stat-label">分鐘 (目標 ≥90)</div></div>
-    <div class="stat-card eff"><h3>平均效率</h3><div class="stat-value" id="avgEff">--</div><div class="stat-label">% (目標 ≥85)</div></div>
-    <div class="stat-card bed"><h3>平均就寢</h3><div class="stat-value" id="avgBed" style="font-size:1.5rem">--</div><div class="stat-label">目標 ≤00:30</div></div>
-  </div>
-
-  <!-- Sleep Duration Stacked Bar -->
-  <div class="chart-section">
-    <h2>😴 每夜睡眠時長（階段分布）</h2>
-    <div class="legend-row">
-      <span><span class="dot" style="background:#5B4F8A"></span> 深睡</span>
-      <span><span class="dot" style="background:#A8A0CC"></span> 淺睡</span>
-      <span><span class="dot" style="background:#7C6CA8"></span> REM</span>
-      <span><span class="dot" style="background:#E07A5F;opacity:0.5"></span> 清醒</span>
-    </div>
-    <div class="range-toggle">
-      <button class="range-btn" onclick="setRange(30)">30天</button>
-      <button class="range-btn active" onclick="setRange(60)">60天</button>
-      <button class="range-btn" onclick="setRange(0)">全部</button>
-    </div>
-    <div class="chart-container" style="height:360px"><canvas id="durationChart"></canvas></div>
-    <div id="durationAlert"></div>
-  </div>
-
-  <!-- Sleep Efficiency Trend -->
-  <div class="chart-section">
-    <h2>📊 睡眠效率趨勢</h2>
-    <div class="chart-container"><canvas id="effChart"></canvas></div>
-  </div>
-
-  <!-- Bedtime / Wake Time -->
-  <div class="chart-section">
-    <h2>🕐 就寢 / 起床時間</h2>
-    <div class="legend-row">
-      <span><span class="dot" style="background:#5B4F8A"></span> 就寢</span>
-      <span><span class="dot" style="background:#E07A5F"></span> 起床</span>
-    </div>
-    <div class="chart-container"><canvas id="timeChart"></canvas></div>
-  </div>
-
-  <!-- Weekly Averages -->
-  <div class="chart-section">
-    <h2>📅 每週平均睡眠</h2>
-    <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
-  </div>
-
-  <!-- Analysis -->
-  <div class="analysis">
-    <h2>📝 睡眠分析</h2>
-    <div id="analysisContent"></div>
-  </div>
 </div>
-
-
   </div>
 
-  <!-- BODY PANEL (no inline script) -->
-  <div id="panel-body" class="tab-panel">
-<div class="stats-grid">
-    <div class="stat-card weight" id="cardWeight">
-      <h3>&#26368;&#26032;&#39636;&#37325;</h3>
-      <div class="stat-value" id="latestWeight">--</div>
-      <div class="stat-label">kg</div>
-      <div class="stat-delta neutral" id="deltaWeight"></div>
-    </div>
-    <div class="stat-card bf" id="cardBf">
-      <h3>&#39636;&#33026;&#29575;</h3>
-      <div class="stat-value" id="latestBf">--</div>
-      <div class="stat-label">%</div>
-      <div class="stat-delta neutral" id="deltaBf"></div>
-    </div>
-    <div class="stat-card sm" id="cardSm">
-      <h3>&#39592;&#39612;&#32908;&#36074;&#37327;</h3>
-      <div class="stat-value" id="latestSm">--</div>
-      <div class="stat-label">kg</div>
-      <div class="stat-delta neutral" id="deltaSm"></div>
-    </div>
-    <div class="stat-card bmr" id="cardBmr">
-      <h3>&#22522;&#30990;&#20195;&#35613;&#29575;</h3>
-      <div class="stat-value" id="latestBmr">--</div>
-      <div class="stat-label">kcal</div>
-      <div class="stat-delta neutral" id="deltaBmr"></div>
-    </div>
-  </div>
-
-  <div class="chart-section">
-    <h2>&#128200; &#39636;&#37325;&#36264;&#21218;</h2>
-    <div class="chart-container"><canvas id="weightChart"></canvas></div>
-  </div>
-
-  <div class="chart-section">
-    <h2>&#128202; &#36523;&#39636;&#32068;&#25104;&#36264;&#21218;</h2>
-    <div class="chart-container"><canvas id="compChart"></canvas></div>
-  </div>
-
-  <div class="table-section">
-    <h2>&#128203; &#36817;&#26399;&#39636;&#32068;&#25104;&#32000;&#37636;&#65288;&#39636;&#33026;&#31204; / InBody&#65289;</h2>
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>&#26085;&#26399;</th>
-          <th>&#39636;&#37325;</th>
-          <th>&#39636;&#33026;%</th>
-          <th>&#39636;&#33026;&#32938;</th>
-          <th>&#28961;&#33026;&#32938;</th>
-          <th>&#39592;&#39612;&#32908;</th>
-          <th>BMR</th>
-        </tr>
-      </thead>
-      <tbody id="compTableBody"></tbody>
-    </table>
-  </div>
-</div>
-
-
-  </div>
-</div>
-
-
-
-
-
-
-
-
-  </div>
-
-  <div id="panel-sleep" class="tab-panel">
-<div class="data-verify">
-    <div class="verify-main">
-      <span class="label">最後睡眠紀錄</span>
-      <span class="date" id="lastDate">--</span>
-    </div>
-    <div class="verify-meta">
-      <div class="item"><div class="num" id="nightCount">--</div><div class="sub">夜</div></div>
-      <div class="item"><div class="num" id="dataSpan">--</div><div class="sub">天跨度</div></div>
-      <div class="item"><div class="num" id="avgTotal">--</div><div class="sub">平均睡眠(h)</div></div>
-    </div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card total"><h3>平均睡眠</h3><div class="stat-value" id="avgSleep">--</div><div class="stat-label">小時</div></div>
-    <div class="stat-card deep"><h3>平均深睡</h3><div class="stat-value" id="avgDeep">--</div><div class="stat-label">分鐘 (目標 ≥60)</div></div>
-    <div class="stat-card rem"><h3>平均 REM</h3><div class="stat-value" id="avgRem">--</div><div class="stat-label">分鐘 (目標 ≥90)</div></div>
-    <div class="stat-card eff"><h3>平均效率</h3><div class="stat-value" id="avgEff">--</div><div class="stat-label">% (目標 ≥85)</div></div>
-    <div class="stat-card bed"><h3>平均就寢</h3><div class="stat-value" id="avgBed" style="font-size:1.5rem">--</div><div class="stat-label">目標 ≤00:30</div></div>
-  </div>
-
-  <!-- Sleep Duration Stacked Bar -->
-  <div class="chart-section">
-    <h2>😴 每夜睡眠時長（階段分布）</h2>
-    <div class="legend-row">
-      <span><span class="dot" style="background:#5B4F8A"></span> 深睡</span>
-      <span><span class="dot" style="background:#A8A0CC"></span> 淺睡</span>
-      <span><span class="dot" style="background:#7C6CA8"></span> REM</span>
-      <span><span class="dot" style="background:#E07A5F;opacity:0.5"></span> 清醒</span>
-    </div>
-    <div class="range-toggle">
-      <button class="range-btn" onclick="setRange(30)">30天</button>
-      <button class="range-btn active" onclick="setRange(60)">60天</button>
-      <button class="range-btn" onclick="setRange(0)">全部</button>
-    </div>
-    <div class="chart-container" style="height:360px"><canvas id="durationChart"></canvas></div>
-    <div id="durationAlert"></div>
-  </div>
-
-  <!-- Sleep Efficiency Trend -->
-  <div class="chart-section">
-    <h2>📊 睡眠效率趨勢</h2>
-    <div class="chart-container"><canvas id="effChart"></canvas></div>
-  </div>
-
-  <!-- Bedtime / Wake Time -->
-  <div class="chart-section">
-    <h2>🕐 就寢 / 起床時間</h2>
-    <div class="legend-row">
-      <span><span class="dot" style="background:#5B4F8A"></span> 就寢</span>
-      <span><span class="dot" style="background:#E07A5F"></span> 起床</span>
-    </div>
-    <div class="chart-container"><canvas id="timeChart"></canvas></div>
-  </div>
-
-  <!-- Weekly Averages -->
-  <div class="chart-section">
-    <h2>📅 每週平均睡眠</h2>
-    <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
-  </div>
-
-  <!-- Analysis -->
-  <div class="analysis">
-    <h2>📝 睡眠分析</h2>
-    <div id="analysisContent"></div>
-  </div>
-</div>
-
-
-  </div>
-
-  <div id="panel-body" class="tab-panel">
-<div class="stats-grid">
-    <div class="stat-card weight" id="cardWeight">
-      <h3>&#26368;&#26032;&#39636;&#37325;</h3>
-      <div class="stat-value" id="latestWeight">--</div>
-      <div class="stat-label">kg</div>
-      <div class="stat-delta neutral" id="deltaWeight"></div>
-    </div>
-    <div class="stat-card bf" id="cardBf">
-      <h3>&#39636;&#33026;&#29575;</h3>
-      <div class="stat-value" id="latestBf">--</div>
-      <div class="stat-label">%</div>
-      <div class="stat-delta neutral" id="deltaBf"></div>
-    </div>
-    <div class="stat-card sm" id="cardSm">
-      <h3>&#39592;&#39612;&#32908;&#36074;&#37327;</h3>
-      <div class="stat-value" id="latestSm">--</div>
-      <div class="stat-label">kg</div>
-      <div class="stat-delta neutral" id="deltaSm"></div>
-    </div>
-    <div class="stat-card bmr" id="cardBmr">
-      <h3>&#22522;&#30990;&#20195;&#35613;&#29575;</h3>
-      <div class="stat-value" id="latestBmr">--</div>
-      <div class="stat-label">kcal</div>
-      <div class="stat-delta neutral" id="deltaBmr"></div>
-    </div>
-  </div>
-
-  <div class="chart-section">
-    <h2>&#128200; &#39636;&#37325;&#36264;&#21218;</h2>
-    <div class="chart-container"><canvas id="weightChart"></canvas></div>
-  </div>
-
-  <div class="chart-section">
-    <h2>&#128202; &#36523;&#39636;&#32068;&#25104;&#36264;&#21218;</h2>
-    <div class="chart-container"><canvas id="compChart"></canvas></div>
-  </div>
-
-  <div class="table-section">
-    <h2>&#128203; &#36817;&#26399;&#39636;&#32068;&#25104;&#32000;&#37636;&#65288;&#39636;&#33026;&#31204; / InBody&#65289;</h2>
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>&#26085;&#26399;</th>
-          <th>&#39636;&#37325;</th>
-          <th>&#39636;&#33026;%</th>
-          <th>&#39636;&#33026;&#32938;</th>
-          <th>&#28961;&#33026;&#32938;</th>
-          <th>&#39592;&#39612;&#32908;</th>
-          <th>BMR</th>
-        </tr>
-      </thead>
-      <tbody id="compTableBody"></tbody>
-    </table>
-  </div>
-</div>
-
-
-  </div>
 </div>
 
 <script>
 function showTab(name) {
-  ['training','sleep','body'].forEach(n => {
+  ['training','sleep','body'].forEach(function(n) {
     document.getElementById('panel-' + n).style.display = 'none';
     document.getElementById('btn-' + n).className = 'tab-btn';
   });
   document.getElementById('panel-' + name).style.display = 'block';
   document.getElementById('btn-' + name).className = 'tab-btn active-' + name;
+  // Re-render charts when switching to tabs (canvas needs visible dimensions)
+  if (name === 'sleep' && window._sl_updateAll) window._sl_updateAll();
+  if (name === 'body' && window._bd_init) window._bd_init();
 }
 </script>
 
 <script>
 // === TRAINING (IIFE) ===
 (function(){
-// === BODY (IIFE, namespaced) ===
-(function(){
-var _bd_allData = [
-  {date:"2025-12-14",dt:"2025-12-14 14:15",weight:66.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2025-12-15",dt:"2025-12-15 08:52",weight:66.0,bf_pct:18.9,bf_mass:12.5,lean_mass:53.5,sm_mass:30.1,bmr:1526.0},
-  {date:"2025-12-15",dt:"2025-12-15 08:54",weight:66.0,bf_pct:19.9,bf_mass:13.1,lean_mass:52.9,sm_mass:29.7,bmr:1512.0},
-  {date:"2025-12-15",dt:"2025-12-15 08:58",weight:65.9,bf_pct:18.9,bf_mass:12.5,lean_mass:53.4,sm_mass:30.1,bmr:1525.0},
-  {date:"2025-12-15",dt:"2025-12-15 12:18",weight:66.5,bf_pct:19.1,bf_mass:12.7,lean_mass:53.8,sm_mass:30.2,bmr:1531.0},
-  {date:"2025-12-17",dt:"2025-12-17 11:52",weight:65.5,bf_pct:17.3,bf_mass:11.3,lean_mass:54.2,sm_mass:30.6,bmr:1540.0},
-  {date:"2025-12-18",dt:"2025-12-18 21:33",weight:66.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2025-12-23",dt:"2025-12-23 11:14",weight:66.5,bf_pct:17.8,bf_mass:11.8,lean_mass:54.7,sm_mass:30.7,bmr:1551.0},
-  {date:"2025-12-24",dt:"2025-12-24 21:27",weight:67.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2025-12-25",dt:"2025-12-25 06:45",weight:65.65,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2025-12-26",dt:"2025-12-26 04:26",weight:65.8,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2025-12-26",dt:"2025-12-26 07:50",weight:65.05,bf_pct:19.2,bf_mass:12.49,lean_mass:12.49,sm_mass:29.47,bmr:1505.0},
-  {date:"2025-12-26",dt:"2025-12-26 16:43",weight:66.9,bf_pct:18.2,bf_mass:12.2,lean_mass:54.7,sm_mass:30.7,bmr:1552.0},
-  {date:"2025-12-26",dt:"2025-12-26 16:44",weight:66.8,bf_pct:18.8,bf_mass:12.6,lean_mass:54.2,sm_mass:30.4,bmr:1541.0},
-  {date:"2026-01-01",dt:"2026-01-01 14:06",weight:66.6,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-04",dt:"2026-01-04 22:05",weight:67.75,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-06",dt:"2026-01-06 09:48",weight:67.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-06",dt:"2026-01-06 15:11",weight:67.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-06",dt:"2026-01-06 15:51",weight:67.75,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-06",dt:"2026-01-06 16:41",weight:68.4,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-06",dt:"2026-01-06 21:41",weight:67.85,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-08",dt:"2026-01-08 16:38",weight:67.3,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-09",dt:"2026-01-09 09:49",weight:67.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-09",dt:"2026-01-09 11:25",weight:67.2,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-10",dt:"2026-01-10 06:43",weight:66.8,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-10",dt:"2026-01-10 23:02",weight:67.5,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-11",dt:"2026-01-11 21:44",weight:67.2,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-12",dt:"2026-01-12 06:13",weight:66.25,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-12",dt:"2026-01-12 08:34",weight:65.8,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-13",dt:"2026-01-13 06:53",weight:66.2,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-14",dt:"2026-01-14 06:12",weight:66.15,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-15",dt:"2026-01-15 08:47",weight:65.9,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-16",dt:"2026-01-16 06:26",weight:66.3,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-16",dt:"2026-01-16 12:14",weight:66.9,bf_pct:18.5,bf_mass:12.4,lean_mass:54.5,sm_mass:30.7,bmr:1548.0},
-  {date:"2026-01-17",dt:"2026-01-17 08:43",weight:66.4,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-17",dt:"2026-01-17 14:29",weight:66.9,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-18",dt:"2026-01-18 07:56",weight:67.3,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-18",dt:"2026-01-18 08:09",weight:67.0,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-18",dt:"2026-01-18 08:19",weight:67.05,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-19",dt:"2026-01-19 06:26",weight:66.55,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-19",dt:"2026-01-19 08:07",weight:66.3,bf_pct:18.2,bf_mass:12.1,lean_mass:54.2,sm_mass:30.6,bmr:1542.0},
-  {date:"2026-01-20",dt:"2026-01-20 08:32",weight:66.25,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-21",dt:"2026-01-21 06:09",weight:66.8,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-21",dt:"2026-01-21 07:51",weight:66.65,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-22",dt:"2026-01-22 06:09",weight:65.95,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-23",dt:"2026-01-23 08:04",weight:65.75,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-24",dt:"2026-01-24 07:33",weight:65.95,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-25",dt:"2026-01-25 08:56",weight:66.35,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-26",dt:"2026-01-26 09:00",weight:65.7,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-27",dt:"2026-01-27 07:52",weight:66.05,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-28",dt:"2026-01-28 07:06",weight:66.4,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-28",dt:"2026-01-28 18:14",weight:67.65,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-29",dt:"2026-01-29 06:59",weight:66.75,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-01-30",dt:"2026-01-30 07:52",weight:66.75,bf_pct:19.0,bf_mass:12.68,lean_mass:12.68,sm_mass:30.44,bmr:1537.0},
-  {date:"2026-02-01",dt:"2026-02-01 08:30",weight:66.95,bf_pct:19.2,bf_mass:12.85,lean_mass:12.85,sm_mass:30.40,bmr:1537.0},
-  {date:"2026-02-01",dt:"2026-02-01 08:39",weight:67.55,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-02",dt:"2026-02-02 07:15",weight:66.3,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-03",dt:"2026-02-03 08:32",weight:66.75,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-05",dt:"2026-02-05 08:00",weight:67.5,bf_pct:18.3,bf_mass:12.4,lean_mass:55.1,sm_mass:31.0,bmr:1561.0},
-  {date:"2026-02-05",dt:"2026-02-05 08:19",weight:67.3,bf_pct:18.0,bf_mass:12.1,lean_mass:55.2,sm_mass:31.0,bmr:1562.0},
-  {date:"2026-02-08",dt:"2026-02-08 09:51",weight:67.65,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-11",dt:"2026-02-11 15:25",weight:67.35,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-12",dt:"2026-02-12 08:08",weight:66.05,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-13",dt:"2026-02-13 09:49",weight:66.85,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-14",dt:"2026-02-14 09:18",weight:67.7,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-15",dt:"2026-02-15 05:56",weight:67.2,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-20",dt:"2026-02-20 09:08",weight:68.75,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-22",dt:"2026-02-22 09:08",weight:68.05,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-23",dt:"2026-02-23 06:05",weight:68.55,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-24",dt:"2026-02-24 06:12",weight:67.85,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-25",dt:"2026-02-25 06:58",weight:68.15,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-26",dt:"2026-02-26 07:41",weight:68.35,bf_pct:0.0,bf_mass:0.0,lean_mass:0.0,sm_mass:0.0,bmr:0.0},
-  {date:"2026-02-26",dt:"2026-02-26 08:06",weight:67.7,bf_pct:15.8,bf_mass:10.7,lean_mass:57.0,sm_mass:32.2,bmr:1602.0},
-  {date:"2026-02-26",dt:"2026-02-26 11:20",weight:67.05,bf_pct:19.0,bf_mass:12.74,lean_mass:12.74,sm_mass:30.57,bmr:1543.0},
-  {date:"2026-03-02",dt:"2026-03-02 14:21",weight:67.6,bf_pct:18.1,bf_mass:12.2,lean_mass:55.4,sm_mass:31.5,bmr:1567.0},
-  {date:"2026-03-04",dt:"2026-03-04 08:17",weight:66.4,bf_pct:19.4,bf_mass:12.9,lean_mass:53.5,sm_mass:30.4,bmr:1526.0},
-  {date:"2026-03-09",dt:"2026-03-09 08:14",weight:67.3,bf_pct:17.0,bf_mass:11.4,lean_mass:55.9,sm_mass:31.4,bmr:1576.0},
-  {date:"2026-03-17",dt:"2026-03-17 08:49",weight:67.6,bf_pct:17.3,bf_mass:11.7,lean_mass:55.9,sm_mass:31.5,bmr:1578.0},
-  {date:"2026-04-01",dt:"2026-04-01 08:57",weight:66.6,bf_pct:17.4,bf_mass:11.6,lean_mass:55.0,sm_mass:31.2,bmr:1558.0}
-];
+const _tr_RAW_DATA = `date\ttraining\tcategory\tsub_category\tsets\treps\tmax_weight_kg\tvolume_kg\ttotal_sets\ttotal_reps
+2025-12-19 13:37:00\tPPL-pull\tROW\tBARBELL_ROW\t3\t30\t30\t900\t17\t183
+2025-12-19 13:37:00\tPPL-pull\tLATERAL_RAISE\tCABLE_DIAGONAL_RAISE\t2\t30\t12\t360\t17\t183
+2025-12-19 13:37:00\tPPL-pull\tCURL\tEZ_BAR_PREACHER_CURL\t2\t20\t18\t360\t17\t183
+2025-12-19 13:37:00\tPPL-pull\tROW\tFACE_PULL\t2\t31\t8\t248\t17\t183
+2025-12-19 13:37:00\tPPL-pull\tCURL\tINCLINE_DUMBBELL_BICEPS_CURL\t1\t15\t8\t120\t17\t183
+2025-12-19 13:37:00\tPPL-pull\tPULL_UP\tBodyWeight_PULL_UP\t3\t24\t67\t1608\t17\t183
+2025-12-19 13:37:00\tPPL-pull\tROW\tSEATED_CABLE_ROW\t2\t24\t15\t360\t17\t183
+2026-01-08 17:16:00\tPPL-push\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t20\t60\t1200\t13\t102
+2026-01-08 17:16:00\tPPL-push\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t20\t14\t280\t13\t102
+2026-01-08 17:16:00\tPPL-push\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t16\t16\t256\t13\t102
+2026-01-08 17:16:00\tPPL-push\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t24\t17.5\t420\t13\t102
+2026-01-08 17:16:00\tPPL-push\tSUSPENSION\tY_FLY\t2\t22\t12.5\t275\t13\t102
+2026-01-09 13:54:00\tPPL-pull\tROW\tBARBELL_ROW\t3\t24\t40\t960\t16\t111
+2026-01-09 13:54:00\tPPL-pull\tCURL\tEZ_BAR_PREACHER_CURL\t2\t19\t18\t342\t16\t111
+2026-01-09 13:54:00\tPPL-pull\tSUSPENSION\tFACE_PULL\t2\t25\t21.5\t537.5\t16\t111
+2026-01-09 13:54:00\tPPL-pull\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t5\t12\t60\t16\t111
+2026-01-09 13:54:00\tPPL-pull\tROW\tV_GRIP_CABLE_ROW\t2\t15\t30\t450\t16\t111
+2026-01-09 13:54:00\tPPL-pull\tPULL_UP\tBodyWeight_PULL_UP\t3\t23\t67\t1541\t16\t111
+2026-01-12 12:22:00\tPPL-pull\tROW\tBARBELL_ROW\t2\t15\t50\t750\t14\t108
+2026-01-12 12:22:00\tPPL-pull\tCURL\tEZ_BAR_PREACHER_CURL\t1\t10\t14\t140\t14\t108
+2026-01-12 12:22:00\tPPL-pull\tSUSPENSION\tFACE_PULL\t2\t30\t21.5\t645\t14\t108
+2026-01-12 12:22:00\tPPL-pull\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t9\t10\t90\t14\t108
+2026-01-12 12:22:00\tPPL-pull\tROW\tV_GRIP_CABLE_ROW\t2\t20\t30\t600\t14\t108
+2026-01-12 12:22:00\tPPL-pull\tPULL_UP\tBodyWeight_PULL_UP\t3\t24\t67\t1608\t14\t108
+2026-01-16 16:37:27\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t24\t39\t936\t14\t133
+2026-01-16 16:37:27\tPPL-Leg\tSQUAT\tLEG_PRESS\t3\t34\t72.5\t2465\t14\t133
+2026-01-16 16:37:27\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t24\t38\t912\t14\t133
+2026-01-16 16:37:27\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t20\t40\t800\t14\t133
+2026-01-16 16:37:27\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t31\t95\t2945\t14\t133
+2026-01-18 14:57:22\tPPL-PUSH\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t19\t50\t950\t16\t117
+2026-01-18 14:57:22\tPPL-PUSH\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t23\t12\t276\t16\t117
+2026-01-18 14:57:22\tPPL-PUSH\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t20\t16\t320\t16\t117
+2026-01-18 14:57:22\tPPL-PUSH\tTRICEPS_EXTENSION\tLYING_EZ_BAR_TRICEPS_EXTENSION\t1\t8\t12\t96\t16\t117
+2026-01-18 14:57:22\tPPL-PUSH\tLATERAL_RAISE\tLATERAL_RAISE\t1\t10\t2.5\t25\t16\t117
+2026-01-18 14:57:22\tPPL-PUSH\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t22\t17.5\t385\t16\t117
+2026-01-18 14:57:22\tPPL-PUSH\tSUSPENSION\tY_FLY\t2\t15\t12.5\t187.5\t16\t117
+2026-01-20 12:01:00\tPPL-PULL\tROW\tBARBELL_ROW\t2\t16\t30\t480\t14\t116
+2026-01-20 12:01:00\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t22\t14\t308\t14\t116
+2026-01-20 12:01:00\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t27\t15\t405\t14\t116
+2026-01-20 12:01:00\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t7\t10\t70\t14\t116
+2026-01-20 12:01:00\tPPL-PULL\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t20\t10\t200\t14\t116
+2026-01-20 12:01:00\tPPL-PULL\tPULL_UP\tBodyWeight_PULL_UP\t3\t24\t67\t1608\t14\t116
+2026-01-21 15:41:17\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t24\t40\t960\t14\t113
+2026-01-21 15:41:17\tPPL-Leg\tSQUAT\tLEG_PRESS\t3\t36\t72\t2592\t14\t113
+2026-01-21 15:41:17\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t12\t39\t468\t14\t113
+2026-01-21 15:41:17\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t11\t40\t440\t14\t113
+2026-01-21 15:41:17\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t95\t2850\t14\t113
+2026-01-22 15:11:39\tPPL-PUSH\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t22\t50\t1100\t16\t120
+2026-01-22 15:11:39\tPPL-PUSH\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t20\t14\t280\t16\t120
+2026-01-22 15:11:39\tPPL-PUSH\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t20\t16\t320\t16\t120
+2026-01-22 15:11:39\tPPL-PUSH\tTRICEPS_EXTENSION\tLYING_EZ_BAR_TRICEPS_EXTENSION\t1\t12\t12\t144\t16\t120
+2026-01-22 15:11:39\tPPL-PUSH\tLATERAL_RAISE\tLATERAL_RAISE\t1\t8\t5\t40\t16\t120
+2026-01-22 15:11:39\tPPL-PUSH\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t22\t17.5\t385\t16\t120
+2026-01-22 15:11:39\tPPL-PUSH\tSUSPENSION\tY_FLY\t2\t16\t12.5\t200\t16\t120
+2026-01-23 13:51:06\tPPL-PULL\tROW\tBARBELL_ROW\t2\t10\t30\t300\t14\t102
+2026-01-23 13:51:06\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t24\t14\t336\t14\t102
+2026-01-23 13:51:06\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t28\t15\t420\t14\t102
+2026-01-23 13:51:06\tPPL-PULL\tPULL_UP\tPULL_UP\t3\t24\t67\t1608\t14\t102
+2026-01-23 13:51:06\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t6\t10\t60\t14\t102
+2026-01-23 13:51:06\tPPL-PULL\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t10\t12.5\t125\t14\t102
+2026-01-24 16:19:37\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t26\t39\t1014\t14\t140
+2026-01-24 16:19:37\tPPL-Leg\tSQUAT\tLEG_PRESS\t3\t38\t72\t2736\t14\t140
+2026-01-24 16:19:37\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t22\t40\t880\t14\t140
+2026-01-24 16:19:37\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t24\t40\t960\t14\t140
+2026-01-24 16:19:37\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t95\t2850\t14\t140
+2026-01-28 15:42:46\tPPL-PUSH\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t30\t50\t1500\t15\t140
+2026-01-28 15:42:46\tPPL-PUSH\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t18\t14\t252\t15\t140
+2026-01-28 15:42:46\tPPL-PUSH\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t20\t16\t320\t15\t140
+2026-01-28 15:42:46\tPPL-PUSH\tTRICEPS_EXTENSION\tLYING_EZ_BAR_TRICEPS_EXTENSION\t1\t12\t12\t144\t15\t140
+2026-01-28 15:42:46\tPPL-PUSH\tLATERAL_RAISE\tLATERAL_RAISE\t1\t6\t5\t30\t15\t140
+2026-01-28 15:42:46\tPPL-PUSH\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t30\t12.5\t375\t15\t140
+2026-01-28 15:42:46\tPPL-PUSH\tSUSPENSION\tY_FLY\t2\t24\t12.5\t300\t15\t140
+2026-01-30 14:08:00\tPPL-PULL\tROW\tBARBELL_ROW\t3\t24\t20\t1160\t21\t133
+2026-01-30 14:08:00\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t24\t14\t336\t21\t133
+2026-01-30 14:08:00\tPPL-PULL\tSUSPENSION\tFACE_PULL\t1\t15\t15\t225\t21\t133
+2026-01-30 14:08:00\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t8\t10\t80\t21\t133
+2026-01-30 14:08:00\tPPL-PULL\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t3\t17\t12.5\t212.5\t21\t133
+2026-01-30 14:08:00\tPPL-PULL\tPULL_UP\tBodyWeight_PULL_UP\t3\t26\t67\t1742\t21\t133
+2026-02-03 15:42:24\tPPL-PUSH\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t31\t50\t1550\t15\t131
+2026-02-03 15:42:24\tPPL-PUSH\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t18\t14\t252\t15\t131
+2026-02-03 15:42:24\tPPL-PUSH\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t19\t16\t304\t15\t131
+2026-02-03 15:42:24\tPPL-PUSH\tTRICEPS_EXTENSION\tLYING_EZ_BAR_TRICEPS_EXTENSION\t1\t11\t12\t132\t15\t131
+2026-02-03 15:42:24\tPPL-PUSH\tLATERAL_RAISE\tLATERAL_RAISE\t1\t8\t6.5\t52\t15\t131
+2026-02-03 15:42:24\tPPL-PUSH\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t24\t17.5\t420\t15\t131
+2026-02-03 15:42:24\tPPL-PUSH\tSUSPENSION\tY_FLY\t2\t20\t12.5\t250\t15\t131
+2026-02-04 13:31:48\tPPL-PULL\tROW\tBARBELL_ROW\t3\t24\t30\t1770\t23\t105
+2026-02-04 13:31:48\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t16\t16\t256\t23\t105
+2026-02-04 13:31:48\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t30\t15\t450\t23\t105
+2026-02-04 13:31:48\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t12\t10\t120\t23\t105
+2026-02-04 13:31:48\tPPL-PULL\tROW\tSINGLE_ARM_CABLE_ROW\t3\t22\t30\t660\t23\t105
+2026-02-04 13:31:48\tPPL-PULL\tPULL_UP\tBodyWeight_PULL_UP\t3\t24\t67\t1608\t23\t105
+2026-02-06 16:17:03\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t24\t39\t936\t13\t122
+2026-02-06 16:17:03\tPPL-Leg\tSQUAT\tLEG_PRESS\t3\t27\t72\t1944\t13\t122
+2026-02-06 16:17:03\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t16\t40\t640\t13\t122
+2026-02-06 16:17:03\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t25\t40\t1000\t13\t122
+2026-02-06 16:17:03\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t95\t2850\t13\t122
+2026-02-07 18:42:59\tPPL-PUSH\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t30\t55\t1650\t17\t152
+2026-02-07 18:42:59\tPPL-PUSH\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t17\t14\t238\t17\t152
+2026-02-07 18:42:59\tPPL-PUSH\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t23\t16\t368\t17\t152
+2026-02-07 18:42:59\tPPL-PUSH\tTRICEPS_EXTENSION\tLYING_EZ_BAR_TRICEPS_EXTENSION\t1\t13\t12\t156\t17\t152
+2026-02-07 18:42:59\tPPL-PUSH\tLATERAL_RAISE\tLATERAL_RAISE\t2\t16\t10\t120\t17\t152
+2026-02-07 18:42:59\tPPL-PUSH\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t28\t21\t539\t17\t152
+2026-02-07 18:42:59\tPPL-PUSH\tSUSPENSION\tY_FLY\t2\t25\t14\t350\t17\t152
+2026-02-08 18:59:32\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t12\t39\t468\t14\t86
+2026-02-08 18:59:32\tPPL-Leg\tSQUAT\tLEG_PRESS\t3\t27\t80\t2160\t14\t86
+2026-02-08 18:59:32\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t20\t40\t800\t14\t86
+2026-02-08 18:59:32\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t7\t40\t280\t14\t86
+2026-02-08 18:59:32\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t20\t105\t1970\t14\t86
+2026-02-12 23:04:00\tPPL-PULL\tROW\tSINGLE_ARM_CABLE_ROW\t2\t16\t17.5\t280\t15\t105
+2026-02-12 23:04:00\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t16\t15\t240\t15\t105
+2026-02-12 23:04:00\tPPL-PULL\tPULL_UP\tBodyWeight_PULL_UP\t3\t25\t68\t1700\t15\t105
+2026-02-12 23:04:00\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t16\t16\t256\t15\t105
+2026-02-12 23:04:00\tPPL-PULL\tROW\tBARBELL_ROW\t3\t24\t30\t720\t15\t105
+2026-02-12 23:04:00\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t8\t8\t64\t15\t105
+2026-02-13 17:47:55\tPPL-Leg\tSQUAT\tLEG_PRESS\t4\t48\t80\t3840\t14\t144
+2026-02-13 17:47:55\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t24\t40\t960\t14\t144
+2026-02-13 17:47:55\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t12\t39\t468\t14\t144
+2026-02-13 17:47:55\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t30\t40\t1200\t14\t144
+2026-02-13 17:47:55\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t105\t3150\t14\t144
+2026-02-22 18:10:19\tPPL-Leg\tSQUAT\tLEG_PRESS\t4\t48\t80\t3840\t14\t150
+2026-02-22 18:10:19\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t24\t40\t960\t14\t150
+2026-02-22 18:10:19\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t24\t39\t936\t14\t150
+2026-02-22 18:10:19\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t24\t40\t960\t14\t150
+2026-02-22 18:10:19\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t95\t2850\t14\t150
+2026-02-25 15:21:39\tPPL-PULL\tROW\tSINGLE_ARM_CABLE_ROW\t3\t8\t17.5\t140\t20\t128
+2026-02-25 15:21:39\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t30\t21\t630\t20\t128
+2026-02-25 15:21:39\tPPL-PULL\tPULL_UP\tBodyWeight_PULL_UP\t3\t24\t68\t1632\t20\t128
+2026-02-25 15:21:39\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t26\t14\t364\t20\t128
+2026-02-25 15:21:39\tPPL-PULL\tROW\tBARBELL_ROW\t3\t28\t40\t1120\t20\t128
+2026-02-25 15:21:39\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t12\t5\t60\t20\t128
+2026-03-01 16:16:09\tPPL-Leg\tSQUAT\tLEG_PRESS\t4\t48\t80\t3840\t15\t145
+2026-03-01 16:16:09\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t24\t40\t960\t15\t145
+2026-03-01 16:16:09\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t24\t39\t936\t15\t145
+2026-03-01 16:16:09\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t2\t19\t47\t893\t15\t145
+2026-03-01 16:16:09\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t105\t3150\t15\t145
+2026-03-07 15:43:50\tPPL-PUSH\tTRICEPS_EXTENSION\tLYING_EZ_BAR_TRICEPS_EXTENSION\t2\t20\t12\t240\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tLATERAL_RAISE\t\t2\t18\t5\t90\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tSHOULDER_PRESS\tDUMBBELL_SHOULDER_PRESS\t2\t18\t14\t252\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tBENCH_PRESS\tBARBELL_BENCH_PRESS\t3\t30\t60\t1800\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tBENCH_PRESS\tINCLINE_DUMBBELL_BENCH_PRESS\t2\t19\t16\t304\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tPULL_UP\tSTRAIGHT_ARM_PULLDOWN\t2\t32\t21.5\t688\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tSUSPENSION\tY_FLY\t2\t25\t12.5\t312.5\t17\t152
+2026-03-07 15:43:50\tPPL-PUSH\tTRICEPS_EXTENSION\tBENCH_DIP\t2\t18\t14\t252\t17\t152
+2026-03-12 7:29:25\tPPL-PULL\tROW\tSINGLE_ARM_CABLE_ROW\t3\t32\t17.5\t560\t19\t157
+2026-03-12 7:29:25\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t30\t17.5\t525\t19\t157
+2026-03-12 7:29:25\tPPL-PULL\tPULL_UP\tBodyWeight_PULL_UP\t3\t27\t68\t1836\t19\t157
+2026-03-12 7:29:25\tPPL-PULL\tCURL\tEZ_BAR_PREACHER_CURL\t2\t24\t16\t384\t19\t157
+2026-03-12 7:29:25\tPPL-PULL\tROW\tBARBELL_ROW\t3\t34\t40\t1264\t19\t157
+2026-03-12 7:29:25\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t1\t10\t5\t50\t19\t157
+2026-03-18 19:30:13\tPPL-Leg\tSQUAT\tLEG_PRESS\t4\t46\t80\t3680\t15\t146
+2026-03-18 19:30:13\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t22\t40\t880\t15\t146
+2026-03-18 19:30:13\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t24\t39\t936\t15\t146
+2026-03-18 19:30:13\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t3\t24\t40\t960\t15\t146
+2026-03-18 19:30:13\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t105\t3150\t15\t146
+2026-03-24 17:18:42\tPPL-PULL\tROW\tSINGLE_ARM_CABLE_ROW\t3\t21\t40\t840\t19\t86
+2026-03-24 17:18:42\tPPL-PULL\tSUSPENSION\tFACE_PULL\t2\t30\t17.5\t525\t19\t86
+2026-03-24 17:18:42\tPPL-PULL\tPULL_UP\tWEIGHTED_PULL_UP\t3\t25\t68\t1700\t19\t86
+2026-03-24 17:18:42\tPPL-PULL\tROW\tBARBELL_ROW\t6\t30\t34\t1020\t19\t86
+2026-03-24 17:18:42\tPPL-PULL\tCURL\tSEATED_ALTERNATING_DUMBBELL_BICEPS_CURL\t2\t15\t105\t1575\t19\t86
+2026-03-29 15:10:43\tPPL-Leg\tSQUAT\tLEG_PRESS\t4\t40\t80\t3200\t16\t146
+2026-03-29 15:10:43\tPPL-Leg\tDEADLIFT\tROMANIAN_DEADLIFT\t2\t20\t40\t800\t16\t146
+2026-03-29 15:10:43\tPPL-Leg\tSUSPENSION\tHAMSTRING_CURL\t2\t20\t39\t780\t16\t146
+2026-03-29 15:10:43\tPPL-Leg\tCRUNCH\tWEIGHTED_LEG_EXTENSIONS\t3\t36\t40\t1440\t16\t146
+2026-03-29 15:10:43\tPPL-Leg\tCALF_RAISE\tWEIGHTED_SEATED_CALF_RAISE\t2\t30\t105\t3150\t16\t146`;
 
-// Filter: body composition records with valid lean_mass (>30 means real data from body comp scale)
-var _bd_compData = _bd_allData.filter(function(d) { return d.bf_pct > 0; });
-var _bd_validCompData = _bd_compData.filter(function(d) { return d.sm_mass > 0; });
+const _tr_HELMS_REF = {
+  '\u80f8': { mev: 6, mav: 14, mrv: 20 },
+  '\u80cc': { mev: 6, mav: 14, mrv: 20 },
+  '\u80a9(\u5074+\u5f8c)': { mev: 4, mav: 12, mrv: 18 },
+  '\u80a1\u56db\u982d': { mev: 6, mav: 14, mrv: 20 },
+  '\u5f8c\u93c8(\u817f\u5f8c+\u81c0)': { mev: 4, mav: 10, mrv: 16 },
+  '\u4e8c\u982d': { mev: 4, mav: 10, mrv: 16 },
+  '\u4e09\u982d': { mev: 4, mav: 8, mrv: 14 },
+  '\u5c0f\u817f': { mev: 4, mav: 10, mrv: 16 }
+};
 
-// === HEADER STATS ===
-function _bd_initStats() {
-  var latest = _bd_allData[_bd_allData.length - 1];
-  var latestComp = _bd_validCompData[_bd_validCompData.length - 1];
-  var prevComp = _bd_validCompData.length >= 2 ? _bd_validCompData[_bd_validCompData.length - 2] : null;
-
-  document.getElementById('latestWeight').innerHTML = latest.weight.toFixed(1) + '<span class="stat-unit"> kg</span>';
-  document.getElementById('latestBf').innerHTML = latestComp.bf_pct.toFixed(1) + '<span class="stat-unit"> %</span>';
-  document.getElementById('latestSm').innerHTML = latestComp.sm_mass.toFixed(1) + '<span class="stat-unit"> kg</span>';
-  document.getElementById('latestBmr').innerHTML = Math.round(latestComp.bmr) + '<span class="stat-unit"> kcal</span>';
-
-  var prevWeight = _bd_allData.length >= 2 ? _bd_allData[_bd_allData.length - 2] : null;
-  if (prevWeight) _bd_setDelta('deltaWeight', latest.weight - prevWeight.weight, 'kg', true);
-  if (prevComp) {
-    _bd_setDelta('deltaBf', latestComp.bf_pct - prevComp.bf_pct, '%', true);
-    _bd_setDelta('deltaSm', latestComp.sm_mass - prevComp.sm_mass, 'kg', false);
-    _bd_setDelta('deltaBmr', latestComp.bmr - prevComp.bmr, 'kcal', false);
+function toMuscle(cat, sub) {
+  cat = (cat||'').toUpperCase();
+  sub = (sub||'').toUpperCase();
+  if (cat === 'BENCH_PRESS') return '\u80f8';
+  if (cat === 'SHOULDER_PRESS' || cat === 'LATERAL_RAISE') return '\u80a9(\u5074+\u5f8c)';
+  if (cat === 'TRICEPS_EXTENSION') return '\u4e09\u982d';
+  if (cat === 'ROW') return '\u80cc';
+  if (cat === 'PULL_UP') return '\u80cc';
+  if (cat === 'CURL') return '\u4e8c\u982d';
+  if (cat === 'SQUAT') return '\u80a1\u56db\u982d';
+  if (cat === 'DEADLIFT') return '\u5f8c\u93c8(\u817f\u5f8c+\u81c0)';
+  if (cat === 'CALF_RAISE') return '\u5c0f\u817f';
+  if (cat === 'CRUNCH') return '\u80a1\u56db\u982d';
+  if (cat === 'SUSPENSION') {
+    if (sub.includes('HAMSTRING')) return '\u5f8c\u93c8(\u817f\u5f8c+\u81c0)';
+    if (sub.includes('FACE_PULL') || sub.includes('Y_FLY')) return '\u80a9(\u5074+\u5f8c)';
+    return '\u80a9(\u5074+\u5f8c)';
   }
-
-  document.querySelector('#cardWeight .stat-label').textContent = latest.dt;
-  document.querySelector('#cardBf .stat-label').textContent = latestComp.dt;
+  return '\u5176\u4ed6';
 }
 
-function _bd_setDelta(id, diff, unit, lowerIsBetter) {
-  var el = document.getElementById(id);
-  var sign = diff > 0 ? '+' : '';
-  var val = Math.abs(diff) < 0.05 ? '0.0' : diff.toFixed(1);
-  el.textContent = sign + val + ' ' + unit;
-  if (Math.abs(diff) < 0.05) {
-    el.className = 'stat-delta neutral';
-  } else if (lowerIsBetter) {
-    el.className = diff < 0 ? 'stat-delta up' : 'stat-delta down';
+let _tr_trainingData = [];
+let _tr_charts = {};
+
+function parseTSV(text) {
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const sep = lines[0].includes('\t') ? '\t' : ',';
+  const hasHeader = lines[0].toLowerCase().includes('date');
+  const dataLines = hasHeader ? lines.slice(1) : lines;
+  return dataLines.map(line => {
+    const p = line.split(sep);
+    if (p.length < 8) return null;
+    return {
+      date: p[0].trim().split(' ')[0],
+      training: p[1].trim(),
+      category: p[2].trim(),
+      sub_category: (p[3]||'').trim(),
+      sets: parseInt(p[4]) || 0,
+      reps: parseInt(p[5]) || 0,
+      weight: parseFloat(p[6]) || 0,
+      volume: parseFloat(p[7]) || 0
+    };
+  }).filter(d => d && d.date);
+}
+
+function getSplit(training) {
+  const t = training.toUpperCase();
+  if (t.includes('PUSH')) return 'push';
+  if (t.includes('PULL')) return 'pull';
+  if (t.includes('LEG')) return 'leg';
+  return 'other';
+}
+
+function getWeekKey(dateStr) {
+  const d = new Date(dateStr);
+  const day = d.getDay() || 7;
+  const mon = new Date(d);
+  mon.setDate(d.getDate() - day + 1);
+  return mon.toISOString().slice(0,10);
+}
+
+function getWeekLabel(weekKey) {
+  const d = new Date(weekKey);
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+function dedup(data) {
+  const seen = new Set();
+  return data.filter(d => {
+    const key = `${d.date}|${d.category}|${d.sub_category}|${d.sets}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function updateAll() {
+  if (!_tr_trainingData.length) return;
+  _tr_trainingData.sort((a,b) => a.date.localeCompare(b.date));
+
+  const dates = [...new Set(_tr_trainingData.map(d => d.date))].sort();
+  const lastDate = dates[dates.length-1];
+  const firstDate = dates[0];
+  const totalDays = Math.ceil((new Date(lastDate) - new Date(firstDate)) / 86400000) + 1;
+  const daysSince = Math.floor((new Date() - new Date(lastDate)) / 86400000);
+
+  const sessionSet = new Set();
+  _tr_trainingData.forEach(d => sessionSet.add(d.date + '|' + d.training));
+  const totalSessions = sessionSet.size;
+  const weeklyFreq = (totalSessions / (totalDays / 7)).toFixed(1);
+
+  let pushC=0, pullC=0, legC=0;
+  sessionSet.forEach(s => {
+    const split = getSplit(s.split('|')[1]);
+    if (split==='push') pushC++;
+    else if (split==='pull') pullC++;
+    else if (split==='leg') legC++;
+  });
+
+  document.getElementById('lastTrainDate').textContent = lastDate;
+  document.getElementById('dataCount').textContent = _tr_trainingData.length;
+  document.getElementById('dataSpan').textContent = totalDays;
+  document.getElementById('daysSince').textContent = daysSince;
+  document.getElementById('totalSessions').textContent = totalSessions;
+  document.getElementById('weeklyFreq').textContent = weeklyFreq;
+  document.getElementById('pushCount').textContent = pushC;
+  document.getElementById('pullCount').textContent = pullC;
+  document.getElementById('legCount').textContent = legC;
+
+  Object.values(_tr_charts).forEach(c => c.destroy());
+  _tr_charts = {};
+
+  renderFreqChart();
+  renderLiftChart();
+  renderMevChart();
+  renderVolChart('all');
+  renderAnalysis(weeklyFreq, daysSince, pushC, pullC, legC);
+}
+
+function renderFreqChart() {
+  const sessionWeek = {};
+  _tr_trainingData.forEach(d => {
+    const wk = getWeekKey(d.date);
+    const key = d.date + '|' + d.training;
+    if (!sessionWeek[wk]) sessionWeek[wk] = new Set();
+    sessionWeek[wk].add(key);
+  });
+  const weeks = Object.keys(sessionWeek).sort();
+  const weekLabels = weeks.map(getWeekLabel);
+  const weekData = weeks.map(w => sessionWeek[w].size);
+
+  const last4 = weekData.slice(-4);
+  const avg4 = last4.reduce((a,b)=>a+b,0) / last4.length;
+  const freqWarning = document.getElementById('freqWarning');
+  if (avg4 < 3) {
+    freqWarning.style.display = 'block';
+    freqWarning.innerHTML = `\u26a0\ufe0f \u6700\u8fd1 4 \u9031\u5e73\u5747\u983b\u7387 ${avg4.toFixed(1)} \u6b21/\u9031\uff0c\u4f4e\u65bc\u5efa\u8b70\u7684 3 \u6b21/\u9031\u3002Eric Helms\uff1a\u6bcf\u808c\u7fa4\u6bcf\u9031\u81f3\u5c11\u523a\u6fc0 2 \u6b21\uff0cPPL \u81f3\u5c11\u9700\u8981 3 \u6b21/\u9031\u3002`;
   } else {
-    el.className = diff > 0 ? 'stat-delta up' : 'stat-delta down';
+    freqWarning.style.display = 'none';
   }
+
+  const bgColors = weekData.map(v => v < 3 ? 'rgba(224,122,95,0.5)' : 'rgba(129,178,154,0.3)');
+  const borderColors = weekData.map(v => v < 3 ? '#E07A5F' : '#81B29A');
+
+  const ctx = document.getElementById('freqChart').getContext('2d');
+  _tr_charts.freq = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: weekLabels,
+      datasets: [{
+        label: '\u9031\u8a13\u7df4\u6b21\u6578',
+        data: weekData,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 1.5,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(244,241,222,0.08)' }, ticks: { color: '#A8A29E', stepSize: 1 } },
+        x: { grid: { color: 'rgba(244,241,222,0.04)' }, ticks: { color: '#A8A29E', maxRotation: 45 } }
+      }
+    },
+    plugins: [{
+      id: 'refLine',
+      afterDraw(chart) {
+        const yScale = chart.scales.y;
+        const ctx2 = chart.ctx;
+        const y3 = yScale.getPixelForValue(3);
+        ctx2.save();
+        ctx2.strokeStyle = '#F2CC8F';
+        ctx2.lineWidth = 1.5;
+        ctx2.setLineDash([6,4]);
+        ctx2.beginPath();
+        ctx2.moveTo(chart.chartArea.left, y3);
+        ctx2.lineTo(chart.chartArea.right, y3);
+        ctx2.stroke();
+        ctx2.fillStyle = '#F2CC8F';
+        ctx2.font = '11px Roboto Mono';
+        ctx2.fillText('\u5efa\u8b70 \u2265 3\u6b21/\u9031', chart.chartArea.right - 100, y3 - 5);
+        ctx2.restore();
+      }
+    }]
+  });
 }
 
-// === WEIGHT CHART ===
-function _bd_initWeightChart() {
-  var ctx = document.getElementById('weightChart').getContext('2d');
-  var labels = _bd_allData.map(function(d) { return d.date; });
-  var weights = _bd_allData.map(function(d) { return d.weight; });
+function renderLiftChart() {
+  const lifts = {
+    'Bench Press (kg)': { sub: 'BARBELL_BENCH_PRESS', field: 'weight', color: '#E07A5F' },
+    'Pull-up (total reps)': { sub: ['BODYWEIGHT_PULL_UP','PULL_UP','WEIGHTED_PULL_UP'], field: 'reps', color: '#81B29A', sumReps: true },
+    'Leg Press (kg)': { sub: 'LEG_PRESS', field: 'weight', color: '#F2CC8F' },
+    'RDL (kg)': { sub: 'ROMANIAN_DEADLIFT', field: 'weight', color: '#3D405B' },
+    'EZ Curl (kg)': { sub: 'EZ_BAR_PREACHER_CURL', field: 'weight', color: '#A8A29E' }
+  };
 
-  var ma = [];
-  for (var i = 0; i < weights.length; i++) {
-    var windowData = weights.slice(Math.max(0, i - 6), i + 1);
-    var sum = 0;
-    for (var j = 0; j < windowData.length; j++) sum += windowData[j];
-    ma.push(sum / windowData.length);
-  }
+  const datasets = [];
+  let allVals = [];
 
-  new Chart(ctx, {
+  Object.entries(lifts).forEach(([name, cfg]) => {
+    const byDate = {};
+    _tr_trainingData.forEach(d => {
+      const sub = d.sub_category.toUpperCase();
+      const match = Array.isArray(cfg.sub) ? cfg.sub.some(s => sub.includes(s)) : sub.includes(cfg.sub);
+      if (!match) return;
+      if (!byDate[d.date]) byDate[d.date] = [];
+      byDate[d.date].push(d);
+    });
+
+    const points = [];
+    Object.entries(byDate).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([date, rows]) => {
+      let val;
+      if (cfg.sumReps) {
+        val = rows.reduce((s,r) => s + r.reps, 0);
+      } else {
+        val = Math.max(...rows.map(r => r[cfg.field]));
+      }
+      points.push({ x: date, y: val });
+      allVals.push(val);
+    });
+
+    datasets.push({
+      label: name,
+      data: points,
+      borderColor: cfg.color,
+      backgroundColor: cfg.color + '33',
+      borderWidth: 2,
+      tension: 0.3,
+      pointRadius: 3,
+      pointHoverRadius: 6
+    });
+  });
+
+  const minVal = Math.min(...allVals);
+  const maxVal = Math.max(...allVals);
+  const padding = (maxVal - minVal) * 0.15;
+
+  const ctx = document.getElementById('liftChart').getContext('2d');
+  _tr_charts.lift = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '\u9AD4\u91CD',
-          data: weights,
-          borderColor: '#E07A5F',
-          backgroundColor: 'rgba(224,122,95,0.1)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          pointBackgroundColor: '#E07A5F',
-          tension: 0.3,
-          fill: true
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#A8A29E', font: { family: 'Roboto Mono', size: 11 } } },
+        tooltip: { callbacks: { title: items => items[0]?.raw?.x || '' } }
+      },
+      scales: {
+        x: {
+          type: 'category',
+          labels: [...new Set(_tr_trainingData.map(d=>d.date))].sort(),
+          grid: { color: 'rgba(244,241,222,0.04)' },
+          ticks: { color: '#A8A29E', maxRotation: 45, maxTicksLimit: 15 }
         },
-        {
-          label: '7\u6B21\u79FB\u52D5\u5E73\u5747',
-          data: ma,
-          borderColor: 'rgba(242,204,143,0.7)',
-          borderWidth: 2,
-          borderDash: [5, 3],
-          pointRadius: 0,
-          tension: 0.4,
-          fill: false
+        y: {
+          min: Math.max(0, Math.floor(minVal - padding)),
+          grid: { color: 'rgba(244,241,222,0.08)' },
+          ticks: { color: '#A8A29E' }
         }
+      }
+    }
+  });
+}
+
+function renderMevChart() {
+  const weekMuscle = {};
+  _tr_trainingData.forEach(d => {
+    const wk = getWeekKey(d.date);
+    const muscle = toMuscle(d.category, d.sub_category);
+    if (muscle === '\u5176\u4ed6') return;
+    if (!weekMuscle[wk]) weekMuscle[wk] = {};
+    if (!weekMuscle[wk][muscle]) weekMuscle[wk][muscle] = 0;
+    weekMuscle[wk][muscle] += d.sets;
+  });
+
+  const weeks = Object.keys(weekMuscle);
+  const muscles = Object.keys(_tr_HELMS_REF);
+  const avgSets = {};
+  muscles.forEach(m => {
+    const vals = weeks.map(w => weekMuscle[w]?.[m] || 0);
+    avgSets[m] = vals.reduce((a,b)=>a+b,0) / weeks.length;
+  });
+
+  const dataVals = muscles.map(m => Math.round(avgSets[m] * 10) / 10);
+  const mevVals = muscles.map(m => _tr_HELMS_REF[m].mev);
+  const mavVals = muscles.map(m => _tr_HELMS_REF[m].mav);
+  const mrvVals = muscles.map(m => _tr_HELMS_REF[m].mrv);
+  const barColors = muscles.map((m,i) => dataVals[i] < _tr_HELMS_REF[m].mev ? 'rgba(224,122,95,0.7)' : 'rgba(129,178,154,0.5)');
+
+  const ctx = document.getElementById('mevChart').getContext('2d');
+  _tr_charts.mev = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: muscles,
+      datasets: [
+        { label: '\u4f60\u7684\u9031\u5747\u7d44\u6578', data: dataVals, backgroundColor: barColors, borderColor: barColors.map(c=>c.replace('0.7','1').replace('0.6','1')), borderWidth: 1, borderRadius: 4 },
+        { label: 'MEV', data: mevVals, type: 'line', borderColor: '#E07A5F', borderWidth: 2, borderDash: [6,3], pointRadius: 0, fill: false },
+        { label: 'MAV', data: mavVals, type: 'line', borderColor: '#F2CC8F', borderWidth: 2, borderDash: [6,3], pointRadius: 0, fill: false },
+        { label: 'MRV', data: mrvVals, type: 'line', borderColor: '#E07A5F', borderWidth: 2, borderDash: [3,3], pointRadius: 0, fill: false, opacity: 0.5 }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#A8A29E', font: { family: 'Roboto Mono', size: 11 } } } },
+      scales: {
+        y: { beginAtZero: true, max: 22, grid: { color: 'rgba(244,241,222,0.08)' }, ticks: { color: '#A8A29E', stepSize: 2 }, title: { display: true, text: '\u7d44\u6578/\u9031', color: '#A8A29E' } },
+        x: { grid: { color: 'rgba(244,241,222,0.04)' }, ticks: { color: '#A8A29E' } }
+      }
+    }
+  });
+}
+
+let _tr_currentFilter = 'all';
+function filterVolume(f) {
+  _tr_currentFilter = f;
+  document.querySelectorAll('.ppl-btn').forEach(btn => btn.className = 'ppl-btn');
+  const btns = document.querySelectorAll('.ppl-btn');
+  const idx = ['all','push','pull','leg'].indexOf(f);
+  if (idx >= 0) btns[idx].classList.add(['active-all','active-push','active-pull','active-leg'][idx]);
+  if (_tr_charts.vol) _tr_charts.vol.destroy();
+  renderVolChart(f);
+}
+
+function renderVolChart(filter) {
+  const sessions = {};
+  _tr_trainingData.forEach(d => {
+    const key = d.date + '|' + d.training;
+    if (!sessions[key]) sessions[key] = { date: d.date, training: d.training, vol: 0, split: getSplit(d.training) };
+    sessions[key].vol += d.volume;
+  });
+
+  let arr = Object.values(sessions).sort((a,b) => a.date.localeCompare(b.date));
+  if (filter !== 'all') arr = arr.filter(s => s.split === filter);
+
+  const labels = arr.map(s => s.date.slice(5));
+  const data = arr.map(s => s.vol);
+  const colors = arr.map(s => {
+    if (s.split === 'push') return 'rgba(224,122,95,0.7)';
+    if (s.split === 'pull') return 'rgba(129,178,154,0.7)';
+    if (s.split === 'leg') return 'rgba(242,204,143,0.7)';
+    return 'rgba(168,162,158,0.5)';
+  });
+
+  const minVol = data.length ? Math.min(...data) : 0;
+  const yMin = Math.max(0, Math.floor(minVol * 0.7));
+
+  const ctx = document.getElementById('volChart').getContext('2d');
+  _tr_charts.vol = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Session Volume (kg)',
+        data,
+        backgroundColor: colors,
+        borderColor: colors.map(c => c.replace('0.7','1')),
+        borderWidth: 1,
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: {
-          labels: { color: '#A8A29E', font: { family: 'Inter', size: 11 }, usePointStyle: true, pointStyle: 'line' }
-        },
+        legend: { display: false },
         tooltip: {
-          backgroundColor: '#2A2A2A',
-          titleColor: '#F4F1DE',
-          bodyColor: '#F4F1DE',
-          borderColor: 'rgba(224,122,95,0.3)',
-          borderWidth: 1,
           callbacks: {
-            label: function(ctx) { return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2) + ' kg'; }
+            title: items => { const i = items[0]?.dataIndex; return i !== undefined ? arr[i].date + ' ' + arr[i].training : ''; },
+            label: item => `Volume: ${Math.round(item.raw).toLocaleString()} kg`
           }
         }
       },
       scales: {
-        x: {
-          ticks: { color: '#A8A29E', font: { family: 'Inter', size: 10 }, maxRotation: 45, maxTicksLimit: 15 },
-          grid: { color: 'rgba(255,255,255,0.04)' }
-        },
-        y: {
-          ticks: { color: '#A8A29E', font: { family: 'Inter', size: 11 }, callback: function(v) { return v + ' kg'; } },
-          grid: { color: 'rgba(255,255,255,0.06)' }
-        }
+        y: { min: yMin, grid: { color: 'rgba(244,241,222,0.08)' }, ticks: { color: '#A8A29E', callback: v => (v/1000).toFixed(1)+'k' }, title: { display: true, text: 'Volume (kg)', color: '#A8A29E' } },
+        x: { grid: { color: 'rgba(244,241,222,0.04)' }, ticks: { color: '#A8A29E', maxRotation: 60 } }
       }
     }
   });
 }
 
-// === BODY COMPOSITION CHART ===
-function _bd_initCompChart() {
-  var ctx = document.getElementById('compChart').getContext('2d');
-  var labels = _bd_validCompData.map(function(d) { return d.date; });
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '\u9AD4\u8102\u7387 %',
-          data: _bd_validCompData.map(function(d) { return d.bf_pct; }),
-          borderColor: '#F2CC8F',
-          backgroundColor: 'rgba(242,204,143,0.08)',
-          borderWidth: 2.5,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          pointBackgroundColor: '#F2CC8F',
-          tension: 0.3,
-          yAxisID: 'y',
-          fill: true
-        },
-        {
-          label: '\u9AA8\u9ABC\u808C kg',
-          data: _bd_validCompData.map(function(d) { return d.sm_mass; }),
-          borderColor: '#81B29A',
-          borderWidth: 2.5,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          pointBackgroundColor: '#81B29A',
-          tension: 0.3,
-          yAxisID: 'y1'
-        },
-        {
-          label: '\u7121\u8102\u80AA\u8CEA\u91CF kg',
-          data: _bd_validCompData.map(function(d) { return d.lean_mass; }),
-          borderColor: '#7FAADC',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          pointBackgroundColor: '#7FAADC',
-          tension: 0.3,
-          borderDash: [4, 2],
-          yAxisID: 'y1'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          labels: { color: '#A8A29E', font: { family: 'Inter', size: 11 }, usePointStyle: true, pointStyle: 'circle' }
-        },
-        tooltip: {
-          backgroundColor: '#2A2A2A',
-          titleColor: '#F4F1DE',
-          bodyColor: '#F4F1DE',
-          borderColor: 'rgba(224,122,95,0.3)',
-          borderWidth: 1
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#A8A29E', font: { family: 'Inter', size: 10 }, maxRotation: 45, maxTicksLimit: 12 },
-          grid: { color: 'rgba(255,255,255,0.04)' }
-        },
-        y: {
-          type: 'linear',
-          position: 'left',
-          title: { display: true, text: '\u9AD4\u8102\u7387 %', color: '#F2CC8F', font: { family: 'Inter', size: 11 } },
-          ticks: { color: '#F2CC8F', font: { family: 'Inter', size: 11 }, callback: function(v) { return v + '%'; } },
-          grid: { color: 'rgba(255,255,255,0.06)' }
-        },
-        y1: {
-          type: 'linear',
-          position: 'right',
-          title: { display: true, text: '\u8CEA\u91CF kg', color: '#81B29A', font: { family: 'Inter', size: 11 } },
-          ticks: { color: '#81B29A', font: { family: 'Inter', size: 11 }, callback: function(v) { return v + ' kg'; } },
-          grid: { drawOnChartArea: false }
-        }
-      }
-    }
+function renderAnalysis(weeklyFreq, daysSince, pushC, pullC, legC) {
+  const weekMuscle = {};
+  _tr_trainingData.forEach(d => {
+    const wk = getWeekKey(d.date);
+    const muscle = toMuscle(d.category, d.sub_category);
+    if (muscle === '\u5176\u4ed6') return;
+    if (!weekMuscle[wk]) weekMuscle[wk] = {};
+    if (!weekMuscle[wk][muscle]) weekMuscle[wk][muscle] = 0;
+    weekMuscle[wk][muscle] += d.sets;
   });
-}
+  const weeks = Object.keys(weekMuscle);
+  const muscles = Object.keys(_tr_HELMS_REF);
 
-// === TABLE ===
-function _bd_initTable() {
-  var tbody = document.getElementById('compTableBody');
-  var last10 = _bd_validCompData.slice(-10).reverse();
+  const belowMev = [];
+  muscles.forEach(m => {
+    const avg = weeks.map(w => weekMuscle[w]?.[m] || 0).reduce((a,b)=>a+b,0) / weeks.length;
+    if (avg < _tr_HELMS_REF[m].mev) belowMev.push(`${m}(${avg.toFixed(1)}\u7d44 < MEV ${_tr_HELMS_REF[m].mev})`);
+  });
 
-  for (var i = 0; i < last10.length; i++) {
-    var d = last10[i];
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td>' + d.dt + '</td>' +
-      '<td class="val-weight">' + d.weight.toFixed(1) + '</td>' +
-      '<td class="val-bf">' + d.bf_pct.toFixed(1) + '</td>' +
-      '<td class="val-bf">' + d.bf_mass.toFixed(1) + '</td>' +
-      '<td class="val-lean">' + d.lean_mass.toFixed(1) + '</td>' +
-      '<td class="val-sm">' + d.sm_mass.toFixed(1) + '</td>' +
-      '<td class="val-bmr">' + Math.round(d.bmr) + '</td>';
-    tbody.appendChild(tr);
+  const liftTrends = [];
+  ['BARBELL_BENCH_PRESS','LEG_PRESS','ROMANIAN_DEADLIFT','EZ_BAR_PREACHER_CURL'].forEach(sub => {
+    const rows = _tr_trainingData.filter(d => d.sub_category.toUpperCase().includes(sub)).sort((a,b)=>a.date.localeCompare(b.date));
+    if (rows.length < 2) return;
+    const mid = Math.floor(rows.length/2);
+    const first = Math.max(...rows.slice(0,mid).map(r=>r.weight));
+    const second = Math.max(...rows.slice(mid).map(r=>r.weight));
+    const name = sub.replace(/_/g,' ').toLowerCase();
+    if (second > first) liftTrends.push(`<strong>${name}</strong>\uff1a${first}\u2192${second}kg \u2191 \u9032\u6b65\u4e2d`);
+    else if (second === first) liftTrends.push(`<strong>${name}</strong>\uff1a${first}kg \u2192 \u6301\u5e73\uff0c\u53ef\u80fd\u9700\u8981\u8abf\u6574`);
+    else liftTrends.push(`<strong>${name}</strong>\uff1a${first}\u2192${second}kg \u2193 \u9700\u8981\u6ce8\u610f`);
+  });
+
+  let html = '';
+  html += `<p><strong>1. \u8a13\u7df4\u983b\u7387\u8207\u91cf</strong><br>`;
+  html += `\u9031\u5747\u983b\u7387 <strong>${weeklyFreq} \u6b21/\u9031</strong>\uff08Push ${pushC} / Pull ${pullC} / Leg ${legC}\uff09\u3002`;
+  if (parseFloat(weeklyFreq) >= 3) {
+    html += `\u983b\u7387\u9054\u6a19\uff0cEric Helms \u5efa\u8b70\u6bcf\u808c\u7fa4\u6bcf\u9031\u81f3\u5c11\u523a\u6fc0 2 \u6b21\uff0c\u4f60\u7684 PPL \u5206\u914d\u5408\u7406\u3002`;
+  } else {
+    html += `<span style="color:#f85149">\u983b\u7387\u504f\u4f4e\uff0c\u5efa\u8b70\u63d0\u9ad8\u5230\u81f3\u5c11 3 \u6b21/\u9031\u3002</span>`;
   }
+  if (belowMev.length) {
+    html += `<br><span style="color:#f85149">\u4f4e\u65bc MEV \u7684\u808c\u7fa4\uff1a${belowMev.join('\u3001')}</span>`;
+  } else {
+    html += `<br>\u6240\u6709\u808c\u7fa4\u9031\u5747\u7d44\u6578\u5747\u5728 MEV \u4ee5\u4e0a\u3002`;
+  }
+  html += `</p>`;
+
+  html += `<p><strong>2. \u4e3b\u8981\u52d5\u4f5c\u9032\u6b65\u8ffd\u8e64</strong><br>`;
+  html += liftTrends.join('<br>');
+  html += `</p>`;
+
+  html += `<p><strong>3. \u4e0b\u4e00\u6b65\u5efa\u8b70</strong><br>`;
+  if (daysSince > 7) {
+    html += `\u8ddd\u4e0a\u6b21\u8a13\u7df4\u5df2 <strong>${daysSince} \u5929</strong>\uff0c\u512a\u5148\u6062\u5fa9\u8a13\u7df4\u983b\u7387\u3002<br>`;
+  }
+  if (belowMev.length) {
+    html += `\u91dd\u5c0d\u4f4e\u65bc MEV \u7684\u808c\u7fa4\uff0c\u6bcf\u9031\u589e\u52a0 1-2 \u7d44\uff0c\u9010\u6b65\u63d0\u5347\u5230 MEV \u4ee5\u4e0a\u3002<br>`;
+  }
+  html += `Pull-up \u7e3d reps \u7a69\u5b9a\u5728 24 \u5de6\u53f3\uff0c\u5617\u8a66\u52a0\u5165\u8ca0\u91cd\uff08vest \u6216 belt\uff09\u4f86\u7a81\u7834\u3002<br>`;
+  html += `Bench Press \u5df2\u5f9e 50\u219260kg \u9032\u6b65\uff0c\u7dad\u6301\u76ee\u524d\u7bc0\u594f\uff0c\u6bcf 2-3 \u9031\u5617\u8a66\u5fae\u589e\uff082.5kg\uff09\u3002`;
+  html += `</p>`;
+
+  document.getElementById('analysisContent').innerHTML = html;
 }
 
-// === INIT ===
-_bd_initStats();
-_bd_initWeightChart();
-_bd_initCompChart();
-_bd_initTable();
-})();
+function toggleInput() {
+  document.getElementById('inputSection').classList.toggle('open');
+}
+
+function loadUserData() {
+  const text = document.getElementById('csvInput').value.trim();
+  if (!text) { alert('\u8acb\u8cbc\u4e0a\u8cc7\u6599'); return; }
+  const parsed = parseTSV(text);
+  if (!parsed.length) { alert('\u683c\u5f0f\u932f\u8aa4'); return; }
+  _tr_trainingData = dedup(parsed);
+  localStorage.setItem('gymData', JSON.stringify(_tr_trainingData));
+  updateAll();
+  alert(`\u2705 \u5df2\u8f09\u5165 ${_tr_trainingData.length} \u7b46`);
+}
+
+function exportData() {
+  if (!_tr_trainingData.length) { alert('\u7121\u8cc7\u6599'); return; }
+  const csv = ['date,training,category,sub_category,sets,reps,max_weight_kg,volume_kg'];
+  _tr_trainingData.forEach(d => csv.push(`${d.date},${d.training},${d.category},${d.sub_category},${d.sets},${d.reps},${d.weight},${d.volume}`));
+  const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `gym_data_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function clearData() {
+  if (!confirm('\u78ba\u5b9a\u6e05\u9664\uff1f')) return;
+  _tr_trainingData = [];
+  localStorage.removeItem('gymData');
+  location.reload();
+}
+
+window.addEventListener('load', () => {
+  try {
+    const saved = localStorage.getItem('gymData');
+    if (saved) {
+      try {
+        _tr_trainingData = JSON.parse(saved);
+        if (_tr_trainingData.length) { updateAll(); return; }
+      } catch(e) {}
+    }
+    const parsed = parseTSV(_tr_RAW_DATA);
+    if (parsed.length) {
+      _tr_trainingData = dedup(parsed);
+      localStorage.setItem('gymData', JSON.stringify(_tr_trainingData));
+      updateAll();
+    } else {
+      document.body.insertAdjacentHTML('afterbegin', '<pre style="color:orange;padding:20px">WARNING: parseTSV returned 0 records</pre>');
+    }
+  } catch(e) {
+    document.body.insertAdjacentHTML('afterbegin', '<pre style="color:red;padding:20px">ERROR: ' + e.message + '\n' + e.stack + '</pre>');
+  }
+});
+// Expose public functions to global scope for HTML onclick handlers
+window.filterVolume = filterVolume;
+window.toggleInput = toggleInput;
+window.loadUserData = loadUserData;
+window.exportData = exportData;
+window.clearData = clearData;
 })();
 </script>
 
@@ -1031,8 +1116,8 @@ function updateAll() {
   document.getElementById('avgRem').style.color = avgR >= 90 ? '#81B29A' : '#E07A5F';
   document.getElementById('avgEff').style.color = avgE >= 85 ? '#81B29A' : '#E07A5F';
 
-  Object.values(charts).forEach(c => c.destroy());
-  charts = {};
+  Object.values(_sl_charts).forEach(c => c.destroy());
+  _sl_charts = {};
 
   renderDuration(data);
   renderEfficiency(data);
@@ -1364,9 +1449,17 @@ function renderAnalysis(data, avgT, avgD, avgR, avgE, avgBed) {
   document.getElementById('analysisContent').innerHTML = html;
 }
 
+// Expose updateAll for lazy chart rendering on tab switch
+window._sl_updateAll = updateAll;
+// Expose setRange for HTML onclick
+window.setRange = setRange;
 window.addEventListener('load', updateAll);
 })();
-</script>
+
+
+
+
+
 
 <script>
 // === BODY (IIFE) ===
@@ -1679,12 +1772,15 @@ function _bd_initTable() {
 }
 
 // === INIT ===
-_bd_initStats();
-_bd_initWeightChart();
-_bd_initCompChart();
-_bd_initTable();
+function _bd_initAll() {
+  _bd_initStats();
+  _bd_initWeightChart();
+  _bd_initCompChart();
+  _bd_initTable();
+}
+window._bd_init = _bd_initAll;
+_bd_initAll();
 })();
 </script>
-
 </body>
 </html>
