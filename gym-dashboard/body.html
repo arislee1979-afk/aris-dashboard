@@ -210,9 +210,9 @@ body {
   </div>
 
   <div class="nav-bar">
-    <a href="./" class="inactive">&#127947;&#65039; Training</a>
-    <a href="sleep.html" class="inactive">&#127769; Sleep</a>
-    <a href="body.html" class="active">&#9878;&#65039; Body</a>
+    <a href="/gym/" class="inactive">&#127947;&#65039; Training</a>
+    <a href="/gym/sleep.html" class="inactive">&#127769; Sleep</a>
+    <a href="/gym/body.html" class="active">&#9878;&#65039; Body</a>
   </div>
 
   <div class="stats-grid">
@@ -354,9 +354,9 @@ var allData = [
   {date:"2026-04-01",dt:"2026-04-01 08:57",weight:66.6,bf_pct:17.4,bf_mass:11.6,lean_mass:55.0,sm_mass:31.2,bmr:1558.0}
 ];
 
-// Filter: body composition records with valid sm_mass (>0 means real data from body comp scale)
+// Filter: body composition records with valid lean_mass (>30 means real data from body comp scale)
 var compData = allData.filter(function(d) { return d.bf_pct > 0; });
-var validCompData = compData.filter(function(d) { return d.sm_mass > 0; });
+var validCompData = compData.filter(function(d) { return d.lean_mass > 30; });
 
 // === HEADER STATS ===
 function initStats() {
