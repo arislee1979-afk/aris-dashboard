@@ -203,11 +203,13 @@ let charts = {};
 let currentRange = 60;
 
 function getData(days) {
-  if (days === 0) return SLEEP_DATA;
+  // Filter out abnormally short records (< 60 minutes, e.g. naps or sensor errors)
+  const validData = SLEEP_DATA.filter(d => d.total_min >= 60);
+  if (days === 0) return validData;
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   const cutStr = cutoff.toISOString().slice(0,10);
-  return SLEEP_DATA.filter(d => d.date >= cutStr);
+  return validData.filter(d => d.date >= cutStr);
 }
 
 function timeToMinutes(t) {
@@ -307,8 +309,9 @@ function renderDuration(data) {
             title: items => data[items[0]?.dataIndex]?.date || '',
             afterBody: items => {
               const i = items[0]?.dataIndex;
-              if (i === undefined) return '';
+              if (i === undefined || i < 0 || i >= data.length) return '';
               const d = data[i];
+              if (!d) return '';
               return `\n總睡眠: ${(d.total_min/60).toFixed(1)}h\n效率: ${d.efficiency}%`;
             }
           }
@@ -564,7 +567,7 @@ function renderAnalysis(data, avgT, avgD, avgR, avgE, avgBed) {
   html += `</p>`;
 
   html += `<p><strong>2. 深睡品質</strong><br>`;
-  html += `平均深睡 <strong>${Math.round(avgD)} 分鐘/夜</strong>（${(avgD/avgT*100).toFixed(0)}%）。`;
+  html += `平均深睡 <strong>${Math.round(avgD)} 分鐘/夜</strong>（${avgT > 0 ? (avgD/avgT*100).toFixed(0) : 0}%）。`;
   if (avgD >= 60) {
     html += `<span style="color:#81B29A">深睡達標（≥60 分鐘），肌肉修復與生長激素分泌正常。</span>`;
   } else {
