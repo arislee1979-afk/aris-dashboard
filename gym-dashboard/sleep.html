@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aris Sleep Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+:root {
+  --bg-dark: #1E1B2E;
+  --bg-card: #272340;
+  --bg-input: #2F2B4A;
+  --accent-primary: #7C6CA8;
+  --accent-secondary: #81B29A;
+  --accent-warm: #E07A5F;
+  --text-primary: #E8E4F0;
+  --text-secondary: #9B95AD;
+  --border: rgba(124,108,168,0.25);
+  --deep-color: #5B4F8A;
+  --light-color: #A8A0CC;
+  --rem-color: #7C6CA8;
+  --awake-color: #E07A5F;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+.container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+.header { text-align: center; margin-bottom: 2rem; }
+.header h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 2.4rem; font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.header p { color: var(--text-secondary); font-size: 0.85rem; letter-spacing: 0.05em; }
+.nav { text-align: center; margin-bottom: 1.5rem; }
+.nav a {
+  color: var(--text-secondary); text-decoration: none; font-size: 0.8rem;
+  padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 20px;
+  margin: 0 0.3rem; transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 600;
+}
+.nav a:hover, .nav a.active { color: var(--accent-primary); border-color: var(--accent-primary); }
+
+.data-verify {
+  background: var(--bg-card); border: 1px solid var(--accent-primary);
+  border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.verify-main { display: flex; align-items: baseline; gap: 0.75rem; }
+.verify-main .label { color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.verify-main .date { font-family: 'Inter', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); }
+.verify-meta { display: flex; gap: 1.5rem; }
+.verify-meta .item { text-align: center; }
+.verify-meta .num { font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
+.verify-meta .sub { font-size: 0.7rem; color: var(--text-secondary); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.2rem; position: relative; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
+.stat-card.deep::before { background: var(--deep-color); }
+.stat-card.rem::before { background: var(--rem-color); }
+.stat-card.eff::before { background: var(--accent-secondary); }
+.stat-card.bed::before { background: var(--accent-warm); }
+.stat-card.total::before { background: linear-gradient(90deg, var(--deep-color), var(--accent-primary)); }
+.stat-card h3 { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; font-weight: 500; }
+.stat-value { font-family: 'Inter', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent-primary); line-height: 1; }
+.stat-label { font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+.chart-section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.chart-section h2 { font-family: 'Inter', sans-serif; color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem; font-weight: 700; }
+.chart-container { position: relative; height: 320px; }
+
+.legend-row { display: flex; gap: 1.5rem; margin-bottom: 0.8rem; font-size: 0.75rem; flex-wrap: wrap; }
+.legend-row span { display: flex; align-items: center; gap: 0.3rem; color: var(--text-secondary); }
+.legend-row .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+.range-toggle { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.range-btn {
+  padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 20px;
+  background: var(--bg-input); color: var(--text-secondary);
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.range-btn.active { border-color: var(--accent-primary); color: var(--accent-primary); background: rgba(124,108,168,0.08); }
+
+.warning { background: rgba(224,122,95,0.08); border: 1px solid rgba(224,122,95,0.25); border-radius: 12px; padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--accent-warm); }
+.good { background: rgba(129,178,154,0.08); border: 1px solid rgba(129,178,154,0.25); border-radius: 12px; padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--accent-secondary); }
+
+.analysis { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.analysis h2 { font-family: 'Inter', sans-serif; color: var(--accent-secondary); margin-bottom: 1rem; font-size: 1.1rem; font-weight: 700; }
+.analysis p { line-height: 1.7; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary); }
+.analysis strong { color: var(--text-primary); }
+
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .header h1 { font-size: 1.8rem; }
+  .data-verify { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 500px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🌙 Aris Sleep Lab</h1>
+    <p>Sleep Analytics · Recovery Insights · Health Sync Data</p>
+  </div>
+  <div class="nav">
+    <a href="/gym/">🏋️ Training</a>
+    <a href="/gym/sleep.html" class="active">🌙 Sleep</a>
+    <a href="/gym/body.html">⚖️ Body</a>
+  </div>
+
+  <div class="data-verify">
+    <div class="verify-main">
+      <span class="label">最後睡眠紀錄</span>
+      <span class="date" id="lastDate">--</span>
+    </div>
+    <div class="verify-meta">
+      <div class="item"><div class="num" id="nightCount">--</div><div class="sub">夜</div></div>
+      <div class="item"><div class="num" id="dataSpan">--</div><div class="sub">天跨度</div></div>
+      <div class="item"><div class="num" id="avgTotal">--</div><div class="sub">平均睡眠(h)</div></div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card total"><h3>平均睡眠</h3><div class="stat-value" id="avgSleep">--</div><div class="stat-label">小時</div></div>
+    <div class="stat-card deep"><h3>平均深睡</h3><div class="stat-value" id="avgDeep">--</div><div class="stat-label">分鐘 (目標 ≥60)</div></div>
+    <div class="stat-card rem"><h3>平均 REM</h3><div class="stat-value" id="avgRem">--</div><div class="stat-label">分鐘 (目標 ≥90)</div></div>
+    <div class="stat-card eff"><h3>平均效率</h3><div class="stat-value" id="avgEff">--</div><div class="stat-label">% (目標 ≥85)</div></div>
+    <div class="stat-card bed"><h3>平均就寢</h3><div class="stat-value" id="avgBed" style="font-size:1.5rem">--</div><div class="stat-label">目標 ≤00:30</div></div>
+  </div>
+
+  <!-- Sleep Duration Stacked Bar -->
+  <div class="chart-section">
+    <h2>😴 每夜睡眠時長（階段分布）</h2>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#5B4F8A"></span> 深睡</span>
+      <span><span class="dot" style="background:#A8A0CC"></span> 淺睡</span>
+      <span><span class="dot" style="background:#7C6CA8"></span> REM</span>
+      <span><span class="dot" style="background:#E07A5F;opacity:0.5"></span> 清醒</span>
+    </div>
+    <div class="range-toggle">
+      <button class="range-btn" onclick="setRange(30)">30天</button>
+      <button class="range-btn active" onclick="setRange(60)">60天</button>
+      <button class="range-btn" onclick="setRange(0)">全部</button>
+    </div>
+    <div class="chart-container" style="height:360px"><canvas id="durationChart"></canvas></div>
+    <div id="durationAlert"></div>
+  </div>
+
+  <!-- Sleep Efficiency Trend -->
+  <div class="chart-section">
+    <h2>📊 睡眠效率趨勢</h2>
+    <div class="chart-container"><canvas id="effChart"></canvas></div>
+  </div>
+
+  <!-- Bedtime / Wake Time -->
+  <div class="chart-section">
+    <h2>🕐 就寢 / 起床時間</h2>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#5B4F8A"></span> 就寢</span>
+      <span><span class="dot" style="background:#E07A5F"></span> 起床</span>
+    </div>
+    <div class="chart-container"><canvas id="timeChart"></canvas></div>
+  </div>
+
+  <!-- Weekly Averages -->
+  <div class="chart-section">
+    <h2>📅 每週平均睡眠</h2>
+    <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
+  </div>
+
+  <!-- Analysis -->
+  <div class="analysis">
+    <h2>📝 睡眠分析</h2>
+    <div id="analysisContent"></div>
+  </div>
+</div>
+
+<script>
+const SLEEP_DATA = [{"date": "2025-11-14", "total_min": 141.5, "deep_min": 14.0, "light_min": 106.0, "rem_min": 21.5, "awake_min": 21.5, "bed_time": "03:21", "wake_time": "06:04", "efficiency": 86.8}, {"date": "2025-11-15", "total_min": 260.5, "deep_min": 47.5, "light_min": 149.0, "rem_min": 64.0, "awake_min": 73.0, "bed_time": "01:14", "wake_time": "09:37", "efficiency": 78.1}, {"date": "2025-11-16", "total_min": 292.5, "deep_min": 45.0, "light_min": 192.5, "rem_min": 55.0, "awake_min": 51.5, "bed_time": "00:13", "wake_time": "05:57", "efficiency": 85.0}, {"date": "2025-11-17", "total_min": 258.0, "deep_min": 13.5, "light_min": 136.5, "rem_min": 108.0, "awake_min": 40.5, "bed_time": "01:05", "wake_time": "06:03", "efficiency": 86.4}, {"date": "2025-11-18", "total_min": 245.0, "deep_min": 18.5, "light_min": 190.5, "rem_min": 36.0, "awake_min": 72.0, "bed_time": "00:47", "wake_time": "06:04", "efficiency": 77.3}, {"date": "2025-11-19", "total_min": 198.5, "deep_min": 41.0, "light_min": 110.5, "rem_min": 47.0, "awake_min": 25.5, "bed_time": "02:18", "wake_time": "06:02", "efficiency": 88.6}, {"date": "2025-11-20", "total_min": 242.0, "deep_min": 25.0, "light_min": 159.0, "rem_min": 58.0, "awake_min": 30.0, "bed_time": "02:07", "wake_time": "08:09", "efficiency": 89.0}, {"date": "2025-11-21", "total_min": 292.0, "deep_min": 13.0, "light_min": 206.5, "rem_min": 72.5, "awake_min": 50.5, "bed_time": "02:58", "wake_time": "09:32", "efficiency": 85.3}, {"date": "2025-11-22", "total_min": 270.0, "deep_min": 38.5, "light_min": 174.0, "rem_min": 57.5, "awake_min": 45.5, "bed_time": "01:16", "wake_time": "08:29", "efficiency": 85.6}, {"date": "2025-11-23", "total_min": 185.5, "deep_min": 0.0, "light_min": 174.5, "rem_min": 11.0, "awake_min": 84.5, "bed_time": "01:00", "wake_time": "05:58", "efficiency": 68.7}, {"date": "2025-11-24", "total_min": 321.0, "deep_min": 41.0, "light_min": 204.5, "rem_min": 75.5, "awake_min": 59.0, "bed_time": "22:39", "wake_time": "06:03", "efficiency": 84.5}, {"date": "2025-11-25", "total_min": 287.5, "deep_min": 23.5, "light_min": 217.0, "rem_min": 47.0, "awake_min": 74.0, "bed_time": "00:00", "wake_time": "06:01", "efficiency": 79.5}, {"date": "2025-11-26", "total_min": 263.5, "deep_min": 40.0, "light_min": 191.0, "rem_min": 32.5, "awake_min": 34.0, "bed_time": "23:45", "wake_time": "05:49", "efficiency": 88.6}, {"date": "2025-11-27", "total_min": 279.0, "deep_min": 38.5, "light_min": 169.0, "rem_min": 71.5, "awake_min": 37.0, "bed_time": "23:41", "wake_time": "05:44", "efficiency": 88.3}, {"date": "2025-11-28", "total_min": 207.0, "deep_min": 17.5, "light_min": 151.5, "rem_min": 38.0, "awake_min": 26.0, "bed_time": "01:36", "wake_time": "08:16", "efficiency": 88.8}, {"date": "2025-11-30", "total_min": 191.0, "deep_min": 13.0, "light_min": 160.5, "rem_min": 17.5, "awake_min": 51.0, "bed_time": "01:33", "wake_time": "06:07", "efficiency": 78.9}, {"date": "2025-12-01", "total_min": 335.0, "deep_min": 46.0, "light_min": 199.5, "rem_min": 89.5, "awake_min": 31.0, "bed_time": "23:56", "wake_time": "06:02", "efficiency": 91.5}, {"date": "2025-12-02", "total_min": 263.5, "deep_min": 38.5, "light_min": 162.0, "rem_min": 63.0, "awake_min": 49.5, "bed_time": "00:46", "wake_time": "05:59", "efficiency": 84.2}, {"date": "2025-12-03", "total_min": 315.5, "deep_min": 35.0, "light_min": 229.5, "rem_min": 51.0, "awake_min": 53.0, "bed_time": "23:50", "wake_time": "05:58", "efficiency": 85.6}, {"date": "2025-12-04", "total_min": 241.5, "deep_min": 2.5, "light_min": 189.5, "rem_min": 49.5, "awake_min": 80.5, "bed_time": "00:44", "wake_time": "06:06", "efficiency": 75.0}, {"date": "2025-12-05", "total_min": 317.5, "deep_min": 28.0, "light_min": 211.0, "rem_min": 78.5, "awake_min": 44.5, "bed_time": "23:57", "wake_time": "05:59", "efficiency": 87.7}, {"date": "2025-12-07", "total_min": 313.0, "deep_min": 40.0, "light_min": 217.5, "rem_min": 55.5, "awake_min": 73.0, "bed_time": "23:34", "wake_time": "06:00", "efficiency": 81.1}, {"date": "2025-12-08", "total_min": 372.0, "deep_min": 44.0, "light_min": 227.5, "rem_min": 100.5, "awake_min": 92.0, "bed_time": "22:14", "wake_time": "05:58", "efficiency": 80.2}, {"date": "2025-12-09", "total_min": 265.0, "deep_min": 60.0, "light_min": 174.0, "rem_min": 31.0, "awake_min": 36.5, "bed_time": "23:57", "wake_time": "05:17", "efficiency": 87.9}, {"date": "2025-12-10", "total_min": 270.0, "deep_min": 56.0, "light_min": 169.0, "rem_min": 45.0, "awake_min": 94.0, "bed_time": "00:04", "wake_time": "06:08", "efficiency": 74.2}, {"date": "2025-12-11", "total_min": 244.0, "deep_min": 60.5, "light_min": 124.5, "rem_min": 59.0, "awake_min": 46.5, "bed_time": "23:35", "wake_time": "04:25", "efficiency": 84.0}, {"date": "2025-12-12", "total_min": 295.0, "deep_min": 42.5, "light_min": 209.0, "rem_min": 43.5, "awake_min": 66.5, "bed_time": "23:53", "wake_time": "05:54", "efficiency": 81.6}, {"date": "2025-12-13", "total_min": 99.0, "deep_min": 5.0, "light_min": 79.5, "rem_min": 14.5, "awake_min": 14.0, "bed_time": "06:25", "wake_time": "08:18", "efficiency": 87.6}, {"date": "2025-12-14", "total_min": 217.5, "deep_min": 59.5, "light_min": 119.5, "rem_min": 38.5, "awake_min": 34.5, "bed_time": "01:51", "wake_time": "06:03", "efficiency": 86.3}, {"date": "2025-12-15", "total_min": 273.0, "deep_min": 43.0, "light_min": 210.8, "rem_min": 19.2, "awake_min": 97.9, "bed_time": "23:50", "wake_time": "06:00", "efficiency": 73.6}, {"date": "2025-12-16", "total_min": 372.0, "deep_min": 58.0, "light_min": 270.0, "rem_min": 44.0, "awake_min": 24.0, "bed_time": "23:28", "wake_time": "06:04", "efficiency": 93.9}, {"date": "2025-12-17", "total_min": 336.0, "deep_min": 106.0, "light_min": 167.0, "rem_min": 63.0, "awake_min": 96.0, "bed_time": "22:48", "wake_time": "06:00", "efficiency": 77.8}, {"date": "2025-12-18", "total_min": 385.9, "deep_min": 104.0, "light_min": 237.9, "rem_min": 44.0, "awake_min": 19.0, "bed_time": "23:16", "wake_time": "06:01", "efficiency": 95.3}, {"date": "2025-12-19", "total_min": 376.0, "deep_min": 97.0, "light_min": 221.0, "rem_min": 58.0, "awake_min": 30.0, "bed_time": "23:15", "wake_time": "06:01", "efficiency": 92.6}, {"date": "2025-12-20", "total_min": 396.0, "deep_min": 65.0, "light_min": 250.0, "rem_min": 81.0, "awake_min": 74.0, "bed_time": "22:44", "wake_time": "06:34", "efficiency": 84.3}, {"date": "2025-12-21", "total_min": 265.0, "deep_min": 74.0, "light_min": 155.0, "rem_min": 36.0, "awake_min": 168.0, "bed_time": "22:52", "wake_time": "06:05", "efficiency": 61.2}, {"date": "2025-12-22", "total_min": 356.0, "deep_min": 89.0, "light_min": 216.0, "rem_min": 51.0, "awake_min": 33.0, "bed_time": "22:35", "wake_time": "05:04", "efficiency": 91.5}, {"date": "2025-12-23", "total_min": 191.7, "deep_min": 75.0, "light_min": 116.7, "rem_min": 0.0, "awake_min": 22.0, "bed_time": "23:14", "wake_time": "02:48", "efficiency": 89.7}, {"date": "2025-12-24", "total_min": 315.0, "deep_min": 74.0, "light_min": 208.0, "rem_min": 33.0, "awake_min": 79.0, "bed_time": "22:50", "wake_time": "05:24", "efficiency": 79.9}, {"date": "2025-12-25", "total_min": 323.0, "deep_min": 56.0, "light_min": 203.0, "rem_min": 64.0, "awake_min": 114.0, "bed_time": "23:07", "wake_time": "07:13", "efficiency": 73.9}, {"date": "2025-12-26", "total_min": 295.0, "deep_min": 71.0, "light_min": 210.0, "rem_min": 14.0, "awake_min": 181.0, "bed_time": "23:45", "wake_time": "07:41", "efficiency": 62.0}, {"date": "2025-12-27", "total_min": 185.0, "deep_min": 36.5, "light_min": 111.5, "rem_min": 37.0, "awake_min": 53.0, "bed_time": "04:20", "wake_time": "08:18", "efficiency": 77.7}, {"date": "2025-12-28", "total_min": 353.0, "deep_min": 68.0, "light_min": 214.0, "rem_min": 71.0, "awake_min": 21.0, "bed_time": "23:17", "wake_time": "05:31", "efficiency": 94.4}, {"date": "2025-12-29", "total_min": 198.0, "deep_min": 60.0, "light_min": 117.0, "rem_min": 21.0, "awake_min": 6.0, "bed_time": "23:15", "wake_time": "02:39", "efficiency": 97.1}, {"date": "2025-12-30", "total_min": 370.0, "deep_min": 108.0, "light_min": 206.0, "rem_min": 56.0, "awake_min": 13.0, "bed_time": "23:05", "wake_time": "05:28", "efficiency": 96.6}, {"date": "2025-12-31", "total_min": 299.0, "deep_min": 69.0, "light_min": 169.0, "rem_min": 61.0, "awake_min": 1.0, "bed_time": "02:06", "wake_time": "07:06", "efficiency": 99.7}, {"date": "2026-01-01", "total_min": 351.0, "deep_min": 72.0, "light_min": 210.0, "rem_min": 69.0, "awake_min": 34.0, "bed_time": "23:35", "wake_time": "06:00", "efficiency": 91.2}, {"date": "2026-01-02", "total_min": 371.0, "deep_min": 82.0, "light_min": 230.0, "rem_min": 59.0, "awake_min": 1.0, "bed_time": "23:37", "wake_time": "06:10", "efficiency": 99.7}, {"date": "2026-01-03", "total_min": 266.0, "deep_min": 120.0, "light_min": 125.0, "rem_min": 21.0, "awake_min": 57.0, "bed_time": "00:35", "wake_time": "05:58", "efficiency": 82.4}, {"date": "2026-01-04", "total_min": 385.0, "deep_min": 100.0, "light_min": 219.0, "rem_min": 66.0, "awake_min": 11.0, "bed_time": "23:29", "wake_time": "06:05", "efficiency": 97.2}, {"date": "2026-01-05", "total_min": 355.0, "deep_min": 100.0, "light_min": 191.0, "rem_min": 64.0, "awake_min": 27.0, "bed_time": "23:40", "wake_time": "06:02", "efficiency": 92.9}, {"date": "2026-01-06", "total_min": 374.0, "deep_min": 87.0, "light_min": 216.0, "rem_min": 71.0, "awake_min": 26.0, "bed_time": "23:09", "wake_time": "05:49", "efficiency": 93.5}, {"date": "2026-01-07", "total_min": 375.0, "deep_min": 81.0, "light_min": 224.0, "rem_min": 70.0, "awake_min": 46.0, "bed_time": "23:04", "wake_time": "06:05", "efficiency": 89.1}, {"date": "2026-01-08", "total_min": 351.0, "deep_min": 128.0, "light_min": 173.0, "rem_min": 50.0, "awake_min": 64.0, "bed_time": "23:06", "wake_time": "06:01", "efficiency": 84.6}, {"date": "2026-01-09", "total_min": 484.9, "deep_min": 51.0, "light_min": 366.9, "rem_min": 67.0, "awake_min": 23.0, "bed_time": "00:27", "wake_time": "08:54", "efficiency": 95.5}, {"date": "2026-01-10", "total_min": 267.9, "deep_min": 31.0, "light_min": 236.9, "rem_min": 0.0, "awake_min": 5.0, "bed_time": "01:03", "wake_time": "05:36", "efficiency": 98.2}, {"date": "2026-01-11", "total_min": 328.0, "deep_min": 104.0, "light_min": 166.0, "rem_min": 58.0, "awake_min": 3.0, "bed_time": "00:29", "wake_time": "06:00", "efficiency": 99.1}, {"date": "2026-01-12", "total_min": 366.0, "deep_min": 92.0, "light_min": 207.0, "rem_min": 67.0, "awake_min": 4.0, "bed_time": "23:51", "wake_time": "06:01", "efficiency": 98.9}, {"date": "2026-01-13", "total_min": 393.0, "deep_min": 62.0, "light_min": 245.0, "rem_min": 86.0, "awake_min": 25.0, "bed_time": "23:00", "wake_time": "05:58", "efficiency": 94.0}, {"date": "2026-01-14", "total_min": 315.0, "deep_min": 35.0, "light_min": 255.0, "rem_min": 25.0, "awake_min": 70.0, "bed_time": "23:26", "wake_time": "05:51", "efficiency": 81.8}, {"date": "2026-01-15", "total_min": 376.0, "deep_min": 74.0, "light_min": 243.0, "rem_min": 59.0, "awake_min": 58.0, "bed_time": "23:01", "wake_time": "06:15", "efficiency": 86.6}, {"date": "2026-01-16", "total_min": 415.0, "deep_min": 65.0, "light_min": 252.0, "rem_min": 98.0, "awake_min": 59.0, "bed_time": "00:27", "wake_time": "08:21", "efficiency": 87.6}, {"date": "2026-01-17", "total_min": 456.0, "deep_min": 90.0, "light_min": 267.0, "rem_min": 99.0, "awake_min": 11.0, "bed_time": "23:39", "wake_time": "07:26", "efficiency": 97.6}, {"date": "2026-01-18", "total_min": 211.0, "deep_min": 63.0, "light_min": 148.0, "rem_min": 0.0, "awake_min": 20.0, "bed_time": "01:17", "wake_time": "05:08", "efficiency": 91.3}, {"date": "2026-01-19", "total_min": 347.0, "deep_min": 71.0, "light_min": 221.0, "rem_min": 55.0, "awake_min": 21.0, "bed_time": "00:14", "wake_time": "06:22", "efficiency": 94.3}, {"date": "2026-01-20", "total_min": 295.0, "deep_min": 71.0, "light_min": 196.0, "rem_min": 28.0, "awake_min": 51.0, "bed_time": "00:04", "wake_time": "05:50", "efficiency": 85.3}, {"date": "2026-01-21", "total_min": 358.0, "deep_min": 60.0, "light_min": 265.0, "rem_min": 33.0, "awake_min": 17.0, "bed_time": "22:59", "wake_time": "05:14", "efficiency": 95.5}, {"date": "2026-01-22", "total_min": 388.0, "deep_min": 81.0, "light_min": 226.0, "rem_min": 81.0, "awake_min": 0.0, "bed_time": "23:39", "wake_time": "06:07", "efficiency": 100.0}, {"date": "2026-01-23", "total_min": 363.0, "deep_min": 68.0, "light_min": 213.0, "rem_min": 82.0, "awake_min": 1.0, "bed_time": "01:23", "wake_time": "07:27", "efficiency": 99.7}, {"date": "2026-01-24", "total_min": 323.6, "deep_min": 80.0, "light_min": 196.6, "rem_min": 47.0, "awake_min": 100.0, "bed_time": "01:44", "wake_time": "08:48", "efficiency": 76.4}, {"date": "2026-01-25", "total_min": 262.0, "deep_min": 97.0, "light_min": 127.0, "rem_min": 38.0, "awake_min": 140.0, "bed_time": "23:16", "wake_time": "05:58", "efficiency": 65.2}, {"date": "2026-01-26", "total_min": 350.0, "deep_min": 57.0, "light_min": 241.0, "rem_min": 52.0, "awake_min": 4.0, "bed_time": "23:36", "wake_time": "06:01", "efficiency": 98.9}, {"date": "2026-01-27", "total_min": 359.0, "deep_min": 60.0, "light_min": 230.0, "rem_min": 69.0, "awake_min": 22.0, "bed_time": "23:46", "wake_time": "06:07", "efficiency": 94.2}, {"date": "2026-01-28", "total_min": 210.0, "deep_min": 66.0, "light_min": 116.0, "rem_min": 28.0, "awake_min": 8.0, "bed_time": "00:19", "wake_time": "03:57", "efficiency": 96.3}, {"date": "2026-01-29", "total_min": 325.0, "deep_min": 78.0, "light_min": 247.0, "rem_min": 0.0, "awake_min": 40.0, "bed_time": "23:54", "wake_time": "05:59", "efficiency": 89.0}, {"date": "2026-01-30", "total_min": 191.0, "deep_min": 82.0, "light_min": 79.0, "rem_min": 30.0, "awake_min": 4.0, "bed_time": "01:42", "wake_time": "04:57", "efficiency": 97.9}, {"date": "2026-01-31", "total_min": 251.0, "deep_min": 77.0, "light_min": 113.0, "rem_min": 61.0, "awake_min": 33.0, "bed_time": "02:12", "wake_time": "06:56", "efficiency": 88.4}, {"date": "2026-02-01", "total_min": 333.0, "deep_min": 96.0, "light_min": 180.0, "rem_min": 57.0, "awake_min": 16.0, "bed_time": "00:27", "wake_time": "06:16", "efficiency": 95.4}, {"date": "2026-02-02", "total_min": 374.0, "deep_min": 80.0, "light_min": 269.0, "rem_min": 25.0, "awake_min": 54.0, "bed_time": "00:21", "wake_time": "07:29", "efficiency": 87.4}, {"date": "2026-02-03", "total_min": 325.0, "deep_min": 72.0, "light_min": 199.0, "rem_min": 54.0, "awake_min": 35.0, "bed_time": "01:01", "wake_time": "07:21", "efficiency": 90.3}, {"date": "2026-02-04", "total_min": 332.0, "deep_min": 68.0, "light_min": 233.0, "rem_min": 31.0, "awake_min": 56.0, "bed_time": "00:52", "wake_time": "07:20", "efficiency": 85.6}, {"date": "2026-02-05", "total_min": 275.0, "deep_min": 90.0, "light_min": 176.0, "rem_min": 9.0, "awake_min": 11.0, "bed_time": "01:34", "wake_time": "06:20", "efficiency": 96.2}, {"date": "2026-02-06", "total_min": 290.0, "deep_min": 68.0, "light_min": 187.0, "rem_min": 35.0, "awake_min": 47.0, "bed_time": "01:48", "wake_time": "07:25", "efficiency": 86.1}, {"date": "2026-02-07", "total_min": 251.0, "deep_min": 79.0, "light_min": 149.0, "rem_min": 23.0, "awake_min": 41.0, "bed_time": "02:44", "wake_time": "07:36", "efficiency": 86.0}, {"date": "2026-02-08", "total_min": 253.0, "deep_min": 72.0, "light_min": 175.0, "rem_min": 6.0, "awake_min": 66.0, "bed_time": "00:53", "wake_time": "06:12", "efficiency": 79.3}, {"date": "2026-02-09", "total_min": 254.7, "deep_min": 119.0, "light_min": 105.0, "rem_min": 30.7, "awake_min": 40.0, "bed_time": "01:23", "wake_time": "06:18", "efficiency": 86.4}, {"date": "2026-02-10", "total_min": 264.0, "deep_min": 65.0, "light_min": 175.0, "rem_min": 24.0, "awake_min": 73.0, "bed_time": "01:23", "wake_time": "07:00", "efficiency": 78.3}, {"date": "2026-02-11", "total_min": 262.0, "deep_min": 53.0, "light_min": 163.0, "rem_min": 46.0, "awake_min": 24.0, "bed_time": "02:13", "wake_time": "07:00", "efficiency": 91.6}, {"date": "2026-02-12", "total_min": 386.0, "deep_min": 62.0, "light_min": 287.0, "rem_min": 37.0, "awake_min": 45.0, "bed_time": "02:35", "wake_time": "09:46", "efficiency": 89.6}, {"date": "2026-02-13", "total_min": 311.5, "deep_min": 56.0, "light_min": 186.0, "rem_min": 69.5, "awake_min": 26.5, "bed_time": "02:03", "wake_time": "07:41", "efficiency": 92.2}, {"date": "2026-02-14", "total_min": 297.0, "deep_min": 91.0, "light_min": 187.0, "rem_min": 19.0, "awake_min": 5.0, "bed_time": "00:46", "wake_time": "05:48", "efficiency": 98.3}, {"date": "2026-02-15", "total_min": 370.0, "deep_min": 101.0, "light_min": 219.0, "rem_min": 50.0, "awake_min": 2.0, "bed_time": "00:47", "wake_time": "06:59", "efficiency": 99.5}, {"date": "2026-02-16", "total_min": 299.0, "deep_min": 93.0, "light_min": 155.0, "rem_min": 51.0, "awake_min": 3.0, "bed_time": "02:07", "wake_time": "07:09", "efficiency": 99.0}, {"date": "2026-02-18", "total_min": 359.0, "deep_min": 51.0, "light_min": 289.0, "rem_min": 19.0, "awake_min": 7.0, "bed_time": "02:56", "wake_time": "09:02", "efficiency": 98.1}, {"date": "2026-02-19", "total_min": 375.0, "deep_min": 62.0, "light_min": 247.0, "rem_min": 66.0, "awake_min": 27.0, "bed_time": "02:16", "wake_time": "08:58", "efficiency": 93.3}, {"date": "2026-02-20", "total_min": 345.0, "deep_min": 94.0, "light_min": 172.0, "rem_min": 79.0, "awake_min": 9.0, "bed_time": "01:24", "wake_time": "07:18", "efficiency": 97.5}, {"date": "2026-02-21", "total_min": 274.0, "deep_min": 81.0, "light_min": 153.0, "rem_min": 40.0, "awake_min": 44.0, "bed_time": "01:48", "wake_time": "07:06", "efficiency": 86.2}, {"date": "2026-02-22", "total_min": 183.0, "deep_min": 67.0, "light_min": 116.0, "rem_min": 0.0, "awake_min": 37.0, "bed_time": "02:01", "wake_time": "05:41", "efficiency": 83.2}, {"date": "2026-02-23", "total_min": 378.0, "deep_min": 45.0, "light_min": 277.0, "rem_min": 56.0, "awake_min": 5.0, "bed_time": "23:38", "wake_time": "06:01", "efficiency": 98.7}, {"date": "2026-02-24", "total_min": 350.0, "deep_min": 47.0, "light_min": 232.0, "rem_min": 71.0, "awake_min": 34.0, "bed_time": "23:34", "wake_time": "05:58", "efficiency": 91.1}, {"date": "2026-02-25", "total_min": 274.0, "deep_min": 30.0, "light_min": 170.0, "rem_min": 74.0, "awake_min": 72.0, "bed_time": "00:02", "wake_time": "05:48", "efficiency": 79.2}, {"date": "2026-02-26", "total_min": 348.0, "deep_min": 65.0, "light_min": 221.0, "rem_min": 62.0, "awake_min": 25.0, "bed_time": "01:04", "wake_time": "07:17", "efficiency": 93.3}, {"date": "2026-02-27", "total_min": 189.0, "deep_min": 45.0, "light_min": 123.5, "rem_min": 20.5, "awake_min": 94.0, "bed_time": "02:37", "wake_time": "07:43", "efficiency": 66.8}, {"date": "2026-02-28", "total_min": 190.5, "deep_min": 48.5, "light_min": 101.0, "rem_min": 41.0, "awake_min": 41.5, "bed_time": "01:42", "wake_time": "05:34", "efficiency": 82.1}, {"date": "2026-03-02", "total_min": 199.0, "deep_min": 41.0, "light_min": 138.0, "rem_min": 20.0, "awake_min": 38.0, "bed_time": "01:42", "wake_time": "05:39", "efficiency": 84.0}, {"date": "2026-03-03", "total_min": 209.0, "deep_min": 53.0, "light_min": 141.0, "rem_min": 15.0, "awake_min": 72.0, "bed_time": "23:42", "wake_time": "04:23", "efficiency": 74.4}, {"date": "2026-03-04", "total_min": 167.5, "deep_min": 24.0, "light_min": 109.0, "rem_min": 34.5, "awake_min": 49.5, "bed_time": "02:24", "wake_time": "06:01", "efficiency": 77.2}, {"date": "2026-03-05", "total_min": 405.5, "deep_min": 80.0, "light_min": 229.5, "rem_min": 96.0, "awake_min": 104.5, "bed_time": "21:32", "wake_time": "06:02", "efficiency": 79.5}, {"date": "2026-03-06", "total_min": 396.0, "deep_min": 65.0, "light_min": 235.5, "rem_min": 95.5, "awake_min": 66.0, "bed_time": "23:00", "wake_time": "06:42", "efficiency": 85.7}, {"date": "2026-03-08", "total_min": 302.0, "deep_min": 83.0, "light_min": 164.0, "rem_min": 55.0, "awake_min": 10.0, "bed_time": "00:57", "wake_time": "06:09", "efficiency": 96.8}, {"date": "2026-03-09", "total_min": 228.5, "deep_min": 48.0, "light_min": 124.5, "rem_min": 56.0, "awake_min": 12.0, "bed_time": "02:03", "wake_time": "06:03", "efficiency": 95.0}, {"date": "2026-03-10", "total_min": 381.0, "deep_min": 88.0, "light_min": 229.0, "rem_min": 64.0, "awake_min": 69.0, "bed_time": "01:22", "wake_time": "08:52", "efficiency": 84.7}, {"date": "2026-03-11", "total_min": 241.0, "deep_min": 65.0, "light_min": 153.0, "rem_min": 23.0, "awake_min": 44.0, "bed_time": "00:27", "wake_time": "05:12", "efficiency": 84.6}, {"date": "2026-03-12", "total_min": 437.0, "deep_min": 81.0, "light_min": 249.0, "rem_min": 107.0, "awake_min": 84.0, "bed_time": "23:54", "wake_time": "08:35", "efficiency": 83.9}, {"date": "2026-03-13", "total_min": 258.0, "deep_min": 57.0, "light_min": 190.0, "rem_min": 11.0, "awake_min": 42.0, "bed_time": "03:07", "wake_time": "08:07", "efficiency": 86.0}, {"date": "2026-03-14", "total_min": 315.0, "deep_min": 98.0, "light_min": 169.0, "rem_min": 48.0, "awake_min": 47.0, "bed_time": "01:22", "wake_time": "07:24", "efficiency": 87.0}, {"date": "2026-03-15", "total_min": 221.0, "deep_min": 77.0, "light_min": 135.0, "rem_min": 9.0, "awake_min": 12.0, "bed_time": "02:07", "wake_time": "06:00", "efficiency": 94.8}, {"date": "2026-03-16", "total_min": 214.0, "deep_min": 48.0, "light_min": 158.0, "rem_min": 8.0, "awake_min": 14.0, "bed_time": "02:22", "wake_time": "06:10", "efficiency": 93.9}, {"date": "2026-03-17", "total_min": 325.0, "deep_min": 135.0, "light_min": 114.0, "rem_min": 76.0, "awake_min": 6.0, "bed_time": "00:35", "wake_time": "06:06", "efficiency": 98.2}, {"date": "2026-03-19", "total_min": 406.0, "deep_min": 85.0, "light_min": 258.0, "rem_min": 63.0, "awake_min": 52.0, "bed_time": "22:22", "wake_time": "06:00", "efficiency": 88.6}, {"date": "2026-03-20", "total_min": 49.5, "deep_min": 0.0, "light_min": 49.0, "rem_min": 0.5, "awake_min": 19.5, "bed_time": "01:31", "wake_time": "02:40", "efficiency": 71.7}, {"date": "2026-03-21", "total_min": 262.0, "deep_min": 53.0, "light_min": 186.0, "rem_min": 23.0, "awake_min": 59.0, "bed_time": "02:05", "wake_time": "07:26", "efficiency": 81.6}, {"date": "2026-03-23", "total_min": 324.0, "deep_min": 67.0, "light_min": 232.0, "rem_min": 25.0, "awake_min": 60.0, "bed_time": "00:05", "wake_time": "06:29", "efficiency": 84.4}, {"date": "2026-03-25", "total_min": 294.0, "deep_min": 41.0, "light_min": 238.0, "rem_min": 15.0, "awake_min": 25.0, "bed_time": "00:26", "wake_time": "05:45", "efficiency": 92.2}, {"date": "2026-03-26", "total_min": 256.0, "deep_min": 62.0, "light_min": 181.0, "rem_min": 13.0, "awake_min": 6.0, "bed_time": "01:34", "wake_time": "05:56", "efficiency": 97.7}, {"date": "2026-03-27", "total_min": 321.0, "deep_min": 99.0, "light_min": 166.0, "rem_min": 56.0, "awake_min": 33.0, "bed_time": "00:18", "wake_time": "06:29", "efficiency": 90.7}, {"date": "2026-03-28", "total_min": 387.0, "deep_min": 60.0, "light_min": 291.0, "rem_min": 36.0, "awake_min": 90.0, "bed_time": "01:21", "wake_time": "09:18", "efficiency": 81.1}, {"date": "2026-03-29", "total_min": 392.0, "deep_min": 81.0, "light_min": 238.0, "rem_min": 73.0, "awake_min": 56.0, "bed_time": "02:21", "wake_time": "09:49", "efficiency": 87.5}, {"date": "2026-03-30", "total_min": 406.0, "deep_min": 56.0, "light_min": 250.0, "rem_min": 100.0, "awake_min": 37.0, "bed_time": "00:39", "wake_time": "08:02", "efficiency": 91.6}, {"date": "2026-03-31", "total_min": 250.0, "deep_min": 83.0, "light_min": 140.0, "rem_min": 27.0, "awake_min": 15.0, "bed_time": "01:37", "wake_time": "06:02", "efficiency": 94.3}, {"date": "2026-04-01", "total_min": 304.0, "deep_min": 54.0, "light_min": 197.0, "rem_min": 53.0, "awake_min": 6.0, "bed_time": "01:17", "wake_time": "06:27", "efficiency": 98.1}, {"date": "2026-04-02", "total_min": 187.0, "deep_min": 56.0, "light_min": 121.0, "rem_min": 10.0, "awake_min": 19.0, "bed_time": "03:37", "wake_time": "07:03", "efficiency": 90.8}, {"date": "2026-04-03", "total_min": 234.0, "deep_min": 86.0, "light_min": 110.0, "rem_min": 38.0, "awake_min": 16.0, "bed_time": "03:23", "wake_time": "07:33", "efficiency": 93.6}];
+
+let charts = {};
+let currentRange = 60;
+
+function getData(days) {
+  if (days === 0) return SLEEP_DATA;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutStr = cutoff.toISOString().slice(0,10);
+  return SLEEP_DATA.filter(d => d.date >= cutStr);
+}
+
+function timeToMinutes(t) {
+  if (!t) return 0;
+  const [h,m] = t.split(':').map(Number);
+  // Normalize: if hour >= 18, it's PM (evening before midnight)
+  // if hour < 18, add 24 to sort properly (early morning = late night)
+  return h < 18 ? (h + 24) * 60 + m : h * 60 + m;
+}
+
+function minutesToTime(mins) {
+  mins = mins % (24 * 60);
+  if (mins >= 24 * 60) mins -= 24 * 60;
+  const h = Math.floor(mins / 60) % 24;
+  const m = Math.floor(mins % 60);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+function getWeekKey(dateStr) {
+  const d = new Date(dateStr);
+  const day = d.getDay() || 7;
+  const mon = new Date(d);
+  mon.setDate(d.getDate() - day + 1);
+  return mon.toISOString().slice(0,10);
+}
+
+function updateAll() {
+  const all = SLEEP_DATA;
+  const data = getData(currentRange);
+  if (!data.length) return;
+
+  const last = all[all.length-1];
+  const first = all[0];
+  const span = Math.ceil((new Date(last.date) - new Date(first.date)) / 86400000) + 1;
+
+  document.getElementById('lastDate').textContent = last.date;
+  document.getElementById('nightCount').textContent = all.length;
+  document.getElementById('dataSpan').textContent = span;
+
+  // Averages from current range
+  const avgT = data.reduce((s,d) => s + d.total_min, 0) / data.length;
+  const avgD = data.reduce((s,d) => s + d.deep_min, 0) / data.length;
+  const avgR = data.reduce((s,d) => s + d.rem_min, 0) / data.length;
+  const avgE = data.reduce((s,d) => s + d.efficiency, 0) / data.length;
+  const bedMins = data.filter(d => d.bed_time).map(d => timeToMinutes(d.bed_time));
+  const avgBedMin = bedMins.reduce((a,b) => a+b, 0) / bedMins.length;
+
+  document.getElementById('avgTotal').textContent = (avgT/60).toFixed(1);
+  document.getElementById('avgSleep').textContent = (avgT/60).toFixed(1);
+  document.getElementById('avgDeep').textContent = Math.round(avgD);
+  document.getElementById('avgRem').textContent = Math.round(avgR);
+  document.getElementById('avgEff').textContent = avgE.toFixed(1);
+  document.getElementById('avgBed').textContent = minutesToTime(Math.round(avgBedMin));
+
+  // Color code stats
+  document.getElementById('avgDeep').style.color = avgD >= 60 ? '#81B29A' : '#E07A5F';
+  document.getElementById('avgRem').style.color = avgR >= 90 ? '#81B29A' : '#E07A5F';
+  document.getElementById('avgEff').style.color = avgE >= 85 ? '#81B29A' : '#E07A5F';
+
+  Object.values(charts).forEach(c => c.destroy());
+  charts = {};
+
+  renderDuration(data);
+  renderEfficiency(data);
+  renderTimes(data);
+  renderWeekly(all);
+  renderAnalysis(data, avgT, avgD, avgR, avgE, avgBedMin);
+}
+
+function setRange(days) {
+  currentRange = days;
+  document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateAll();
+}
+
+function renderDuration(data) {
+  const labels = data.map(d => d.date.slice(5));
+  const ctx = document.getElementById('durationChart').getContext('2d');
+  charts.dur = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '深睡', data: data.map(d => d.deep_min), backgroundColor: '#5B4F8A', borderRadius: 3 },
+        { label: '淺睡', data: data.map(d => d.light_min), backgroundColor: '#A8A0CC', borderRadius: 3 },
+        { label: 'REM', data: data.map(d => d.rem_min), backgroundColor: '#7C6CA8', borderRadius: 3 },
+        { label: '清醒', data: data.map(d => d.awake_min), backgroundColor: 'rgba(224,122,95,0.4)', borderRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#9B95AD', font: { family: 'Roboto Mono', size: 11 } } },
+        tooltip: {
+          callbacks: {
+            title: items => data[items[0]?.dataIndex]?.date || '',
+            afterBody: items => {
+              const i = items[0]?.dataIndex;
+              if (i === undefined) return '';
+              const d = data[i];
+              return `\n總睡眠: ${(d.total_min/60).toFixed(1)}h\n效率: ${d.efficiency}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { color: 'rgba(232,228,240,0.04)' }, ticks: { color: '#9B95AD', maxRotation: 60, maxTicksLimit: 20 } },
+        y: {
+          stacked: true,
+          grid: { color: 'rgba(232,228,240,0.08)' },
+          ticks: { color: '#9B95AD', callback: v => (v/60).toFixed(0)+'h' },
+          title: { display: true, text: '時長', color: '#9B95AD' }
+        }
+      }
+    },
+    plugins: [{
+      id: 'targetLine',
+      afterDraw(chart) {
+        const yScale = chart.scales.y;
+        const ctx2 = chart.ctx;
+        // 7h target line
+        const y7 = yScale.getPixelForValue(420);
+        ctx2.save();
+        ctx2.strokeStyle = '#81B29A';
+        ctx2.lineWidth = 1.5;
+        ctx2.setLineDash([6,4]);
+        ctx2.beginPath();
+        ctx2.moveTo(chart.chartArea.left, y7);
+        ctx2.lineTo(chart.chartArea.right, y7);
+        ctx2.stroke();
+        ctx2.fillStyle = '#81B29A';
+        ctx2.font = '11px Inter';
+        ctx2.fillText('目標 7h', chart.chartArea.right - 60, y7 - 5);
+        ctx2.restore();
+      }
+    }]
+  });
+
+  // Alert
+  const below7 = data.filter(d => d.total_min < 420).length;
+  const pct = Math.round(below7 / data.length * 100);
+  const el = document.getElementById('durationAlert');
+  if (pct > 50) {
+    el.innerHTML = `<div class="warning">⚠️ ${pct}% 的夜晚睡眠不足 7 小時（${below7}/${data.length} 夜）。長期睡眠不足會影響訓練恢復與荷爾蒙平衡。</div>`;
+  } else if (pct > 30) {
+    el.innerHTML = `<div class="warning">⚠️ ${pct}% 的夜晚低於 7 小時。建議調整就寢時間。</div>`;
+  } else {
+    el.innerHTML = `<div class="good">✅ ${100-pct}% 的夜晚達到 7 小時以上，睡眠時長良好。</div>`;
+  }
+}
+
+function renderEfficiency(data) {
+  const labels = data.map(d => d.date.slice(5));
+  const ctx = document.getElementById('effChart').getContext('2d');
+  const minEff = Math.min(...data.map(d => d.efficiency));
+  charts.eff = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: '睡眠效率 %',
+        data: data.map(d => d.efficiency),
+        borderColor: '#81B29A',
+        backgroundColor: 'rgba(129,178,154,0.08)',
+        borderWidth: 2, tension: 0.3, fill: true,
+        pointRadius: 2, pointHoverRadius: 5,
+        segment: {
+          borderColor: ctx2 => ctx2.p1.parsed.y < 80 ? '#E07A5F' : '#81B29A'
+        }
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(232,228,240,0.04)' }, ticks: { color: '#9B95AD', maxRotation: 45, maxTicksLimit: 15 } },
+        y: {
+          min: Math.max(50, Math.floor(minEff - 5)), max: 100,
+          grid: { color: 'rgba(232,228,240,0.08)' },
+          ticks: { color: '#9B95AD', callback: v => v+'%' }
+        }
+      }
+    },
+    plugins: [{
+      id: 'refLine85',
+      afterDraw(chart) {
+        const y85 = chart.scales.y.getPixelForValue(85);
+        const ctx2 = chart.ctx;
+        ctx2.save();
+        ctx2.strokeStyle = '#E07A5F';
+        ctx2.lineWidth = 1.5;
+        ctx2.setLineDash([6,4]);
+        ctx2.beginPath();
+        ctx2.moveTo(chart.chartArea.left, y85);
+        ctx2.lineTo(chart.chartArea.right, y85);
+        ctx2.stroke();
+        ctx2.fillStyle = '#E07A5F';
+        ctx2.font = '11px Inter';
+        ctx2.fillText('良好 ≥ 85%', chart.chartArea.right - 85, y85 - 5);
+        ctx2.restore();
+      }
+    }]
+  });
+}
+
+function renderTimes(data) {
+  const valid = data.filter(d => d.bed_time && d.wake_time);
+  const labels = valid.map(d => d.date.slice(5));
+
+  const bedData = valid.map(d => {
+    let m = timeToMinutes(d.bed_time);
+    return m / 60; // hours (24h+ for after midnight)
+  });
+  const wakeData = valid.map(d => {
+    let [h, m] = d.wake_time.split(':').map(Number);
+    if (h < 12) h += 24; // normalize to same scale
+    return (h * 60 + m) / 60;
+  });
+
+  const allVals = [...bedData, ...wakeData];
+  const minV = Math.floor(Math.min(...allVals));
+  const maxV = Math.ceil(Math.max(...allVals));
+
+  const ctx = document.getElementById('timeChart').getContext('2d');
+  charts.time = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: '就寢', data: bedData,
+          borderColor: '#5B4F8A', backgroundColor: 'rgba(91,79,138,0.08)',
+          borderWidth: 2, tension: 0.3, pointRadius: 3, fill: false
+        },
+        {
+          label: '起床', data: wakeData,
+          borderColor: '#E07A5F', backgroundColor: 'rgba(224,122,95,0.08)',
+          borderWidth: 2, tension: 0.3, pointRadius: 3, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#9B95AD', font: { family: 'Roboto Mono', size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: item => {
+              const hrs = item.raw;
+              const h = Math.floor(hrs) % 24;
+              const m = Math.round((hrs % 1) * 60);
+              return `${item.dataset.label}: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(232,228,240,0.04)' }, ticks: { color: '#9B95AD', maxRotation: 45, maxTicksLimit: 15 } },
+        y: {
+          min: minV, max: maxV,
+          grid: { color: 'rgba(232,228,240,0.08)' },
+          ticks: {
+            color: '#9B95AD',
+            callback: v => { const h = Math.floor(v) % 24; return String(h).padStart(2,'0') + ':00'; }
+          },
+          reverse: true
+        }
+      }
+    }
+  });
+}
+
+function renderWeekly(data) {
+  const weeks = {};
+  data.forEach(d => {
+    const wk = getWeekKey(d.date);
+    if (!weeks[wk]) weeks[wk] = [];
+    weeks[wk].push(d);
+  });
+
+  const wkKeys = Object.keys(weeks).sort();
+  const labels = wkKeys.map(w => { const d = new Date(w); return `${d.getMonth()+1}/${d.getDate()}`; });
+  const avgData = wkKeys.map(w => {
+    const nights = weeks[w];
+    return Math.round(nights.reduce((s,n) => s + n.total_min, 0) / nights.length);
+  });
+  const deepData = wkKeys.map(w => {
+    const nights = weeks[w];
+    return Math.round(nights.reduce((s,n) => s + n.deep_min, 0) / nights.length);
+  });
+
+  const minV = Math.min(...avgData) * 0.8;
+  const ctx = document.getElementById('weeklyChart').getContext('2d');
+  charts.weekly = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: '週均總睡眠(min)', data: avgData,
+          backgroundColor: avgData.map(v => v < 420 ? 'rgba(224,122,95,0.3)' : 'rgba(124,108,168,0.3)'),
+          borderColor: avgData.map(v => v < 420 ? '#E07A5F' : '#7C6CA8'),
+          borderWidth: 1, borderRadius: 4
+        },
+        {
+          label: '週均深睡(min)', data: deepData,
+          backgroundColor: 'rgba(91,79,138,0.4)',
+          borderColor: '#5B4F8A',
+          borderWidth: 1, borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#9B95AD', font: { family: 'Roboto Mono', size: 11 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(232,228,240,0.04)' }, ticks: { color: '#9B95AD', maxRotation: 45 } },
+        y: {
+          min: Math.max(0, Math.floor(minV)),
+          grid: { color: 'rgba(232,228,240,0.08)' },
+          ticks: { color: '#9B95AD', callback: v => (v/60).toFixed(1)+'h' }
+        }
+      }
+    },
+    plugins: [{
+      id: 'target7h',
+      afterDraw(chart) {
+        const y7 = chart.scales.y.getPixelForValue(420);
+        const c = chart.ctx;
+        c.save(); c.strokeStyle = '#81B29A'; c.lineWidth = 1.5; c.setLineDash([6,4]);
+        c.beginPath(); c.moveTo(chart.chartArea.left, y7); c.lineTo(chart.chartArea.right, y7); c.stroke();
+        c.fillStyle = '#81B29A'; c.font = '11px Inter'; c.fillText('7h', chart.chartArea.right - 25, y7 - 5);
+        c.restore();
+      }
+    }]
+  });
+}
+
+function renderAnalysis(data, avgT, avgD, avgR, avgE, avgBed) {
+  const recent7 = data.slice(-7);
+  const r7avg = recent7.reduce((s,d) => s + d.total_min, 0) / recent7.length;
+  const r7deep = recent7.reduce((s,d) => s + d.deep_min, 0) / recent7.length;
+
+  let html = '';
+  html += `<p><strong>1. 睡眠時長</strong><br>`;
+  html += `近期平均 <strong>${(avgT/60).toFixed(1)} 小時/夜</strong>。`;
+  if (avgT < 420) {
+    html += `<span style="color:#E07A5F">低於建議的 7 小時。成人最佳恢復需要 7-9 小時，睡眠不足直接影響訓練恢復、荷爾蒙分泌（GH、睪固酮）。</span>`;
+  } else {
+    html += `<span style="color:#81B29A">達到 7 小時目標，良好。</span>`;
+  }
+  html += `<br>最近 7 夜平均 <strong>${(r7avg/60).toFixed(1)} 小時</strong>。`;
+  html += `</p>`;
+
+  html += `<p><strong>2. 深睡品質</strong><br>`;
+  html += `平均深睡 <strong>${Math.round(avgD)} 分鐘/夜</strong>（${(avgD/avgT*100).toFixed(0)}%）。`;
+  if (avgD >= 60) {
+    html += `<span style="color:#81B29A">深睡達標（≥60 分鐘），肌肉修復與生長激素分泌正常。</span>`;
+  } else {
+    html += `<span style="color:#E07A5F">深睡偏低，建議：避免睡前 2h 激烈運動、控制咖啡因攝取（14:00 後不喝）、降低臥室溫度。</span>`;
+  }
+  html += `</p>`;
+
+  html += `<p><strong>3. 就寢規律性</strong><br>`;
+  const bedHr = Math.floor(avgBed / 60) % 24;
+  const bedMin = Math.round(avgBed % 60);
+  html += `平均就寢 <strong>${String(bedHr).padStart(2,'0')}:${String(bedMin).padStart(2,'0')}</strong>。`;
+  if (bedHr >= 2 || (bedHr >= 0 && bedHr < 18 && bedHr >= 2)) {
+    html += `<span style="color:#E07A5F">就寢偏晚。每提早 30 分鐘入睡，深睡佔比通常會提升 5-10%。</span>`;
+  } else {
+    html += `就寢時間合理。`;
+  }
+  html += `<br>睡眠效率 <strong>${avgE.toFixed(1)}%</strong>`;
+  if (avgE >= 85) html += `（良好，躺在床上的時間有效利用）。`;
+  else html += `<span style="color:#E07A5F">（偏低，可能翻來覆去或中途清醒過多）。</span>`;
+  html += `</p>`;
+
+  html += `<p><strong>4. 建議</strong><br>`;
+  const tips = [];
+  if (avgT < 420) tips.push('提早 30-60 分鐘就寢，目標至少 7 小時在床時間');
+  if (avgD < 60) tips.push('睡前 1h 降低螢幕亮度、避免高GI食物，提升深睡比例');
+  if (avgR < 60) tips.push('REM 偏低，可能與壓力或酒精有關，注意壓力管理');
+  if (avgE < 80) tips.push('睡眠效率低，若長期失眠建議限制在床時間（Sleep Restriction Therapy）');
+  if (tips.length === 0) tips.push('目前睡眠指標均在合理範圍，維持現有習慣');
+  html += tips.map(t => `- ${t}`).join('<br>');
+  html += `</p>`;
+
+  document.getElementById('analysisContent').innerHTML = html;
+}
+
+window.addEventListener('load', updateAll);
+</script>
+</body>
+</html>
