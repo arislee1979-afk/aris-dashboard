@@ -442,7 +442,7 @@ function renderChart(){
           annotations:Object.fromEntries(
             [2000,2002,2008,2009,2020,2022,2023].map(yr=>{
               const idx=months.findIndex(m=>m.year===yr&&m.month===1);
-              return[idx>=0?[String(yr),{type:'line',xMin:idx,xMax:idx,yMin:0,yMax:1000000,borderColor:annC,borderWidth:1,borderDash:[3,3],label:{display:true,content:String(yr),position:'start',backgroundColor:'rgba(255,204,0,.08)',color:isDark?'#ffcc00':'#854d0e',font:{size:9}}]]:null;
+              return [idx>=0 ? [String(yr),{type:'line',xMin:idx,xMax:idx,yMin:0,yMax:1000000,borderColor:annC,borderWidth:1,borderDash:[3,3],label:{display:true,content:String(yr),position:'start',backgroundColor:'rgba(255,204,0,.08)',color:isDark?'#ffcc00':'#854d0e',font:{size:9}}] : null];
             }).filter(Boolean)
           )
         },
