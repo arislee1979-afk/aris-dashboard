@@ -468,7 +468,7 @@ function renderChart(){
   const debts=months.map(m=>m.debt);
   if(mainChart){mainChart.destroy();}
   const ctx=document.getElementById('mainChart').getContext('2d');
-  const isDark=document.documentElement.dataset.theme==='dark';
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
   const gridC=isDark?'#1e2d3d':'#d0d7e4';
   const textC=isDark?'#6080a0':'#6b7a94';
   const annC=isDark?'rgba(255,204,0,.25)':'rgba(212,160,23,.25)';
@@ -501,14 +501,14 @@ function renderChart(){
           annotations:Object.fromEntries(
             [2000,2002,2008,2009,2020,2022,2023].map(yr=>{
               const idx=months.findIndex(m=>m.year===yr&&m.month===1);
-              return [idx>=0 ? [String(yr),{type:'line',xMin:idx,xMax:idx,yMin:0,yMax:1000000,borderColor:annC,borderWidth:1,borderDash:[3,3],label:{display:true,content:String(yr),position:'start',backgroundColor:'rgba(255,204,0,.08)',color:isDark?'#ffcc00':'#854d0e',font:{size:9}}] : null];
+              return [idx>=0 ? [String(yr),{type:'line',xMin:idx,xMax:idx,yMin:0,yMax:1000000,borderColor:annC,borderWidth:1,borderDash:[3,3],label:{display:true,content:String(yr),position:'start',backgroundColor:'rgba(255,204,0,.08)',color:isDark?'#ffcc00':'#854d0e',font:{size:9}}}] : null];
             }).filter(Boolean)
           )
         },
       },
       scales:{
-        x:{grid:{color:gridC},ticks:{color:textC,maxTicksLimit:20,maxRotation:0,font:{size:9}},
-        y:{grid:{color:gridC},ticks:{color:textC,callback:v=>fmtM(v),font:{size:9}},title:{display:true,text:'淨值(萬USD)',color:textC}
+        x:{grid:{color:gridC},ticks:{color:textC,maxTicksLimit:20,maxRotation:0,font:{size:9}}},
+        y:{grid:{color:gridC},ticks:{color:textC,callback:v=>fmtM(v),font:{size:9}},title:{display:true,text:'淨值(萬USD)',color:textC}}
       },
     },
   });
@@ -516,10 +516,10 @@ function renderChart(){
 
 function renderModeTimeline(){
   const{months}=simResults;
-  const isDark=document.documentElement.dataset.theme==='dark';
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
   const col={A:isDark?'#00d4ff':'#0066cc',B:isDark?'#00ff88':'#00a854',C:isDark?'#ffcc00':'#d4a017',D:isDark?'#ff8800':'#d46b08',E:isDark?'#ff4466':'#cf1322'};
   document.getElementById('modeTimeline').innerHTML=months.map(m=>
-    `<div class="mb m{m.mode}" style="background:${col[m.mode]}" title="${m.year}/${m.month} Mode ${m.mode}"></div>`
+    `<div class="mb m${m.mode}" style="background:${col[m.mode]}" title="${m.year}/${m.month} Mode ${m.mode}"></div>`
   ).join('');
 }
 
@@ -576,17 +576,26 @@ function renderMonthly(){
   document.getElementById('monthlyBody').innerHTML=html;
 }
 
-function toggleTheme(){
-  const html=document.documentElement;
-  const current=html.dataset.theme||'dark';
-  html.dataset.theme=current==='dark'?'light':'dark';
-  document.body.classList.toggle('light-theme',html.dataset.theme==='light');
-  if(simResults){renderChart();renderModeTimeline();renderYearly();renderMonthly();}
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  
+  html.setAttribute('data-theme', next);
+  document.body.classList.toggle('light-theme', next === 'light');
+  
+  if (simResults) {
+    renderChart();
+    renderModeTimeline();
+    renderYearly();
+    renderMonthly();
+  }
 }
 
 function runBacktest() {
   const loading = document.getElementById('loading');
   loading.classList.add('show');
+
   setTimeout(() => {
     try {
       simulate();
@@ -601,7 +610,6 @@ function runBacktest() {
     }
   }, 50);
 }
-
 </script>
 </body>
 </html>
