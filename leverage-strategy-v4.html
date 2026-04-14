@@ -47,6 +47,10 @@
   --accent:#0066cc;--green:#00a854;--red:#cf1322;--yellow:#d4a017;--orange:#d46b08;
   --dim:#8c9bb0;--text:#1a1a2e;--textdim:#6b7a94;
 }
+body.light-theme{--bg:#f5f7fa;--panel:#fff;--panel2:#eef1f6;--border:#d0d7e4;
+  --accent:#0066cc;--green:#00a854;--red:#cf1322;--yellow:#d4a017;--orange:#d46b08;
+  --dim:#8c9bb0;--text:#1a1a2e;--textdim:#6b7a94;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
 header{padding:18px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,var(--panel) 0%,var(--bg) 100%)}
@@ -219,6 +223,34 @@ const BOND_MONTHLY = {
 function fmt(v,d=2){return(v===undefined||isNaN(v))?'–':v.toFixed(d);}
 function fmtPct(v){if(v===undefined||isNaN(v))return'–';return(v>=0?'+':'')+(v*100).toFixed(1)+'%';}
 function fmtM(v){return fmt(v)+'M';}
+
+function getMarketState(trailing){
+  if(trailing>0.02)return'up';
+  if(trailing<-0.02)return'down';
+  return'flat';
+}
+
+function getQQQIBeta(market){
+  if(market==='up')return 0.80;
+  if(market==='down')return 0.40;
+  return 0.60;
+}
+
+function qldReturn(qqq_r){
+  return 2*qqq_r-0.0002;
+}
+
+function qqqiReturn(qqq_r,beta,div_annual){
+  return beta*qqq_r+div_annual/12;
+}
+
+function getMode(maint){
+  if(maint>=4.0)return'A';
+  if(maint>=3.5)return'B';
+  if(maint>=3.0)return'C';
+  if(maint>=2.0)return'D';
+  return'E';
+}
 
 let simResults=null,mainChart=null;
 
@@ -546,23 +578,27 @@ function renderMonthly(){
 
 function toggleTheme(){
   const html=document.documentElement;
-  html.dataset.theme=html.dataset.theme==='dark'?'light':'dark';
+  const current=html.dataset.theme||'dark';
+  html.dataset.theme=current==='dark'?'light':'dark';
+  document.body.classList.toggle('light-theme',html.dataset.theme==='light');
   if(simResults){renderChart();renderModeTimeline();renderYearly();renderMonthly();}
 }
 
 function runBacktest() {
-  document.getElementById('loading').classList.add('show');
+  const loading = document.getElementById('loading');
+  loading.classList.add('show');
   setTimeout(() => {
     try {
       simulate();
-    } catch(e) {
+      renderModeTimeline();
+    } catch (e) {
       console.error(e);
+      alert("模擬過程中發生錯誤，請檢查主控台。");
+    } finally {
+      requestAnimationFrame(() => {
+        loading.classList.remove('show');
+      });
     }
-    // Defer loading removal to the next animation frame
-    // so it doesn't get blocked by the synchronous DOM work above.
-    requestAnimationFrame(() => {
-      document.getElementById('loading').classList.remove('show');
-    });
   }, 50);
 }
 
