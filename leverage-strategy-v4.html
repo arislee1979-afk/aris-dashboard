@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>25% QQQ · 25% QLD · 20% 短債 · 30% QQQI 策略回測 v4</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;--panel:#111820;--panel2:#161e28;--border:#1e2d3d;
+  --accent:#00d4ff;--green:#00ff88;--red:#ff4466;--yellow:#ffcc00;--orange:#ff8800;
+  --dim:#4a6080;--text:#c8d8e8;--textdim:#6080a0;
+  --mono:'IBM Plex Mono',monospace;--sans:'Space Grotesk',sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f5f7fa;--panel:#fff;--panel2:#eef1f6;--border:#d0d7e4;
+  --accent:#0066cc;--green:#00a854;--red:#cf1322;--yellow:#d4a017;--orange:#d46b08;
+  --dim:#8c9bb0;--text:#1a1a2e;--textdim:#6b7a94;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+header{padding:18px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,var(--panel) 0%,var(--bg) 100%)}
+.logo{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;border:1px solid var(--accent);padding:4px 10px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+header h1{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
+header p{font-size:11px;color:var(--textdim);font-family:var(--mono)}
+.theme-btn{margin-left:auto;background:var(--panel);border:1px solid var(--border);color:var(--textdim);padding:6px 14px;border-radius:6px;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s;flex-shrink:0}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.controls{display:flex;gap:10px;padding:12px 24px;background:var(--panel);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:flex-end}
+.cg{display:flex;flex-direction:column;gap:3px}
+.cg label{font-size:9px;font-family:var(--mono);color:var(--textdim);text-transform:uppercase;letter-spacing:1.5px}
+.cg input,.cg select{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:4px;width:118px;outline:none;transition:border .2s}
+.cg input:focus,.cg select:focus{border-color:var(--accent)}
+.run-btn{background:var(--accent);color:#000;border:none;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 24px;border-radius:4px;cursor:pointer;letter-spacing:1px;transition:opacity .2s;align-self:flex-end}
+.run-btn:hover{opacity:.8}
+.sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+.c{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.cl{font-size:9px;font-family:var(--mono);color:var(--textdim);text-transform:uppercase;letter-spacing:1.5px}
+.cv{font-family:var(--mono);font-size:17px;font-weight:600;line-height:1.2}
+.cs{font-size:10px;color:var(--textdim);font-family:var(--mono)}
+.pos{color:var(--green)}.neg{color:var(--red)}.acc{color:var(--accent)}.yel{color:var(--yellow)}
+.sec{padding:18px 24px;border-bottom:1px solid var(--border)}
+.st{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.st::after{content:'';flex:1;height:1px;background:var(--border)}
+.chart-wrap{position:relative;height:260px}
+.leg-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+.leg{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--textdim)}
+.leg-dot{width:18px;height:3px;border-radius:2px}
+.mode-tl{display:flex;gap:2px;height:22px;margin-top:8px;flex-wrap:wrap}
+.mb{flex:1;min-width:3px;border-radius:2px;cursor:default;transition:transform .1s}
+.mA{background:var(--accent)}.mB{background:var(--green)}.mC{background:var(--yellow)}.mD{background:var(--orange)}.mE{background:var(--red)}
+.tbl-wrap{overflow-x:auto;max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:4px}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+th{background:var(--panel2);color:var(--textdim);padding:7px 9px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:5}
+th:first-child,th:nth-child(2){text-align:left}
+td{padding:5px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+td:first-child,td:nth-child(2){text-align:left;color:var(--textdim)}
+tr:hover td{background:var(--panel2)}
+tr:last-child td{border-bottom:none}
+.pill{display:inline-block;padding:2px 6px;border-radius:99px;font-size:9px;font-weight:600}
+.pU{background:rgba(0,255,136,.12);color:var(--green)}
+.pD{background:rgba(255,68,102,.12);color:var(--red)}
+.pF{background:rgba(255,204,0,.12);color:var(--yellow)}
+.mb2{font-size:9px;padding:1px 5px;border-radius:2px;font-weight:600}
+.mA2{background:rgba(0,212,255,.12);color:var(--accent)}
+.mB2{background:rgba(0,255,136,.12);color:var(--green)}
+.mC2{background:rgba(255,204,0,.12);color:var(--yellow)}
+.mD2{background:rgba(255,136,0,.12);color:var(--orange)}
+.mE2{background:rgba(255,68,102,.12);color:var(--red)}
+.yr td{background:var(--panel2)!important;color:var(--accent);font-size:9px;font-weight:600;letter-spacing:1px;padding-top:9px;text-align:left!important}
+.footer{padding:14px 24px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--textdim);line-height:1.8}
+.footer strong{color:var(--accent)}
+#loading{display:none;position:fixed;inset:0;background:rgba(10,14,20,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+[data-theme="light"] #loading{background:rgba(245,247,250,.92)}
+#loading.show{display:flex}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{font-family:var(--mono);font-size:11px;color:var(--textdim);letter-spacing:2px}
+@media(max-width:600px){
+header h1{font-size:13px}
+.sum{grid-template-columns:repeat(3,1fr)}
+.cv{font-size:14px}
+.sec{padding:14px 16px}
+}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spinner"></div><p>RUNNING SIMULATION...</p></div>
+<header>
+  <div class="logo">BACKTEST v4</div>
+  <div><h1>25% QQQ · 25% QLD · 20% 短債 · 30% QQQI 策略回測</h1><p>2000.01–2025.12 ｜ 每月維持率監控 ｜ 動態提領策略</p></div>
+  <button class="theme-btn" onclick="toggleTheme()">◐ 主題切換</button>
+</header>
+<div class="controls">
+  <div class="cg"><label>初始資產(萬USD)</label><input type="number" id="initAsset" value="100" min="10" max="10000" step="10"></div>
+  <div class="cg"><label>每月生活費(萬USD)</label><input type="number" id="monthlyExp" value="0.5" min="0.1" max="10" step="0.1"></div>
+  <div class="cg"><label>緊急準備金(萬USD)</label><input type="number" id="emergencyFund" value="100" min="10" max="1000" step="10"></div>
+  <div class="cg"><label>借貸年利率(%)</label><input type="number" id="pledgeRate" value="3.5" min="1" max="10" step="0.5"></div>
+  <div class="cg"><label>QQQI配息率(%)</label><input type="number" id="qqiDiv" value="10" min="5" max="20" step="1"></div>
+  <button class="run-btn" onclick="runBacktest()">▶ RUN</button>
+</div>
+<div class="sum" id="summary-row"></div>
+<div class="sec">
+  <div class="st">資產淨值走勢（2000–2025）</div>
+  <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+  <div class="leg-row">
+    <div class="leg"><div class="leg-dot" style="background:#00ff88"></div>淨值</div>
+    <div class="leg"><div class="leg-dot" style="background:rgba(0,212,255,.6)"></div>總資產</div>
+    <div class="leg"><div class="leg-dot" style="background:rgba(255,68,102,.6)"></div>借貸</div>
+  </div>
+  <div class="st" style="margin-top:16px">策略模式時間軸（每像素=1月）</div>
+  <div class="mode-tl" id="modeTimeline"></div>
+</div>
+<div class="sec">
+  <div class="st">年度摘要</div>
+  <div class="tbl-wrap">
+    <table><thead><tr><th>年份</th><th>QQQ漲跌</th><th>期末資產</th><th>期末借貸</th><th>維持率均</th><th>提領</th><th>股息</th><th>主模式</th><th>備註</th></tr></thead>
+    <tbody id="yearlyBody"></tbody></table>
+  </div>
+</div>
+<div class="sec">
+  <div class="st">月度明細</div>
+  <div class="tbl-wrap">
+    <table><thead><tr><th>年月</th><th>模式</th><th>QQQ價</th><th>市場</th><th>總資產</th><th>借貸</th><th>維持率</th><th>月股息</th><th>淨值</th></tr></thead>
+    <tbody id="monthlyBody"></tbody></table>
+  </div>
+</div>
+<div class="footer">
+  <strong>策略說明：</strong>Mode A(≥500%)全質押借款，股息→QQQ ｜Mode B(450-500%)全借款，股息→QQQI ｜Mode C(400-450%)全借款，股息→短債 ｜Mode D(300-400%)股息優先，不足借款 ｜Mode E(&lt;300%)外部資金，股息還債<br>
+  <strong>Beta說明：</strong>可質押組合β=0.75｜QQQI不納擔保，β僅用於漲跌模擬：上升0.4/盤整0.6/下跌1.0｜維持率=(QQQ+QLD+短債)×0.75/借貸餘額
+</div>
+<script>
+const QQQ_MONTHLY = {
+  2000:[0.059,-0.058,-0.346,0.152,0.027,-0.126,0.097,-0.115,-0.122,-0.126,0.022,-0.076],
+  2001:[-0.257,0.053,-0.145,0.157,-0.031,0.115,-0.063,-0.127,-0.171,0.117,0.182,-0.058],
+  2002:[0.008,0.056,-0.108,0.097,-0.116,-0.094,-0.216,0.011,-0.116,0.175,-0.148,-0.120],
+  2003:[0.009,-0.012,0.010,0.098,0.099,0.041,0.082,0.061,-0.011,0.075,-0.010,0.052],
+  2004:[0.016,0.013,0.008,-0.035,-0.042,0.040,0.000,-0.001,0.004,0.035,-0.045,0.067],
+  2005:[0.016,-0.012,0.038,0.014,-0.017,0.018,0.039,-0.011,0.052,-0.011,0.022,0.018],
+  2006:[0.051,0.008,-0.001,0.030,-0.058,0.002,0.005,-0.025,0.044,0.054,-0.033,0.013],
+  2007:[0.021,0.020,-0.015,0.042,0.030,0.013,0.009,-0.008,0.037,-0.045,0.036,0.029],
+  2008:[0.031,-0.043,0.000,0.046,-0.006,0.004,0.001,-0.003,-0.145,-0.194,0.014,-0.036],
+  2009:[-0.069,-0.055,0.039,0.147,0.059,-0.002,0.085,-0.004,0.040,-0.032,0.047,0.071],
+  2010:[0.037,0.043,0.065,0.019,-0.080,0.002,0.069,-0.032,0.110,0.057,-0.019,0.072],
+  2011:[0.018,0.030,0.024,0.028,-0.020,-0.009,-0.027,-0.061,-0.060,0.100,-0.028,0.028],
+  2012:[0.097,0.050,0.047,0.019,-0.071,0.037,0.028,0.048,0.030,-0.025,0.010,0.013],
+  2013:[0.034,0.013,0.044,0.022,0.053,0.008,0.082,0.032,0.042,0.043,0.038,0.026],
+  2014:[0.024,0.055,0.008,0.001,-0.005,0.059,-0.002,-0.042,-0.053,0.063,-0.013,0.007],
+  2015:[0.020,0.064,0.008,0.021,-0.010,0.037,0.032,-0.066,-0.069,0.098,-0.010,0.025],
+  2016:[-0.083,0.009,0.059,0.010,0.037,0.029,0.069,-0.009,-0.035,0.018,0.016,0.022],
+  2017:[0.044,0.024,0.018,0.014,0.038,0.037,0.040,0.056,0.012,0.038,-0.011,0.043],
+  2018:[0.079,0.049,0.021,-0.017,0.055,0.056,0.023,0.057,-0.013,-0.108,-0.049,-0.093],
+  2019:[0.102,0.030,-0.025,0.037,-0.090,0.082,0.022,-0.026,0.035,0.031,0.044,0.043],
+  2020:[-0.020,-0.073,-0.131,0.154,0.107,0.115,0.074,-0.009,0.139,0.055,0.034,0.058],
+  2021:[0.031,0.001,0.017,0.065,-0.016,0.064,0.039,0.041,-0.053,0.077,-0.002,0.020],
+  2022:[-0.088,-0.048,-0.093,-0.134,0.004,0.027,-0.049,0.003,-0.108,0.033,-0.043,-0.091],
+  2023:[0.104,0.035,0.093,-0.009,0.092,0.068,0.062,-0.023,-0.055,0.100,0.108,0.027],
+  2024:[0.018,0.071,0.035,0.044,0.062,0.048,0.027,-0.011,0.061,0.059,0.066,0.056],
+  2025:[0.030,-0.052,-0.078,0.080,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000],
+};
+const BOND_MONTHLY = {
+  2000:[0.0048,0.0048,0.0048,0.0048,0.0048,0.0048,0.0048,0.0048,0.0048,0.0048,0.0048,0.0046],
+  2001:[0.0043,0.0042,0.0040,0.0038,0.0036,0.0033,0.0030,0.0028,0.0022,0.0018,0.0018,0.0016],
+  2002:[0.0015,0.0015,0.0014,0.0014,0.0014,0.0014,0.0013,0.0013,0.0013,0.0012,0.0012,0.0012],
+  2003:[0.0010,0.0010,0.0010,0.0010,0.0010,0.0008,0.0008,0.0008,0.0008,0.0008,0.0008,0.0008],
+  2004:[0.0007,0.0007,0.0007,0.0008,0.0008,0.0010,0.0012,0.0015,0.0017,0.0018,0.0019,0.0021],
+  2005:[0.0022,0.0024,0.0026,0.0028,0.0030,0.0032,0.0033,0.0035,0.0037,0.0038,0.0039,0.0041],
+  2006:[0.0043,0.0044,0.0044,0.0045,0.0046,0.0046,0.0046,0.0046,0.0046,0.0046,0.0046,0.0046],
+  2007:[0.0046,0.0044,0.0044,0.0044,0.0044,0.0044,0.0044,0.0044,0.0040,0.0038,0.0036,0.0035],
+  2008:[0.0030,0.0025,0.0022,0.0020,0.0018,0.0018,0.0016,0.0014,0.0010,0.0008,0.0004,0.0002],
+  2009:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002],
+  2010:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002],
+  2011:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002],
+  2012:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002],
+  2013:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002],
+  2014:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0003],
+  2015:[0.0003,0.0003,0.0003,0.0003,0.0003,0.0003,0.0003,0.0003,0.0003,0.0003,0.0004,0.0005],
+  2016:[0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0006,0.0006,0.0006,0.0006,0.0007],
+  2017:[0.0007,0.0007,0.0008,0.0008,0.0008,0.0009,0.0009,0.0009,0.0010,0.0010,0.0010,0.0011],
+  2018:[0.0012,0.0013,0.0014,0.0015,0.0015,0.0016,0.0016,0.0017,0.0018,0.0018,0.0019,0.0020],
+  2019:[0.0020,0.0020,0.0020,0.0021,0.0021,0.0020,0.0019,0.0018,0.0017,0.0016,0.0015,0.0015],
+  2020:[0.0014,0.0013,0.0008,0.0004,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002],
+  2021:[0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0002,0.0003,0.0003,0.0004,0.0005],
+  2022:[0.0006,0.0008,0.0015,0.0025,0.0035,0.0050,0.0060,0.0065,0.0070,0.0075,0.0075,0.0075],
+  2023:[0.0075,0.0075,0.0075,0.0075,0.0075,0.0075,0.0075,0.0075,0.0075,0.0075,0.0070,0.0065],
+  2024:[0.0063,0.0061,0.0058,0.0056,0.0054,0.0051,0.0050,0.0048,0.0043,0.0040,0.0038,0.0037],
+  2025:[0.0036,0.0035,0.0034,0.0033,0.0033,0.0033,0.0033,0.0033,0.0033,0.0033,0.0033,0.0033],
+};
+
+function fmt(v,d=2){return(v===undefined||isNaN(v))?'–':v.toFixed(d);}
+function fmtPct(v){if(v===undefined||isNaN(v))return'–';return(v>=0?'+':'')+(v*100).toFixed(1)+'%';}
+function fmtM(v){return fmt(v)+'M';}
+
+let simResults=null,mainChart=null;
+
+function simulate() {
+  const INIT = parseFloat(document.getElementById('initAsset').value);
+  const MONTHLY_EXP = parseFloat(document.getElementById('monthlyExp').value);
+  const EMERGENCY = parseFloat(document.getElementById('emergencyFund').value);
+  const PLEDGE_RATE = parseFloat(document.getElementById('pledgeRate').value) / 100 / 12;
+  const QQQI_DIV_ANNUAL = parseFloat(document.getElementById('qqiDiv').value) / 100;
+  const QQQI_DIV_MONTHLY = QQQI_DIV_ANNUAL / 12;
+
+  // Portfolio weights
+  const W_QQQ = 0.25, W_QLD = 0.25, W_BOND = 0.20, W_QQQI = 0.30;
+  const PLEDGEABLE_BETA = 0.75;
+
+  // Initial allocations
+  let qqq = INIT * W_QQQ;
+  let qld = INIT * W_QLD;
+  let bond = INIT * W_BOND;
+  let qqqi = INIT * W_QQQI;
+  let debt = 0;         // outstanding pledged loan
+  let emergencyUsed = 0;
+  let emergencyPool = EMERGENCY;
+
+  // Track QQQ price history for trailing return
+  let qqqPriceHistory = [100]; // normalized
+  let qqqPrice = 100;
+
+  const months = [];
+  const years = Object.keys(QQQ_MONTHLY).map(Number).sort();
+
+  let totalWithdrawn = 0;
+  let totalDividend = 0;
+  let totalEmergencyIn = 0;
+
+  for (const year of years) {
+    const qqq_year = QQQ_MONTHLY[year];
+    for (let m = 0; m < 12; m++) {
+      // Skip future months in 2025
+      if (year === 2025 && m >= 4) break;
+
+      const qqq_r = qqq_year[m];
+      const bond_r = BOND_MONTHLY[year][m];
+
+      // trailing 3-month QQQ for market state
+      const trailing = qqqPriceHistory.slice(-3).reduce((a,b,i,arr)=> {
+        return i === 0 ? 0 : a + (arr[i] - arr[i-1]) / arr[i-1];
+      }, 0) / Math.max(qqqPriceHistory.slice(-3).length - 1, 1);
+      
+      const market = getMarketState(trailing);
+      const qqqi_beta = getQQQIBeta(market);
+
+      // Update QQQ price
+      qqqPrice *= (1 + qqq_r);
+      qqqPriceHistory.push(qqqPrice);
+
+      // QLD return (2x leveraged with decay)
+      const qld_r_raw = qldReturn(qqq_r);
+      // Bond
+      const bond_r_actual = bond_r;
+      // QQQI
+      const qqqi_r = qqqiReturn(qqq_r, qqqi_beta, QQQI_DIV_ANNUAL);
+
+      // Apply returns to positions
+      qqq *= (1 + qqq_r);
+      qld *= (1 + qld_r_raw);
+      bond *= (1 + bond_r_actual);
+      qqqi *= (1 + qqqi_r);
+
+      // Accrue debt interest
+      debt *= (1 + PLEDGE_RATE);
+
+      // Monthly dividend from QQQI
+      const qqqi_div = qqqi * QQQI_DIV_MONTHLY;
+      totalDividend += qqqi_div;
+
+      // Total asset value
+      const totalAsset = qqq + qld + bond + qqqi;
+      const netValue = totalAsset - debt;
+
+      // Pledgeable portfolio = QQQ+QLD+BOND only (QQQI excluded)
+      // β=0.75 is the collateral discount factor (same as market exposure beta per spec)
+      const pledgeableValue = (qqq + qld + bond) * PLEDGEABLE_BETA;
+      // 維持率 = 可質押有效價值 / 借貸餘額
+      const maintRatio = debt > 0 ? pledgeableValue / debt : 999;
+      const mode = getMode(maintRatio === 999 ? 10 : maintRatio);
+
+      let withdrawn = 0;
+      let fromDividend = 0;
+      let fromLoan = 0;
+      let fromExternal = 0;
+      let dividendReinvest = 0;
+      let dividendReinvestTarget = '';
+
+      if (mode === 'A') {
+        // Full loan for living, dividends → QQQ
+        fromLoan = MONTHLY_EXP;
+        debt += fromLoan;
+        dividendReinvest = qqqi_div;
+        dividendReinvestTarget = 'QQQ';
+        qqq += dividendReinvest;
+      } else if (mode === 'B') {
+        // Full loan for living, dividends → QQQI
+        fromLoan = MONTHLY_EXP;
+        debt += fromLoan;
+        dividendReinvest = qqqi_div;
+        dividendReinvestTarget = 'QQQI';
+        qqqi += dividendReinvest;
+      } else if (mode === 'C') {
+        // Full loan for living, dividends → Bond
+        fromLoan = MONTHLY_EXP;
+        debt += fromLoan;
+        dividendReinvest = qqqi_div;
+        dividendReinvestTarget = '短債';
+        bond += dividendReinvest;
+      } else if (mode === 'D') {
+        // Dividend first, shortfall from loan
+        fromDividend = Math.min(qqqi_div, MONTHLY_EXP);
+        const shortfall = MONTHLY_EXP - fromDividend;
+        if (shortfall > 0) {
+          fromLoan = shortfall;
+          debt += fromLoan;
+        }
+        // remaining dividend (if any) reinvest to bond
+        const remainDiv = qqqi_div - fromDividend;
+        if (remainDiv > 0) {
+          bond += remainDiv;
+          dividendReinvestTarget = '短債';
+        }
+      } else { // E: <300%, external funds
+        // Dividend goes to repay debt first
+        const divToDebt = Math.min(qqqi_div, debt);
+        debt -= divToDebt;
+        const remainDiv = qqqi_div - divToDebt;
+        // living expenses from external
+        fromExternal = MONTHLY_EXP;
+        emergencyPool -= fromExternal;
+        emergencyUsed += fromExternal;
+        totalEmergencyIn += fromExternal;
+        if (emergencyPool < 0) {
+          // sell bond to cover
+          const needed = -emergencyPool;
+          const bondSell = Math.min(bond, needed);
+          bond -= bondSell;
+          emergencyPool = 0;
+        }
+        if (remainDiv > 0 && debt > 0) {
+          debt -= Math.min(remainDiv, debt);
+        }
+      }
+
+      withdrawn = fromDividend + fromLoan + fromExternal;
+      totalWithdrawn += withdrawn;
+
+      const totalAssetPost = qqq + qld + bond + qqqi;
+      const netValuePost = totalAssetPost - debt;
+      // Post-action 維持率（QQQI不納入擔保品）
+      const pledgePost = (qqq + qld + bond) * PLEDGEABLE_BETA;
+      const maintPost = debt > 0 ? pledgePost / debt : 999;
+
+      months.push({
+        year, month: m + 1,
+        market,
+        qqq_r, qld_r: qld_r_raw, bond_r: bond_r_actual, qqqi_r,
+        qqq, qld, bond, qqqi,
+        debt,
+        totalAsset: totalAssetPost,
+        netValue: netValuePost,
+        maintRatio: maintPost,
+        mode,
+        qqqi_div,
+        withdrawn,
+        fromDividend, fromLoan, fromExternal,
+        dividendReinvestTarget,
+        qqqPrice
+      });
+    }
+  }
+
+  simResults = { months, totalWithdrawn, totalDividend, totalEmergencyIn };
+
+  renderSummary();
+  renderChart();
+  renderYearly();
+  renderMonthly();
+}
+
+function renderSummary(){
+  const{months,totalWithdrawn,totalDividend,totalEmergencyIn}=simResults;
+  const last=months[months.length-1];
+  const init=+document.getElementById('initAsset').value;
+  const finalNet=last.netValue;
+  const cagr=Math.pow(finalNet/init,1/(months.length/12))-1;
+  const maxDD=calcMaxDD(months);
+  const cards=[
+    {label:'期末淨值',value:fmtM(finalNet),sub:'vs本金'+fmtM(init),cls:finalNet>init?'pos':'neg'},
+    {label:'CAGR',value:fmtPct(cagr),sub:'年化複合成長率',cls:cagr>0?'pos':'neg'},
+    {label:'最大回撒',value:fmtPct(maxDD),sub:'淨值基礎',cls:'neg'},
+    {label:'期末借貸',value:fmtM(last.debt),sub:'質押借貸餘額',cls:last.debt>0?'yel':'pos'},
+    {label:'累積提領',value:fmtM(totalWithdrawn),sub:'含生活費',cls:'acc'},
+    {label:'累積股息',value:fmtM(totalDividend),sub:'QQQI配息',cls:'acc'},
+    {label:'緊急金使用',value:fmtM(totalEmergencyIn),sub:'Mode E啟動',cls:totalEmergencyIn>0?'yel':'pos'},
+    {label:'期末維持率',value:(last.maintRatio>50?'∞':fmtPct(last.maintRatio-1)),sub:'Mode:'+last.mode,cls:'acc'},
+  ];
+  document.getElementById('summary-row').innerHTML=cards.map(c=>`<div class="c"><div class="cl">${c.label}</div><div class="cv ${c.cls}">${c.value}</div><div class="cs">${c.sub}</div></div>`).join('');
+}
+
+function calcMaxDD(months){let peak=months[0].netValue,maxDD=0;for(const m of months){if(m.netValue>peak)peak=m.netValue;const dd=(peak-m.netValue)/peak;if(dd>maxDD)maxDD=dd;}return-maxDD;}
+
+function renderChart(){
+  const{months}=simResults;
+  const labels=months.map(m=>`${m.year}/${m.month}`);
+  const netVals=months.map(m=>m.netValue);
+  const assets=months.map(m=>m.totalAsset);
+  const debts=months.map(m=>m.debt);
+  if(mainChart){mainChart.destroy();}
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  const isDark=document.documentElement.dataset.theme==='dark';
+  const gridC=isDark?'#1e2d3d':'#d0d7e4';
+  const textC=isDark?'#6080a0':'#6b7a94';
+  const annC=isDark?'rgba(255,204,0,.25)':'rgba(212,160,23,.25)';
+  mainChart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'淨值',data:netVals,borderColor:'#00ff88',backgroundColor:'rgba(0,255,136,.05)',fill:true,tension:.3,borderWidth:2,pointRadius:0,pointHoverRadius:4},
+        {label:'總資產',data:assets,borderColor:isDark?'rgba(0,212,255,.5)':'rgba(0,102,204,.5)',fill:false,tension:.3,borderWidth:1.5,pointRadius:0},
+        {label:'借貸',data:debts,borderColor:isDark?'rgba(255,68,102,.5)':'rgba(207,19,34,.5)',fill:false,tension:.3,borderWidth:1,pointRadius:0,borderDash:[4,4]},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            title:ctx=>{const m=months[ctx[0].dataIndex];return`${m.year}/${m.month}｜${m.market}`;},
+            label:ctx=>` ${ctx.dataset.label}: ${fmtM(ctx.raw)}`,
+          },
+          backgroundColor:isDark?'#111820':'#fff',
+          titleColor:isDark?'#c8d8e8':'#1a1a2e',
+          bodyColor:isDark?'#6080a0':'#6b7a94',
+          borderColor:isDark?'#1e2d3d':'#d0d7e4',borderWidth:1,
+        },
+        annotation:{
+          annotations:Object.fromEntries(
+            [2000,2002,2008,2009,2020,2022,2023].map(yr=>{
+              const idx=months.findIndex(m=>m.year===yr&&m.month===1);
+              return[idx>=0?[String(yr),{type:'line',xMin:idx,xMax:idx,yMin:0,yMax:1000000,borderColor:annC,borderWidth:1,borderDash:[3,3],label:{display:true,content:String(yr),position:'start',backgroundColor:'rgba(255,204,0,.08)',color:isDark?'#ffcc00':'#854d0e',font:{size:9}}]]:null;
+            }).filter(Boolean)
+          )
+        },
+      },
+      scales:{
+        x:{grid:{color:gridC},ticks:{color:textC,maxTicksLimit:20,maxRotation:0,font:{size:9}},
+        y:{grid:{color:gridC},ticks:{color:textC,callback:v=>fmtM(v),font:{size:9}},title:{display:true,text:'淨值(萬USD)',color:textC}
+      },
+    },
+  });
+}
+
+function renderModeTimeline(){
+  const{months}=simResults;
+  const isDark=document.documentElement.dataset.theme==='dark';
+  const col={A:isDark?'#00d4ff':'#0066cc',B:isDark?'#00ff88':'#00a854',C:isDark?'#ffcc00':'#d4a017',D:isDark?'#ff8800':'#d46b08',E:isDark?'#ff4466':'#cf1322'};
+  document.getElementById('modeTimeline').innerHTML=months.map(m=>
+    `<div class="mb m{m.mode}" style="background:${col[m.mode]}" title="${m.year}/${m.month} Mode ${m.mode}"></div>`
+  ).join('');
+}
+
+function renderYearly(){
+  const{months}=simResults;
+  const yrMap={};for(const m of months){if(!yrMap[m.year])yrMap[m.year]=[];yrMap[m.year].push(m);}
+  const notes={2000:'科技泡沫頂部',2001:'9/11',2002:'泡沫底部',2003:'反彈年',2008:'金融海嘯',2009:'危機反彈',2020:'COVID+反彈',2022:'Fed升息',2023:'AI反彈',2024:'AI多頭'};
+  let html='';
+  for(const[yr,ms]of Object.entries(yrMap)){
+    const first=ms[0],last=ms[ms.length-1];
+    const yr_r=QQQ_MONTHLY[yr].slice(0,ms.length).reduce((a,r)=>a*(1+r),1)-1;
+    const avgM=ms.reduce((a,m)=>a+(m.maintRatio>20?20:m.maintRatio),0)/ms.length;
+    const totD=ms.reduce((a,m)=>a+m.qqqi_div,0);
+    const totW=ms.reduce((a,m)=>a+m.withdrawn,0);
+    const mc={};ms.forEach(m=>{mc[m.mode]=(mc[m.mode]||0)+1;});
+    const dom=Object.entries(mc).sort((a,b)=>b[1]-a[1])[0][0];
+    const pill=yr_r>0.1?`<span class="pill pU">${fmtPct(yr_r)}</span>`:yr_r<-0.1?`<span class="pill pD">${fmtPct(yr_r)}</span>`:`<span class="pill pF">${fmtPct(yr_r)}</span>`;
+    html+=`<tr>
+<td>${yr}</td><td>${pill}</td>
+<td class="${last.totalAsset>first.totalAsset?'pos':'neg'}">${fmtM(last.totalAsset)}</td>
+<td class="${last.debt>0?'yel':'pos'}">${fmtM(last.debt)}</td>
+<td class="acc">${avgM>19?'∞':(avgM*100).toFixed(0)+'%'}</td>
+<td>${fmtM(totW)}</td><td class="pos">${fmtM(totD)}</td>
+<td><span class="mb2 m${dom}2">${dom}</span></td>
+<td style="color:var(--textdim);font-size:9px">${notes[yr]||''}</td>
+</tr>`;
+  }
+  document.getElementById('yearlyBody').innerHTML=html;
+}
+
+function renderMonthly(){
+  const{months}=simResults;
+  const MZ=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let html='',prevYr=null;
+  for(const m of months){
+    if(m.year!==prevYr){prevYr=m.year;const yr_r=QQQ_MONTHLY[m.year].reduce((a,r)=>a*(1+r),1)-1;html+=`<tr class="yr"><td colspan="9">── ${m.year} ── QQQ:${fmtPct(yr_r)}</td></tr>`;}
+    const mD=m.maintRatio>50?'∞':(m.maintRatio*100).toFixed(0)+'%';
+    const mCol=m.maintRatio<3?'var(--red)':m.maintRatio<4?'var(--orange)':m.maintRatio<5?'var(--yellow)':'var(--green)';
+    const mk=m.market==='UP'?'↑':m.market==='DOWN'?'↓':'→';
+    const mkC=m.market==='UP'?'var(--green)':m.market==='DOWN'?'var(--red)':'var(--yellow)';
+    const wD=m.fromExternal>0?`<span style="color:var(--red)">外部${fmt(m.fromExternal)}</span>`:m.fromLoan>0&&m.fromDividend>0?`借${fmt(m.fromLoan)}+息${fmt(m.fromDividend)}`:m.fromLoan>0?`借款${fmt(m.fromLoan)}`:`股息${fmt(m.fromDividend||0)}`;
+    html+=`<tr>
+<td>${m.year}/${MZ[m.month-1]}</td>
+<td><span class="mb2 m${m.mode}2">${m.mode}</span></td>
+<td>${fmt(m.qqqPrice,1)}</td>
+<td style="color:${mkC}">${mk} ${m.market}</td>
+<td>${fmtM(m.totalAsset)}</td>
+<td class="${m.debt>0?'yel':''}">${fmtM(m.debt)}</td>
+<td style="color:${mCol}">${mD}</td>
+<td class="pos">${fmt(m.qqqi_div,3)}</td>
+<td class="${m.netValue>0?'pos':'neg'}">${fmtM(m.netValue)}</td>
+</tr>`;
+  }
+  document.getElementById('monthlyBody').innerHTML=html;
+}
+
+function toggleTheme(){
+  const html=document.documentElement;
+  html.dataset.theme=html.dataset.theme==='dark'?'light':'dark';
+  if(simResults){renderChart();renderModeTimeline();renderYearly();renderMonthly();}
+}
+
+function runBacktest() {
+  document.getElementById('loading').classList.add('show');
+  setTimeout(() => {
+    try {
+      simulate();
+    } catch(e) {
+      console.error(e);
+    }
+    document.getElementById('loading').classList.remove('show');
+  }, 50);
+}
+
+</script>
+</body>
+</html>
