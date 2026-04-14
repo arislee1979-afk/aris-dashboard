@@ -558,7 +558,11 @@ function runBacktest() {
     } catch(e) {
       console.error(e);
     }
-    document.getElementById('loading').classList.remove('show');
+    // Defer loading removal to the next animation frame
+    // so it doesn't get blocked by the synchronous DOM work above.
+    requestAnimationFrame(() => {
+      document.getElementById('loading').classList.remove('show');
+    });
   }, 50);
 }
 
