@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>槓桿質押提領策略｜25年回測分析</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--card:#1a1d27;--card2:#21253a;--accent:#3b82f6;--accent2:#8b5cf6;--green:#22c55e;--yellow:#eab308;--orange:#f97316;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3454}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:0 16px 80px}
+.container{max-width:900px;margin:0 auto}
+.header{text-align:center;padding:48px 0 32px;border-bottom:1px solid var(--border);margin-bottom:40px}
+.header .badge{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.header h1{font-size:clamp(22px,5vw,36px);font-weight:700;line-height:1.3;margin-bottom:12px}
+.header h1 span{color:var(--accent)}
+.header .subtitle{color:var(--muted);font-size:14px}
+.header .stats-row{display:flex;justify-content:center;gap:24px;margin-top:24px;flex-wrap:wrap}
+.stat-box{text-align:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;min-width:90px}
+.stat-box .num{font-size:22px;font-weight:700;color:var(--accent)}
+.stat-box .label{font-size:11px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.tldr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.tldr-item{background:var(--card2);border-radius:12px;padding:14px;border-left:3px solid var(--accent)}
+.tldr-item.g{border-left-color:var(--green)}.tldr-item.o{border-left-color:var(--orange)}.tldr-item.r{border-left-color:var(--red)}
+.tldr-item .num{font-size:24px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.tldr-item.g .num{color:var(--green)}.tldr-item.o .num{color:var(--orange)}.tldr-item.r .num{color:var(--red)}
+.tldr-item p{font-size:12px;color:var(--muted)}
+.allocation-wrapper{display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center}
+.pie-container{position:relative;width:220px;height:220px}
+.legend-item{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13px}
+.legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.legend-item .pct{margin-left:auto;font-weight:700;color:var(--accent)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--card2);padding:9px 12px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.badge-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.bg{background:rgba(34,197,94,0.15);color:var(--green)}
+.by{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.bo{background:rgba(249,115,22,0.15);color:var(--orange)}
+.br{background:rgba(239,68,68,0.15);color:var(--red)}
+.chart-container{position:relative;height:280px;margin-top:14px}
+.chart-container.tall{height:340px}
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.phase-card{background:var(--card2);border-radius:12px;padding:14px;border:1px solid var(--border)}
+.phase-card .phase-name{font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.phase-card .phase-name.up{color:var(--green)}.phase-card .phase-name.down{color:var(--red)}.phase-card .phase-name.crash{color:var(--orange)}
+.phase-card .qqq{font-size:22px;font-weight:700}.phase-card .qqq span{font-size:12px;color:var(--muted);font-weight:400}
+.phase-card .detail{font-size:12px;color:var(--muted);margin-top:4px}
+.phase-card .ratio{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.swot-item{background:var(--card2);border-radius:10px;padding:13px}
+.swot-item.s{border-top:3px solid var(--green)}.swot-item.w{border-top:3px solid var(--red)}.swot-item.o{border-top:3px solid var(--accent)}.swot-item.t{border-top:3px solid var(--orange)}
+.swot-item h4{font-size:12px;font-weight:700;margin-bottom:8px}
+.swot-item.s h4{color:var(--green)}.swot-item.w h4{color:var(--red)}.swot-item.o h4{color:var(--accent)}.swot-item.t h4{color:var(--orange)}
+.swot-item ul{list-style:none;padding:0}.swot-item ul li{font-size:12px;color:var(--muted);margin-bottom:4px;padding-left:12px;position:relative}.swot-item ul li::before{content:'·';position:absolute;left:0}
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.check-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;padding:8px;background:var(--card2);border-radius:8px}
+.check-icon{color:var(--green);flex-shrink:0}
+.gauge-row{display:flex;justify-content:space-around;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.gauge-item{text-align:center}
+.gauge-label{font-size:11px;color:var(--muted);margin-top:4px;max-width:90px}
+.section-divider{display:flex;align-items:center;gap:12px;margin:36px 0 20px}
+.section-divider h2{font-size:18px;font-weight:700;white-space:nowrap}
+.section-divider .line{flex:1;height:1px;background:var(--border)}
+.footer{text-align:center;padding:40px 0 20px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:600px){.swot-grid,.checklist{grid-template-columns:1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+  <div class="badge">💰 財富資源 · 投資策略</div>
+  <h1>槓桿質押提領策略<br><span>復盤回測報告</span></h1>
+  <p class="subtitle">25%×25%×25%×30% 系統 · 2000年高峰 → 2025年AI牛市</p>
+  <div class="stats-row">
+    <div class="stat-box"><div class="num">25年</div><div class="label">回測期間</div></div>
+    <div class="stat-box"><div class="num">17章</div><div class="label">分析章節</div></div>
+    <div class="stat-box"><div class="num">6次</div><div class="label">重大危機</div></div>
+    <div class="stat-box"><div class="num">~10%</div><div class="label">年均報酬*</div></div>
+  </div>
+  <p style="color:var(--muted);font-size:11px;margin-top:12px">*含生活費提領、利息、緊急金消耗之估算值</p>
+</div>
+
+<!-- TL;DR -->
+<div class="section-divider"><div class="line"></div><h2>🔥 TL;DR 五個核心結論</h2><div class="line"></div></div>
+<div class="card">
+<div class="tldr-grid">
+  <div class="tldr-item o">
+    <div class="num">2000-2002</div>
+    <p>QLD帳面損失超80%，維持率跌至123%，100萬緊急金消耗80%。槓桿≠高報酬</p>
+  </div>
+  <div class="tldr-item g">
+    <div class="num">Covered Call</div>
+    <p>QQQI年度10%股利在COVID恐慌期間仍創造正現金流，啞鈴策略的韌性驗證</p>
+  </div>
+  <div class="tldr-item">
+    <div class="num">分層保護</div>
+    <p>&gt;500%全力再投資、&lt;300%外部救援的分層設計，在2008海嘯中避免強制清算</p>
+  </div>
+  <div class="tldr-item">
+    <div class="num">Beta 動態</div>
+    <p>上升期Beta=0.4 / 下降期Beta=1.0，每年減少2-4次危機級Margin Call</p>
+  </div>
+  <div class="tldr-item r">
+    <div class="num">最大弱點</div>
+    <p>QLD在長多頭市場(2010-2025)落後純QQQ超過40%，為整個系統最大成本</p>
+  </div>
+</div>
+</div>
+
+<!-- 資產配置 -->
+<div class="section-divider"><div class="line"></div><h2>⚙️ 模型架構</h2><div class="line"></div></div>
+<div class="card">
+  <div class="card-title">📊 資產配置（25%×25%×25%×30%）</div>
+  <div class="allocation-wrapper">
+    <div class="pie-container"><canvas id="allocChart"></canvas></div>
+    <div class="pie-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div><span>QQQ（Nasdaq 100）</span><span class="pct">25%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div><span>QLD（2×槓桿）</span><span class="pct">25%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div><span>SHY（短期美債）</span><span class="pct">20%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div><span>QQQI（Covered Call）</span><span class="pct">30%</span></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px">可質押組合70% | Beta≈0.75 | 借款利率≈4%/年<br>Beta浮動：上升0.4 / 盤整0.6 / 下降1.0</p>
+    </div>
+  </div>
+</div>
+
+<!-- 維持率 -->
+<div class="section-divider"><div class="line"></div><h2>🎯 維持率分層策略</h2><div class="line"></div></div>
+<div class="card">
+  <div class="card-title">📊 生活費提領決策表</div>
+  <div class="gauge-row">
+    <div class="gauge-item"><canvas id="g1" width="90" height="56"></canvas><div class="gauge-label">&gt;500% 全額投QQQ</div></div>
+    <div class="gauge-item"><canvas id="g2" width="90" height="56"></canvas><div class="gauge-label">500-450% 投QQQI</div></div>
+    <div class="gauge-item"><canvas id="g3" width="90" height="56"></canvas><div class="gauge-label">450-400% 投美債</div></div>
+    <div class="gauge-item"><canvas id="g4" width="90" height="56"></canvas><div class="gauge-label">400-300% 股利優先</div></div>
+    <div class="gauge-item"><canvas id="g5" width="90" height="56"></canvas><div class="gauge-label">&lt;300% 外部資金</div></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>維持率</th><th>生活費來源</th><th>股利流向</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-tag bg">&gt;500%</span></td><td>全額借款（≈4%年利率）</td><td>再投入 QQQ（最高成長）</td><td>🟢 安全擴張</td></tr>
+        <tr><td><span class="badge-tag bg" style="opacity:0.7">450-500%</span></td><td>全額借款</td><td>再投 QQQI（穩定股利）</td><td>🟢 安全區</td></tr>
+        <tr><td><span class="badge-tag by">400-450%</span></td><td>全額借款</td><td>再投入短期美債</td><td>🟡 保守區</td></tr>
+        <tr><td><span class="badge-tag bo">300-400%</span></td><td>股利優先，不足額借款</td><td>優先還借款</td><td>🟠 警戒區</td></tr>
+        <tr><td><span class="badge-tag br">&lt;300%</span></td><td>外部資金（100萬預備金）</td><td>股利優先還債</td><td>🔴 紅線區</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 歷史圖表 -->
+<div class="section-divider"><div class="line"></div><h2>📈 QQQ 25年歷史價格</h2><div class="line"></div></div>
+<div class="card">
+  <div class="card-title">📉 QQQ 價格走勢（1999-2025）標注重大事件</div>
+  <div class="chart-container tall"><canvas id="qqqChart"></canvas></div>
+</div>
+
+<!-- 市場階段 -->
+<div class="section-divider"><div class="line"></div><h2>📅 六階段市場回測</h2><div class="line"></div></div>
+<div class="phase-grid">
+  <div class="phase-card"><div class="phase-name crash">2000-2002 Dot-Com</div><div class="qqq">4,816→1,114 <span>(-77%)</span></div><div class="detail">Nasdaq歷史高點，15年才恢復</div><span class="ratio" style="background:rgba(239,68,68,.15);color:var(--red)">維持率 123%⚠️</span></div>
+  <div class="phase-card"><div class="phase-name up">2003-2007 恢復期</div><div class="qqq">1,114→2,214 <span>(+98%)</span></div><div class="detail">5年還款積累，QLD 2006加入</div><span class="ratio" style="background:rgba(234,179,8,.15);color:var(--yellow)">維持率 775%</span></div>
+  <div class="phase-card"><div class="phase-name crash">2008-2009 海嘯</div><div class="qqq">2,214→865 <span>(-61%)</span></div><div class="detail">SHY+10%避風港，CC保護</div><span class="ratio" style="background:rgba(249,115,22,.15);color:var(--orange)">維持率 424%</span></div>
+  <div class="phase-card"><div class="phase-name up">2010-2021 超長多頭</div><div class="qqq">865→400+ <span>(+1,400%)</span></div><div class="detail">年均報酬20%+，黃金期</div><span class="ratio" style="background:rgba(34,197,94,.15);color:var(--green)">維持率 &gt;1000%</span></div>
+  <div class="phase-card"><div class="phase-name down">2020 COVID</div><div class="qqq">4,738→6,860 <span>(-29%↺V)</span></div><div class="detail">33交易日-29.5%，3個月恢復</div><span class="ratio" style="background:rgba(249,115,22,.15);color:var(--orange)">維持率 450-500%</span></div>
+  <div class="phase-card"><div class="phase-name down">2022 升息</div><div class="qqq">16,212→10,088 <span>(-37.8%)</span></div><div class="detail">Fed暴力升息，科技股殺傷</div><span class="ratio" style="background:rgba(249,115,22,.15);color:var(--orange)">維持率 450-550%</span></div>
+  <div class="phase-card"><div class="phase-name up">2023-2025 AI牛市</div><div class="qqq">10,088→20,000+ <span>(+100%+)</span></div><div class="detail">NVDA/MSFT/GOOGL七巨頭領漲</div><span class="ratio" style="background:rgba(34,197,94,.15);color:var(--green)">維持率 &gt;1500%</span></div>
+</div>
+
+<!-- 風險 -->
+<div class="section-divider"><div class="line"></div><h2>⚠️ 風險分析</h2><div class="line"></div></div>
+<div class="card">
+  <div class="card-title">📊 QLD 槓桿衰減 vs 純QQQ（2006-2025）</div>
+  <div class="chart-container"><canvas id="decayChart"></canvas></div>
+  <p style="font-size:12px;color:var(--muted);margin-top:12px">
+    <strong style="color:var(--red)">QLD在長多頭落後純QQQ超過40%。</strong>原因：每日重設機制在震盪市場產生路徑依賴損耗。<br>
+    📌 <strong>建議：將QLD替換為選擇權組合（自製2×槓桿），消除decay損耗。</strong>
+  </p>
+</div>
+<div class="card">
+  <div class="card-title">🔥 維持率歷史低點</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>時間</th><th>事件</th><th>維持率</th><th>危機等級</th></tr></thead>
+      <tbody>
+        <tr><td>2002/10</td><td>Dot-Com谷底，QQQ -77%</td><td>123%</td><td><span class="badge-tag br">🔴 歷史最低</span></td></tr>
+        <tr><td>2009/03</td><td>金融海嘯谷底，QQQ -61%</td><td>424%</td><td><span class="badge-tag bo">🟠 中度</span></td></tr>
+        <tr><td>2020/03</td><td>COVID閃崩，QQQ -29.5%</td><td>450-500%</td><td><span class="badge-tag bo">🟠 輕微</span></td></tr>
+        <tr><td>2022/12</td><td>升息熊市，QQQ -37.8%</td><td>450-550%</td><td><span class="badge-tag bo">🟠 輕微</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SWOT -->
+<div class="card">
+  <div class="card-title">🔍 SWOT 分析</div>
+  <div class="swot-grid">
+    <div class="swot-item s"><h4>S 優勢</h4><ul>
+      <li>維持率分層歷史驗證有效</li><li>Covered Call熊市現金流</li>
+      <li>槓桿多頭放大報酬</li><li>台灣復委託可執行</li>
+    </ul></div>
+    <div class="swot-item w"><h4>W 劣勢</h4><ul>
+      <li>QLD長期decay損耗40%+</li><li>2000-2002緊急金消耗80%</li>
+      <li>系統複雜，需主動管理</li><li>升息週期借款成本上升</li>
+    </ul></div>
+    <div class="swot-item o"><h4>O 機會</h4><ul>
+      <li>QLD替换为期权消除decay</li><li>&gt;1000%時建立鎖利機制</li>
+      <li>台灣ETF分紅稅務優化</li><li>與發財蝦建立體檢工作流</li>
+    </ul></div>
+    <div class="swot-item t"><h4>T 威脅</h4><ul>
+      <li>QQQ過度集中(七巨頭>40%)</li><li>Fed貨幣政策轉向</li>
+      <li>地緣政治風險</li><li>&gt;1000%時過於激進</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- 執行手冊 -->
+<div class="section-divider"><div class="line"></div><h2>📋 執行手冊</h2><div class="line"></div></div>
+<div class="card">
+  <div class="card-title">✅ 初始建立清單</div>
+  <div class="checklist">
+    <div class="check-item"><span class="check-icon">☑</span> IBKR開戶，開通Portfolio Margin</div>
+    <div class="check-item"><span class="check-icon">☑</span> 緊急金：50萬SHY+30萬USD+20萬TWD</div>
+    <div class="check-item"><span class="check-icon">☑</span> 核心：250萬QQQ+250萬QLD+200萬SHY</div>
+    <div class="check-item"><span class="check-icon">☑</span> QQQI：300萬，建立每月Covered Call</div>
+    <div class="check-item"><span class="check-icon">☑</span> 警示：&lt;450%通知、&lt;350%緊急</div>
+    <div class="check-item"><span class="check-icon">☑</span> 質押：設定借款利率上限提醒(&gt;6%)</div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title">🚨 危機劇本（維持率&lt;400%）</div>
+  <div style="font-size:13px">
+    <div style="margin-bottom:10px"><strong style="color:var(--red)">P1：</strong>停止所有新Covered Call（保留購買力）</div>
+    <div style="margin-bottom:10px"><strong style="color:var(--orange)">P2：</strong>SHY全數變現，準備緊急金調用</div>
+    <div style="margin-bottom:10px"><strong style="color:var(--yellow)">P3：</strong>評估是否主動減持QLD（變現最快）</div>
+    <div style="margin-bottom:10px"><strong style="color:var(--accent)">P4：</strong>&lt;350%立即通知、&lt;300%緊急會議</div>
+    <div><strong style="color:var(--green)">P5：</strong>不在最低點拍賣持股，等待市場穩定</div>
+  </div>
+</div>
+
+<!-- 核心原則 -->
+<div class="card" style="border-color:var(--accent2);background:linear-gradient(135deg,var(--card),#1a1530)">
+  <div class="card-title">💡 三個不變的核心原則</div>
+  <div style="font-size:14px">
+    <div style="margin-bottom:14px">
+      <strong style="color:var(--green)">1. 維持率 &gt; 300%</strong><br>
+      <span style="color:var(--muted)">這是系統紅線。只要在300%以上，系統就不會被清算。</span>
+    </div>
+    <div style="margin-bottom:14px">
+      <strong style="color:var(--accent)">2. Covered Call 永遠不停止（除非&lt;400%）</strong><br>
+      <span style="color:var(--muted)">它是系統的心臟：提供生活費現金流、熊市保護、穩定額外報酬。</span>
+    </div>
+    <div>
+      <strong style="color:var(--orange)">3. 緊急預備金是最後防線</strong><br>
+      <span style="color:var(--muted)">100萬（新台幣）是系統在極端情況的生存保險，不是閒置成本。</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>槓桿質押提領策略復盤回測報告 · 撰寫：A小蝦 · 2026年4月14日</p>
+  <p style="margin-top:6px;color:var(--accent);font-size:11px">💰 支柱：財富資源 | vault/resources/tools-reference/investment/</p>
+</div>
+</div>
+
+<script>
+// ── Charts ──────────────────────────────────────────
+const FONT = "'Noto Sans TC', sans-serif";
+Chart.defaults.font.family = FONT;
+Chart.defaults.color = '#94a3b8';
+
+const CDN = 'https://quickchart.io/chart';
+
+function halfGauge(canvasId, value, color, label) {
+  new Chart(document.getElementById(canvasId), {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [value, 100 - value],
+        backgroundColor: [color, '#2d3454'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: '75%',
+      rotation: -90,
+      circumference: 180,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: false
+    },
+    plugins: [{
+      id: 'centerText',
+      afterDraw(chart) {
+        const { ctx, chartArea: { width, height } } = chart;
+        ctx.save();
+        ctx.font = 'bold 18px ' + FONT;
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.fillText(value + '%', width / 2, height - 4);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+// Gauges: 500+, 450-500, 400-450, 300-400, <300
+halfGauge('g1', 100, '#22c55e');
+halfGauge('g2', 83, '#22c55e');
+halfGauge('g3', 66, '#eab308');
+halfGauge('g4', 50, '#f97316');
+halfGauge('g5', 30, '#ef4444');
+
+// Allocation Pie
+new Chart(document.getElementById('allocChart'), {
+  type: 'pie',
+  data: {
+    labels: ['QQQ 25%', 'QLD 25%', 'SHY 20%', 'QQQI 30%'],
+    datasets: [{
+      data: [25, 25, 20, 30],
+      backgroundColor: ['#3b82f6', '#8b5cf6', '#22c55e', '#f97316'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    animation: false
+  }
+});
+
+// QQQ Historical Chart
+const qqqLabels = ['1999','2000高','2002谷','2003','2007高','2009谷','2010','2015','2019高','2020谷','2022谷','2023','2025高'];
+const qqqData = [100, 103, 24, 31, 47, 18, 18, 47, 96, 58, 86, 134, 429];
+const qqqColors = qqqData.map((v, i) => {
+  if (i === 1 || i === 2 || i === 9 || i === 10) return '#ef4444'; // crisis
+  if (v > qqqData[i-1]) return '#22c55e';
+  return '#f97316';
+});
+
+new Chart(document.getElementById('qqqChart'), {
+  type: 'bar',
+  data: {
+    labels: qqqLabels,
+    datasets: [{
+      label: 'QQQ價格（相對1999=100）',
+      data: qqqData,
+      backgroundColor: qqqColors,
+      borderRadius: 6,
+      barThickness: 22
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        grid: { color: '#2d3454' },
+        ticks: { callback: v => v }
+      },
+      x: { grid: { display: false } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `QQQ指數: ${ctx.raw}（相對1999=100）`
+        }
+      }
+    }
+  }
+});
+
+// QLD Decay Chart
+new Chart(document.getElementById('decayChart'), {
+  type: 'line',
+  data: {
+    labels: ['2006','2008','2010','2015','2019','2020','2022','2025'],
+    datasets: [
+      {
+        label: 'QQQ（實際）',
+        data: [100, 70, 100, 270, 550, 380, 230, 490],
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.1)',
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'QLD（估算）',
+        data: [100, 50, 80, 200, 350, 180, 100, 230],
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,0.1)',
+        fill: true,
+        tension: 0.3,
+        borderDash: [5, 5]
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        grid: { color: '#2d3454' },
+        title: { display: true, text: '相對2006=100' }
+      },
+      x: { grid: { display: false } }
+    },
+    plugins: {
+      legend: {
+        labels: { usePointStyle: true }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
